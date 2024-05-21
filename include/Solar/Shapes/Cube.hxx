@@ -1,14 +1,14 @@
 #ifndef solar_components_cube_hxx
 #define solar_components_cube_hxx
 
-#include "Solar/Components/Model.hxx"
-#include "Solar/Components/World.hxx"
+#include "Solar/Shapes/Model.hxx"
+#include "Solar/Shapes/World.hxx"
 
 namespace Solar
 {
-    namespace Components
+    namespace Shapes
     {
-        class Cube : public Solar::Components::Model
+        class Cube : public Solar::Shapes::Model
         {
             public:
             void Init();
@@ -18,4 +18,4 @@ namespace Solar
 };
 
 #endif
-// Solar/Components/Cube.hxx:
+// Solar/Shapes/Cube.hxx:

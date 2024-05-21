@@ -4,7 +4,7 @@
 #include "Solar/Math/Vector3.hxx"
 namespace Solar
 {
-    namespace Components
+    namespace Shapes
     {
         typedef Solar::Math::Vector3::I32 PositionVector;
         typedef Solar::Math::Vector3::U16 RotationVector;
@@ -13,4 +13,4 @@ namespace Solar
 };
 
 #endif
-// Solar/Components/World.hxx:
+// Solar/Shapes/World.hxx:
