@@ -13,7 +13,7 @@ BUILD_DIR 	:= ./bin
 SRC_DIRS 	:= ./src
 
 # Required libraries:
-LINKWITH 	:= -lSDL2 -lSDL2_image -lGL -lm -lGLEW
+LINKWITH 	:= -lSDL2 -lGL -lm -lGLEW
 
 # Find all the C and C++ files we want to compile
 # Note the single quotes around the * expressions. 
