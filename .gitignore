@@ -1,0 +1,5 @@
+*.o
+*.bin
+
+# ignore this main folder:
+./bin
