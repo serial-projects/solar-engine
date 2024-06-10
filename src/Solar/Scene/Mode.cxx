@@ -31,9 +31,14 @@ void Solar::Scene::Mode::Init(Solar::Core::Shared *shared_core)
         150.0f
     );
 
-    this->baseplate.position.x = 0;
-    this->baseplate.position.y = 20;
-    this->baseplate.position.z = 0;
+    this->baseplate.position.x  = 0;
+    this->baseplate.position.y  = 20;
+    this->baseplate.position.z  = 0;
+
+    this->baseplate.color.r     = 0xFF;
+    this->baseplate.color.g     = 0xEF;
+    this->baseplate.color.b     = 0xCF;
+    this->baseplate.color.a     = 0xAF;
 
     this->baseplate_extra.position.x = 0;
     this->baseplate_extra.position.y = 20;

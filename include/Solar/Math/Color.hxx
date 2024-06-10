@@ -7,11 +7,13 @@ namespace Solar
 {
     namespace Math
     {
-        struct Color3
+        struct Color4
         {
             Solar::Types::U8 r = 0;
             Solar::Types::U8 g = 0;
             Solar::Types::U8 b = 0;
+            Solar::Types::U8 a = 0;
+            Solar::Types::U32 ConvertToRGBA() { return (Solar::Types::U32)( (this->r << 24) | (this->g << 16) | (this->b << 8) | this->a ); };
         };
     };
 };

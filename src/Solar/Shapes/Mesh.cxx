@@ -1,8 +1,25 @@
-#include "Solar/Shapes/Model.hxx"
+#include "Solar/Shapes/Mesh.hxx"
 #include "Solar/Utils.hxx"
 
-// GetModelAttribute:
-Solar::Types::U8 Solar::Shapes::GetModelAttribute(Solar::Types::Boolean Shape, Solar::Types::Boolean HasElementBuffer)
+// Raw:
+glm::mat4 Solar::Shapes::MeshAttributes::GetMeshMatrix()
+{
+    glm::mat4 __model_matrix = glm::mat4(1.0f);
+    __model_matrix = glm::translate(__model_matrix, this->position.ToGLM());
+    __model_matrix = glm::scale(__model_matrix, this->size.ToGLM());
+    __model_matrix = glm::rotate(__model_matrix, glm::radians((float)this->rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
+    __model_matrix = glm::rotate(__model_matrix, glm::radians((float)this->rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
+    __model_matrix = glm::rotate(__model_matrix, glm::radians((float)this->rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
+    return __model_matrix;
+}
+
+Solar::Types::U32 Solar::Shapes::MeshAttributes::GetPackedColor4()
+{
+    return this->color.ConvertToRGBA();
+}
+
+// GetMeshAttribute:
+Solar::Types::U8 Solar::Shapes::GetMeshAttribute(Solar::Types::Boolean Shape, Solar::Types::Boolean HasElementBuffer)
 {
     Solar::Types::U8 value = (1 << 1) + Shape;
     value = (value << 1) + HasElementBuffer;
@@ -10,12 +27,12 @@ Solar::Types::U8 Solar::Shapes::GetModelAttribute(Solar::Types::Boolean Shape, S
     return value;
 }
 
-// RawMesh:
-void Solar::Shapes::Model::LoadModel(
-    const Solar::Shapes::ModelVertices      vertices,
-    const Solar::Shapes::ModelColors        colors,
-    const Solar::Shapes::ModelTextureMap    texture_map,
-    const Solar::Shapes::ModelIndices       indices
+// Mesh:
+void Solar::Shapes::Mesh::LoadMesh(
+    const Solar::Shapes::MeshVertices      vertices,
+    const Solar::Shapes::MeshColors        colors,
+    const Solar::Shapes::MeshTextureMap    texture_map,
+    const Solar::Shapes::MeshIndices       indices
 )
 {
     bool has_colors         = colors.size() > 0;
@@ -23,8 +40,8 @@ void Solar::Shapes::Model::LoadModel(
     bool has_indices        = indices.size() > 0;
 
     // begin constructing the buffer but first check if there is enough color & texture map for each vertice.
-    if(has_colors)      { MAKESURE(vertices.size() == colors.size(),        GENERROR("error while building model, vertices.size() != colors.size();")); }
-    if(has_texture_map) { MAKESURE(vertices.size() == texture_map.size(),   GENERROR("error while building model, vertices.size() != colors.size();")); }
+    if(has_colors)      { MAKESURE(vertices.size() == colors.size(),        GENERROR("error while building Mesh, vertices.size() != colors.size();")); }
+    if(has_texture_map) { MAKESURE(vertices.size() == texture_map.size(),   GENERROR("error while building Mesh, vertices.size() != colors.size();")); }
     
     // here construct the buffer containing the object!
     std::vector<Solar::Types::D32> buffer;
@@ -91,25 +108,18 @@ void Solar::Shapes::Model::LoadModel(
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(Solar::Types::Integer), indices.data(), GL_STATIC_DRAW);
     }
 
-    this->attributes    = Solar::Shapes::GetModelAttribute(0, has_indices);
+    this->attributes    = Solar::Shapes::GetMeshAttribute(0, has_indices);
     this->indices       = indices.size();
     this->buffer_size   = buffer.size();
 }
 
 #define GetFromAttributesIsQuad(attribute) (attribute & 0b100000000) >> 7
 #define GetFromAttributesHasEBO(attribute) (attribute & 0b010000000) >> 6
-void Solar::Shapes::Model::Draw(Solar::Core::Storage::Shader *using_shader)
+void Solar::Shapes::Mesh::Draw(Solar::Core::Storage::Shader *using_shader)
 {
-    // Apply all the transformations for the model:
-    glm::mat4 __model_matrix = glm::mat4(1.0f);
-    __model_matrix = glm::translate(__model_matrix, this->position.ToGLM());
-    __model_matrix = glm::scale(__model_matrix, this->size.ToGLM());
-    __model_matrix = glm::rotate(__model_matrix, glm::radians((float)this->rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
-    __model_matrix = glm::rotate(__model_matrix, glm::radians((float)this->rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
-    __model_matrix = glm::rotate(__model_matrix, glm::radians((float)this->rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
-
-    // Pass to the shader the model matrix:
-    using_shader->SetMatrixFourUniform("SE_ModelMatrix", __model_matrix);
+    // Pass to the shader the Mesh matrix:
+    using_shader->SetMatrixFourUniform("SE_MeshMatrix", this->GetMeshMatrix());
+    using_shader->SetIntegerUniform("SE_CurrentColor", this->GetPackedColor4());
     using_shader->Use();
 
     // Decide the type of object:
@@ -128,7 +138,7 @@ void Solar::Shapes::Model::Draw(Solar::Core::Storage::Shader *using_shader)
     else glDrawArrays(GL_TRIANGLES, 0, this->buffer_size);
 }
 
-void Solar::Shapes::Model::UnloadModel()
+void Solar::Shapes::Mesh::UnloadMesh()
 {
     if(this->attributes != 0)
     {

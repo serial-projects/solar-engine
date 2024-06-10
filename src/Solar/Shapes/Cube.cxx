@@ -1,7 +1,7 @@
 #include "Solar/Shapes/Cube.hxx"
 void Solar::Shapes::Cube::Init()
 {
-    this->LoadModel(
+    this->LoadMesh(
         {
             {-0.5f,-0.5f,-0.5f  }, {0.5f,-0.5f,-0.5f   }, {0.5f,0.5f,-0.5f    },
             {0.5f,0.5f,-0.5f    }, {-0.5f,0.5f,-0.5f   }, {-0.5f,-0.5f,-0.5f  },
@@ -26,7 +26,8 @@ void Solar::Shapes::Cube::Init()
         {}
     );
 }
+
 void Solar::Shapes::Cube::Destroy()
 {
-    this->UnloadModel();
+    this->UnloadMesh();
 }
