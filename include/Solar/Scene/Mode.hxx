@@ -32,12 +32,16 @@ namespace Solar
 
             Solar::Math::Vector3::D32 cam_position { 0, 0, 0 };
             Solar::Math::Vector3::D32 cam_rotation { 0, 0, 0 };
-
-            void ProcessEvents();
+            
             void Init(Solar::Core::Shared *shared_core);
-            void Tick();
-            void Draw();
             void Quit();
+
+            void UpdateTickUniformVariables();
+            void ProcessEvents();
+            void Tick();
+
+            void UpdateDrawUniformVariables();
+            void Draw();
         };
     };
 };

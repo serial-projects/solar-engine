@@ -18,6 +18,7 @@ void Solar::Scene::Mode::Init(Solar::Core::Shared *shared_core)
 
     // NOTE: for this mode, enable some OpenGL parameters:
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_STENCIL_TEST);
 
     // Set the current viewing port:
     glViewport(0, 0, this->linked_core->window.width, this->linked_core->window.height);
@@ -64,6 +65,17 @@ void Solar::Scene::Mode::ProcessEvents()
     }
 }
 
+void Solar::Scene::Mode::UpdateTickUniformVariables()
+{
+    Solar::Core::Storage::Shader *using_shader = this->linked_core->content_provider.GetShader("Default");
+    
+    // SE_TickCounter:              number
+    using_shader->SetIntegerUniform("SE_TickCounter", this->linked_core->tick_counter);
+    
+    // SE_ProjectionMatrix:         mat4
+    using_shader->SetMatrixFourUniform("SE_ProjectionMatrix", this->BasicPespectiveProjection);
+}
+
 void Solar::Scene::Mode::Tick()
 {
     // Begin by doing some basic events:
@@ -71,7 +83,15 @@ void Solar::Scene::Mode::Tick()
     this->free_camera.ProcessKeyboard();
 
     // Update the current shader uniforms:
-    this->linked_core->content_provider.GetShader("Default")->SetIntegerUniform( "SolarTickCounter", this->linked_core->tick_counter );
+    this->UpdateTickUniformVariables();
+}
+
+void Solar::Scene::Mode::UpdateDrawUniformVariables()
+{
+    Solar::Core::Storage::Shader *using_shader = this->linked_core->content_provider.GetShader("Default");
+
+    // SE_ViewMatrix:               mat4
+    using_shader->SetMatrixFourUniform("SE_ViewMatrix", this->BasicPespectiveView);
 }
 
 void Solar::Scene::Mode::Draw()
@@ -86,11 +106,12 @@ void Solar::Scene::Mode::Draw()
     // Set the view (aka. OpenGL's camera):
     this->BasicPespectiveView = this->free_camera.GetViewMatrix();
 
+    // Update:
+    this->UpdateDrawUniformVariables();
+
     // begin drawing the baseplate:
     Solar::Core::Storage::Shader *using_shader = this->linked_core->content_provider.GetShader("Default");
-    using_shader->SetMatrixFourUniform("SolarCurrentRenderingProjectionMatrix", this->BasicPespectiveProjection);
-    using_shader->SetMatrixFourUniform("SolarCurrentRenderingViewMatrix", this->BasicPespectiveView);
-    
+
     this->baseplate.Draw(using_shader);
     this->baseplate_extra.Draw(using_shader);
     this->cube.Draw(using_shader);

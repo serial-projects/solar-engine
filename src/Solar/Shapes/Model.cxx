@@ -59,7 +59,13 @@ void Solar::Shapes::Model::LoadModel(
     // enable the other layouts in case it is enabled:
     if(has_colors)
     {
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, layout_size * sizeof(Solar::Types::D32), (void*)(3 * sizeof(Solar::Types::D32)));
+        glVertexAttribPointer(
+            1,
+            3,
+            GL_FLOAT,
+            GL_FALSE,
+            layout_size * sizeof(Solar::Types::D32), (void*)(3 * sizeof(Solar::Types::D32))
+        );
         glEnableVertexAttribArray(1);
     }
 
@@ -103,7 +109,7 @@ void Solar::Shapes::Model::Draw(Solar::Core::Storage::Shader *using_shader)
     __model_matrix = glm::rotate(__model_matrix, glm::radians((float)this->rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
 
     // Pass to the shader the model matrix:
-    using_shader->SetMatrixFourUniform("SolarCurrentRenderingModelMatrix", __model_matrix);
+    using_shader->SetMatrixFourUniform("SE_ModelMatrix", __model_matrix);
     using_shader->Use();
 
     // Decide the type of object:
@@ -119,8 +125,7 @@ void Solar::Shapes::Model::Draw(Solar::Core::Storage::Shader *using_shader)
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->ebo);
         glDrawElements(is_quad ? GL_QUADS : GL_TRIANGLES, this->indices, GL_UNSIGNED_INT, 0);
     }
-    else
-        glDrawArrays(GL_TRIANGLES, 0, this->buffer_size);
+    else glDrawArrays(GL_TRIANGLES, 0, this->buffer_size);
 }
 
 void Solar::Shapes::Model::UnloadModel()
