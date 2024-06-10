@@ -21,11 +21,11 @@ namespace Solar
         class Mode
         {
             public:
-            Solar::Core::Shared *linked_core;
-            Solar::Shapes::Plane baseplate;
-            Solar::Shapes::Plane baseplate_extra;
-            Solar::Shapes::Cube cube;
-            Solar::Scene::FreeCamera camera;
+            Solar::Core::Shared         *linked_core;
+            Solar::Shapes::Plane        baseplate;
+            Solar::Shapes::Plane        baseplate_extra;
+            Solar::Shapes::Cube         cube;
+            Solar::Scene::FreeCamera    free_camera;
 
             glm::mat4 BasicPespectiveProjection;
             glm::mat4 BasicPespectiveView;

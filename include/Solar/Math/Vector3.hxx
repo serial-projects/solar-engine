@@ -16,9 +16,8 @@ namespace Solar
                 VectorType y;
                 VectorType z;
                 glm::vec3 ToGLM() {
-                    glm::vec3 vector;
-                    vector.x = x; vector.y = y; vector.z = z;
-                    return vector;
+                    glm::vec3 __result = {(float)this->x, (float)this->y, (float)this->z};
+                    return __result;
                 }
             };
             typedef BaseVector3<Solar::Types::U8>   U8; typedef BaseVector3<Solar::Types::I8> I8;

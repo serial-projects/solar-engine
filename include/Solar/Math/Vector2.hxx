@@ -16,9 +16,8 @@ namespace Solar
                 VectorType y;
                 glm::vec2 ToGLM()
                 {
-                    glm::vec2 vector;
-                    vector.x = x, vector.y = y;
-                    return vector;
+                    glm::vec3 __result = {(float)this->x, (float)this->y};
+                    return __result;
                 }
             };
             typedef BaseVector2<Solar::Types::U8>   U8; typedef BaseVector2<Solar::Types::I8> I8;

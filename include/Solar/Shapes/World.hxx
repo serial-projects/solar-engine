@@ -1,5 +1,5 @@
-#ifndef solar_components_world_hxx
-#define solar_components_world_hxx
+#ifndef solar_shapes_world_hxx
+#define solar_shapes_world_hxx
 
 #include "Solar/Math/Vector3.hxx"
 namespace Solar

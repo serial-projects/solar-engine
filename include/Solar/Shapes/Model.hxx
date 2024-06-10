@@ -1,5 +1,5 @@
-#ifndef solar_components_rawmodel_hxx
-#define solar_components_rawmodel_hxx
+#ifndef solar_shapes_rawmodel_hxx
+#define solar_shapes_rawmodel_hxx
 
 #include "Solar/Shapes/World.hxx"
 #include "Solar/Core/Storage.hxx"

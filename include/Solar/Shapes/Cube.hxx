@@ -1,5 +1,5 @@
-#ifndef solar_components_cube_hxx
-#define solar_components_cube_hxx
+#ifndef solar_shapes_cube_hxx
+#define solar_shapes_cube_hxx
 
 #include "Solar/Shapes/Model.hxx"
 #include "Solar/Shapes/World.hxx"
