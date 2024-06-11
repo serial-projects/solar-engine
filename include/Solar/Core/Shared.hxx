@@ -5,6 +5,19 @@
 #include "Solar/Core/Storage.hxx"
 #include "Solar/Types.hxx"
 
+#define SolarCoreSharedMode_GetRunning(mode)    (mode >> 7)
+#define SolarCoreSharedMode_ToggleRunning(mode) mode ^= 0b10000000;
+#define SolarCoreSharedMode_Shutdown(mode)      mode = 0
+
+#define SolarCoreSharedMode_GetDoDraw(mode)     (mode & 0b01000000)
+#define SolarCoreSharedMode_ToggleDoDraw(mode)  mode ^= 0b01000000
+
+#define SolarCoreSharedMode_GetDoTick(mode)     (mode & 0b00100000)
+#define SolarCoreSharedMode_ToggleDoTick(mode)  mode ^= 0b00100000
+
+#define SolarCoreSharedMode_GetGDebug(mode)     (mode & 0b00010000)
+#define SolarCoreSharedMode_ToggleGDebug(mode)  mode ^= 0b00010000
+
 namespace Solar
 {
     namespace Core

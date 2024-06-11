@@ -7,7 +7,7 @@ void Solar::Instance::Init()
     WHEN(SDL_Init(SDL_INIT_EVERYTHING) < 0, GENERROR("failed to initialize SDL due: " << SDL_GetError()));
     
     // TODO: select mode here, opengl or vulkan?
-    shared_core.window.InitializeOpenGL(1024, 720);
+    shared_core.window.InitializeOpenGL(800, 640);
     shared_core.window.SetTitle("Solar Engine");
 
     // initialize the OpenGL pointers!
@@ -33,7 +33,7 @@ void Solar::Instance::InitializeOpenGL()
 void Solar::Instance::Loop()
 {
     Solar::Types::U64 ltm = SDL_GetTicks64();
-    while((this->shared_core.mode >> 7))
+    while(SolarCoreSharedMode_GetRunning(this->shared_core.mode))
     {
         // NOTE: even though the screen may refresh on different mode, keep
         // in mind the logic is not and thus, keep it on 60 FPS or whatever
@@ -50,15 +50,23 @@ void Solar::Instance::Loop()
 
 void Solar::Instance::Tick()
 {
-    this->scene_mode.Tick();
-    this->shared_core.tick_counter++;
+    if(SolarCoreSharedMode_GetDoTick(this->shared_core.mode))
+    {
+        this->scene_mode.Tick();
+        this->shared_core.tick_counter++;
+    }
+    else SolarCoreSharedMode_ToggleDoTick(this->shared_core.mode);
 }
 
 void Solar::Instance::Draw()
 {
-    this->scene_mode.Draw();
-    SDL_GL_SwapWindow(this->shared_core.window.os_window);
-    this->shared_core.draw_counter++;
+    if(SolarCoreSharedMode_GetDoDraw(this->shared_core.mode))
+    {
+        this->scene_mode.Draw();
+        SDL_GL_SwapWindow(this->shared_core.window.os_window);
+        this->shared_core.draw_counter++;
+    }
+    else SolarCoreSharedMode_ToggleDoDraw(this->shared_core.mode);
 }
 
 void Solar::Instance::Quit()

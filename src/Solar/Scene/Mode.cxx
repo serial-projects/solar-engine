@@ -70,8 +70,17 @@ void Solar::Scene::Mode::ProcessEvents()
                 this->linked_core->mode = 0;
                 break;
             case SDL_KEYDOWN:
-                WHEN(evh.key.keysym.scancode == SDL_SCANCODE_ESCAPE, this->linked_core->mode = 0);
-                WHEN(evh.key.keysym.scancode == SDL_SCANCODE_F1, glPolygonMode(GL_FRONT_AND_BACK, GL_LINE));
+                WHEN(
+                    evh.key.keysym.scancode == SDL_SCANCODE_ESCAPE,
+                    this->linked_core->mode = 0
+                );
+                WHEN(
+                    evh.key.keysym.scancode == SDL_SCANCODE_F1,
+                    {
+                        SolarCoreSharedMode_ToggleGDebug(this->linked_core->mode);
+                        glPolygonMode(GL_FRONT_AND_BACK, this->linked_core->mode ? GL_FILL : GL_LINE);
+                    }
+                );
                 break;
             case SDL_MOUSEMOTION:
                 this->free_camera.ProcessMouse((Solar::Types::I8)evh.motion.xrel,(Solar::Types::I8)evh.motion.yrel);
