@@ -60,7 +60,7 @@ void Solar::Core::Storage::Shader::LoadVertexAndFragmentShader(const Solar::Type
     glShaderSource(fragment_shader, 1, &fragment_shader_code, NULL);
     glCompileShader(fragment_shader);
     glGetShaderiv(fragment_shader, GL_COMPILE_STATUS, &success);
-    std::cout << success << "\n";
+    
     MAKESURE(success, {
         glGetShaderInfoLog(fragment_shader, SOLAR_CORE_STORAGE_SHADER_ERRLOGSIZE, NULL, log);
         GENERROR("failed to compile fragment shader: " << log);

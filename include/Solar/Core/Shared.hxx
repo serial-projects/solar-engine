@@ -15,8 +15,11 @@
 #define SolarCoreSharedMode_GetDoTick(mode)     (mode & 0b00100000)
 #define SolarCoreSharedMode_ToggleDoTick(mode)  mode ^= 0b00100000
 
-#define SolarCoreSharedMode_GetGDebug(mode)     (mode & 0b00010000)
-#define SolarCoreSharedMode_ToggleGDebug(mode)  mode ^= 0b00010000
+#define SolarCoreSharedMode_GetDebug(mode)      (mode & 0b00010000)
+#define SolarCoreSharedMode_ToggleDebug(mode)   mode ^= 0b00010000
+
+#define SolarCoreSharedMode_GetGDebug(mode)     (mode & 0b00001000)
+#define SolarCoreSharedMode_ToggleGDebug(mode)  mode ^= 0b00001000
 
 namespace Solar
 {

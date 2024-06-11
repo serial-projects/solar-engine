@@ -1,13 +1,14 @@
 #include "Solar/Instance.hxx"
 #include "Solar/Utils.hxx"
 #include "Solar/Core/Window.hxx"
+#include "Solar/GL.hxx"
 
 void Solar::Instance::Init()
 {
     WHEN(SDL_Init(SDL_INIT_EVERYTHING) < 0, GENERROR("failed to initialize SDL due: " << SDL_GetError()));
     
     // TODO: select mode here, opengl or vulkan?
-    shared_core.window.InitializeOpenGL(800, 640);
+    shared_core.window.InitializeOpenGL(1280, 720);
     shared_core.window.SetTitle("Solar Engine");
 
     // initialize the OpenGL pointers!
@@ -30,6 +31,13 @@ void Solar::Instance::InitializeOpenGL()
     MAKESURE(glewInit() == GLEW_OK, GENERROR("failed to initialize GLEW!"));
 }
 
+void SolarInstance_ShowTickDebugInformation(Solar::Instance *instance, Solar::Types::U64 dlt)
+{
+    GENDEBUG("Current Delta Time: " << dlt << ", expected = " << (1000 / instance->shared_core.framerate));
+    GENDEBUG("Current Tick: " << instance->shared_core.tick_counter << " / Framerate: " << instance->shared_core.framerate);
+    GENDEBUG("There are " << instance->shared_core.content_provider.cached_shaders.size() << " cached shaders;");
+}
+
 void Solar::Instance::Loop()
 {
     Solar::Types::U64 ltm = SDL_GetTicks64();
@@ -42,6 +50,7 @@ void Solar::Instance::Loop()
         Solar::Types::U64 dlt=(now - ltm);
         WHEN(dlt >= (1000 / this->shared_core.framerate), {
             this->Tick();
+            WHEN(SolarCoreSharedMode_GetDebug(this->shared_core.mode), SolarInstance_ShowTickDebugInformation(this, dlt));
             ltm = now;
         });
         this->Draw();
@@ -58,6 +67,12 @@ void Solar::Instance::Tick()
     else SolarCoreSharedMode_ToggleDoTick(this->shared_core.mode);
 }
 
+void SolarInstance_ShowDrawDebugInformation(Solar::Instance *instance)
+{
+    GENDEBUG("Current Draw: " << instance->shared_core.draw_counter);
+    GENDEBUG("Free Camera Position: " << glm::to_string(instance->scene_mode.free_camera.position));
+}
+
 void Solar::Instance::Draw()
 {
     if(SolarCoreSharedMode_GetDoDraw(this->shared_core.mode))
@@ -67,6 +82,7 @@ void Solar::Instance::Draw()
         this->shared_core.draw_counter++;
     }
     else SolarCoreSharedMode_ToggleDoDraw(this->shared_core.mode);
+    WHEN(SolarCoreSharedMode_GetDebug(this->shared_core.mode), SolarInstance_ShowDrawDebugInformation(this));
 }
 
 void Solar::Instance::Quit()

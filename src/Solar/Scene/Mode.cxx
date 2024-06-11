@@ -40,23 +40,49 @@ void Solar::Scene::Mode::Init(Solar::Core::Shared *shared_core)
     this->baseplate_extra.color.b     = 0xCF;
     this->baseplate_extra.color.a     = 0xFF;
 
-    this->baseplate_extra.size.x = 80;
+    this->baseplate_extra.size.x = 10;
     this->baseplate_extra.size.y = 10;
-    this->baseplate_extra.size.z = 80;
+    this->baseplate_extra.size.z = 10;
 
     this->baseplate_extra.position.x = 0;
-    this->baseplate_extra.position.y = 50;
+    this->baseplate_extra.position.y = 0;
     this->baseplate_extra.position.z = 0;
 
     // 235, 64, 52
-    this->cube.size.x   = 80;
-    this->cube.size.z   = 80;
+    this->cube.size.x   = 10;
+    this->cube.size.z   = 10;
     this->cube.size.y   = 10;
+
+    this->cube.position.x = 10;
+    this->cube.position.y = 0;
+    this->cube.position.z = 0;
 
     this->cube.color.r  = 235;
     this->cube.color.g  = 64;
     this->cube.color.b  = 52;
 
+}
+
+void SolarSceneMode_HandleKeyEvents(Solar::Scene::Mode *scene_mode, SDL_Keysym sym)
+{
+    const Solar::Types::U8 *keyboard_state = SDL_GetKeyboardState(NULL);
+    const Solar::Types::Boolean has_shift_modifier = keyboard_state[SDL_SCANCODE_LSHIFT];
+    WHEN(
+        sym.scancode == SDL_SCANCODE_ESCAPE,
+        {
+            SolarCoreSharedMode_Shutdown(scene_mode->linked_core->mode);
+        }
+    );
+    WHEN(
+        sym.scancode == SDL_SCANCODE_F5,
+        {
+            SolarCoreSharedMode_ToggleDebug(scene_mode->linked_core->mode);
+            WHEN(has_shift_modifier, {
+                SolarCoreSharedMode_ToggleGDebug(scene_mode->linked_core->mode);
+                glPolygonMode(GL_FRONT_AND_BACK, SolarCoreSharedMode_GetGDebug(scene_mode->linked_core->mode) ? GL_LINE : GL_FILL); 
+            });
+        }
+    );
 }
 
 void Solar::Scene::Mode::ProcessEvents()
@@ -70,17 +96,7 @@ void Solar::Scene::Mode::ProcessEvents()
                 this->linked_core->mode = 0;
                 break;
             case SDL_KEYDOWN:
-                WHEN(
-                    evh.key.keysym.scancode == SDL_SCANCODE_ESCAPE,
-                    this->linked_core->mode = 0
-                );
-                WHEN(
-                    evh.key.keysym.scancode == SDL_SCANCODE_F1,
-                    {
-                        SolarCoreSharedMode_ToggleGDebug(this->linked_core->mode);
-                        glPolygonMode(GL_FRONT_AND_BACK, this->linked_core->mode ? GL_FILL : GL_LINE);
-                    }
-                );
+                SolarSceneMode_HandleKeyEvents(this, evh.key.keysym);
                 break;
             case SDL_MOUSEMOTION:
                 this->free_camera.ProcessMouse((Solar::Types::I8)evh.motion.xrel,(Solar::Types::I8)evh.motion.yrel);
@@ -121,7 +137,7 @@ void Solar::Scene::Mode::UpdateDrawUniformVariables()
 void Solar::Scene::Mode::Draw()
 {
     // NOTE: set the skybox color (basic):
-    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+    glClearColor(0.05f, 0.01f, 0.15f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
     // Clear the depth test:

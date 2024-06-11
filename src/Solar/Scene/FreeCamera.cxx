@@ -12,7 +12,8 @@ void Solar::Scene::FreeCamera::Init(Solar::Core::Shared *shared_core)
     this->sensitivity   = 0.3f;
     this->front         = glm::vec3(0.0f, 0.0f, -1.0f);
     
-    SDL_SetRelativeMouseMode(SDL_TRUE);
+    // SDL_SetRelativeMouseMode(SDL_TRUE);
+
     //SDL_SetWindowMouseGrab(shared_core->window.os_window, SDL_TRUE);
     this->UpdateCameraVectors();
 }
@@ -45,7 +46,10 @@ void Solar::Scene::FreeCamera::ProcessMouse(const Solar::Types::I8 xoffset, cons
     // NOTE: finally rotate the camera!
     // Don't forget to invert due OpenGL rendering from Major to Minor (or the opposite)?
     if(mouse_state == SDL_BUTTON(SDL_BUTTON_RIGHT))
+    {
+        SDL_SetRelativeMouseMode(SDL_TRUE);
         this->Rotate(xoffset, -yoffset);
+    } else SDL_SetRelativeMouseMode(SDL_FALSE);
 }
 
 void Solar::Scene::FreeCamera::ProcessKeyboard()
@@ -65,10 +69,8 @@ void Solar::Scene::FreeCamera::Rotate(Solar::Types::D32 xoff, Solar::Types::D32 
     this->pitch += yoff;
 
     // NOTE: here is different from the learnopengl version:
-    if(this->pitch > 89.0f)
-        this->pitch = 89.0f;
-    if(this->pitch < -89.f)
-        this->pitch = -89.0f;
+    if(this->pitch > 89.0f) this->pitch = 89.0f;
+    if(this->pitch < -89.f) this->pitch = -89.0f;
 
     // Update the vector here!
     this->UpdateCameraVectors();
