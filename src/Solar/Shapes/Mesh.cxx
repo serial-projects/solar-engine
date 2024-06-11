@@ -119,7 +119,7 @@ void Solar::Shapes::Mesh::Draw(Solar::Core::Storage::Shader *using_shader)
 {
     // Pass to the shader the Mesh matrix:
     using_shader->SetMatrixFourUniform("SE_MeshMatrix", this->GetMeshMatrix());
-    using_shader->SetIntegerUniform("SE_CurrentColor", this->GetPackedColor4());
+    using_shader->SetUnsignedIntegerUniform("SE_CurrentColor", this->GetPackedColor4());
     using_shader->Use();
 
     // Decide the type of object:

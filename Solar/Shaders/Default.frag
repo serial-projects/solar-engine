@@ -1,6 +1,6 @@
 #version 330 core
 
-uniform int SE_CurrentColor;
+uniform uint SE_CurrentColor;
 
 out vec4    fragcolor;  
 in vec3     vertcolor;
@@ -9,10 +9,10 @@ in vec3     vertcolor;
 vec4 SE_GetColorFromCurrentColor()
 {
     return vec4(
-        ( (SE_CurrentColor >> 24) & 0xFF ),
-        ( (SE_CurrentColor >> 16) & 0xFF ),
-        ( (SE_CurrentColor >>  8) & 0xFF ),
-        ( (SE_CurrentColor >>  0) & 0xFF )
+        float(SE_CurrentColor >> 24u & 255u) / 255,
+        float(SE_CurrentColor >> 16u & 255u) / 255,
+        float(SE_CurrentColor >>  8u & 255u) / 255,
+        float(SE_CurrentColor >>  0u & 255u) / 255
     );
 }
 

@@ -93,6 +93,11 @@ void Solar::Core::Storage::Shader::SetIntegerUniform(const Solar::Types::Charact
     ShaderGetAddressAndImplementFunction(glUniform1i(location, value));
 }
 
+void Solar::Core::Storage::Shader::SetUnsignedIntegerUniform(const Solar::Types::Character *key, Solar::Types::U32 value)
+{
+    ShaderGetAddressAndImplementFunction(glUniform1ui(location, value));
+}
+
 void Solar::Core::Storage::Shader::SetDecimalUniform(const Solar::Types::Character *key, Solar::Types::D32 value)
 {
     ShaderGetAddressAndImplementFunction(glUniform1f(location, value));

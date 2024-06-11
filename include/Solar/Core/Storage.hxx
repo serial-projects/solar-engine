@@ -18,10 +18,11 @@ namespace Solar
             struct Shader
             {
                 Solar::GL::ShaderProgram shader;
-                Solar::Types::U64 lastuse = 0;
+                Solar::Types::U64 lastuse   = 0;
                 Solar::Types::U64 timestamp = 0;
                 void LoadVertexAndFragmentShader(const Solar::Types::String path);
                 void SetIntegerUniform(const Solar::Types::Character *key, Solar::Types::Integer value);
+                void SetUnsignedIntegerUniform(const Solar::Types::Character *key, Solar::Types::U32 value);
                 void SetDecimalUniform(const Solar::Types::Character *key, Solar::Types::D32 value);
                 void SetVectorTwoUniform(const Solar::Types::Character *key, const glm::vec2 &value);
                 void SetVectorThreeUniform(const Solar::Types::Character *key, const glm::vec3 &value);

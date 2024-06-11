@@ -19,7 +19,7 @@ void Solar::Scene::Mode::Init(Solar::Core::Shared *shared_core)
     // NOTE: for this mode, enable some OpenGL parameters:
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_STENCIL_TEST);
-
+    
     // Set the current viewing port:
     glViewport(0, 0, this->linked_core->window.width, this->linked_core->window.height);
 
@@ -35,18 +35,28 @@ void Solar::Scene::Mode::Init(Solar::Core::Shared *shared_core)
     this->baseplate.position.y  = 20;
     this->baseplate.position.z  = 0;
 
-    this->baseplate.color.r     = 0xFF;
-    this->baseplate.color.g     = 0xEF;
-    this->baseplate.color.b     = 0xCF;
-    this->baseplate.color.a     = 0xAF;
+    this->baseplate_extra.color.r     = 0xFF;
+    this->baseplate_extra.color.g     = 0xEF;
+    this->baseplate_extra.color.b     = 0xCF;
+    this->baseplate_extra.color.a     = 0xFF;
+
+    this->baseplate_extra.size.x = 80;
+    this->baseplate_extra.size.y = 10;
+    this->baseplate_extra.size.z = 80;
 
     this->baseplate_extra.position.x = 0;
-    this->baseplate_extra.position.y = 20;
+    this->baseplate_extra.position.y = 50;
     this->baseplate_extra.position.z = 0;
 
-    this->cube.size.x = 80;
-    this->cube.size.z = 80;
-    this->cube.size.y = 10;
+    // 235, 64, 52
+    this->cube.size.x   = 80;
+    this->cube.size.z   = 80;
+    this->cube.size.y   = 10;
+
+    this->cube.color.r  = 235;
+    this->cube.color.g  = 64;
+    this->cube.color.b  = 52;
+
 }
 
 void Solar::Scene::Mode::ProcessEvents()
@@ -116,7 +126,6 @@ void Solar::Scene::Mode::Draw()
 
     // begin drawing the baseplate:
     Solar::Core::Storage::Shader *using_shader = this->linked_core->content_provider.GetShader("Default");
-
     this->baseplate.Draw(using_shader);
     this->baseplate_extra.Draw(using_shader);
     this->cube.Draw(using_shader);

@@ -22,8 +22,8 @@ namespace Solar
         {
             public:
             Solar::Core::Shared         *linked_core;
-            Solar::Shapes::Plane        baseplate;
-            Solar::Shapes::Plane        baseplate_extra;
+            Solar::Shapes::Cube         baseplate;
+            Solar::Shapes::Cube         baseplate_extra;
             Solar::Shapes::Cube         cube;
             Solar::Scene::FreeCamera    free_camera;
 
