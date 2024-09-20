@@ -1,0 +1,23 @@
+# NOTE: Solar Project does not support software acceleration.
+# You must use OpenGL for basic graphics on everywhere.
+
+section engine
+
+    section info
+        set name, "Demo"
+        set version, 100
+        set author, "Pipes Studios"
+        set license, "MIT"
+    end
+
+    section window
+        set width, 800
+        set height, 640
+        set vsync, yes
+    end
+
+    section saving
+        set path, "${BASE_PATH}/Saves/" 
+    end
+    
+end
