@@ -36,7 +36,7 @@ namespace Progator
         typedef void*(*MeshNew)();
         typedef void(*MeshDestroy)(void *backend);
         typedef void(*MeshInit)(void *backend, Progator::Validator *validator);
-        typedef void(*MeshLoadVerTexNor)(void *backend, Progator::F32 data[], const Progator::U32 size);
+        typedef void(*MeshLoadVerTexNor)(void *backend, Progator::F32 data[], const Progator::U32 amount);
         typedef void(*MeshDraw)(void *backend);
 
         /* Shader: */

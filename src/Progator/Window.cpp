@@ -16,7 +16,6 @@ void Progator::WindowInit(Progator::Window* window, Progator::Pointers* pointers
 {
     window->validator = validator;
     window->pointers = pointers;
-    
     window->backend = window->pointers->window_new();
     window->pointers->window_init(window->backend, window->validator);
 }
