@@ -16,6 +16,11 @@ section engine
         set vsync, yes
     end
 
+    section renderer
+        set allow_custom_renderer, yes
+        set default_renderer, "OpenGL"
+    end
+
     section saving
         set path, "${BASE_PATH}/Saves/" 
     end
