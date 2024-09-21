@@ -37,6 +37,9 @@
 #include "Progator/Types.hpp"
 #include "Progator/Renderer.hpp"
 #include "Progator/Window.hpp"
+#include "Progator/Shader.hpp"
+#include "Progator/Texture.hpp"
+#include "Progator/Mesh.hpp"
 
 namespace Progator
 {
