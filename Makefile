@@ -24,7 +24,7 @@ INC_FLAGS := -I./include/
 
 # The -MMD and -MP flags together generate Makefiles for us!
 # These files will have .d instead of .o as the output.
-CPPFLAGS := $(INC_FLAGS) -lSDL2 -lGL -lglm -lm -lGLEW
+CPPFLAGS := $(INC_FLAGS) -lSDL2 -lSDL_Image -lGL -lglm -lm -lGLEW
 
 # The final build step.
 $(BUILD_DIR)/$(TARGET_EXEC): $(OBJS)
