@@ -20,7 +20,7 @@ namespace Progator
             typedef GLuint  VertexShader;
             typedef GLuint  FragmentShader;
             typedef GLuint  ShaderProgram;
-            typedef GLuint  Texture;
+            typedef GLuint  Texture2D;
             typedef GLuint  Framebuffer;
         };
     };

@@ -12,7 +12,7 @@ namespace Progator
         {
             typedef struct Texture
             {
-                Progator::Backends::OpenGL::Texture texture;
+                Progator::Backends::OpenGL::Texture2D texture;
                 Progator::Validator* validator;
             } Texture;
             Progator::Backends::OpenGL::Texture* TextureNew();
