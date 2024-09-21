@@ -3,7 +3,7 @@
 #include <cstdio>
 #include <cstdlib>
 
-Progator::Support::FileBuffer FileBufferGet(const Progator::Character* path)
+Progator::Support::FileBuffer Progator::Support::FileBufferGet(const Progator::Character* path)
 {
     std::FILE *file_pointer = std::fopen(path, "r");
     Progator::Support::FileBuffer buffer = nullptr;
@@ -22,7 +22,7 @@ Progator::Support::FileBuffer FileBufferGet(const Progator::Character* path)
     return buffer;
 }
 
-void FileBufferDestroy(Progator::Support::FileBuffer buffer)
+void Progator::Support::FileBufferDestroy(Progator::Support::FileBuffer buffer)
 {
     delete buffer;
 }
