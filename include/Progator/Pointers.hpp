@@ -63,7 +63,7 @@ namespace Progator
         typedef void(*TextureDestroy)(void *backend);
         typedef void(*TextureInit)(void *backend, Progator::Validator *validator);
         typedef void(*TextureLoadFromFile)(void *backend, const Progator::Character *path);
-        typedef void(*TextureUse)(void *backend, const Progator::Character *path);
+        typedef void(*TextureUse)(void *backend);
     };
     
     typedef struct Pointers
