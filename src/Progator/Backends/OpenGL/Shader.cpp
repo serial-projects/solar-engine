@@ -1,6 +1,8 @@
 #include "Progator/Backends/OpenGL/Shader.hpp"
 #include "Progator/Support/FS.hpp"
 
+#include <iostream>
+
 Progator::Backends::OpenGL::Shader* Progator::Backends::OpenGL::ShaderNew()
 {
     Progator::Backends::OpenGL::Shader* proto = new Progator::Backends::OpenGL::Shader;
@@ -34,7 +36,9 @@ void Progator::Backends::OpenGL::ShaderLoadVertexCodeFromFile(Progator::Backends
         if(! success )
         {
             glGetShaderInfoLog(shader->vertex_shader, 256, NULL, (GLchar*)&build_log);
-            /* TODO: use validator now: */            
+            
+            /* TODO: use validator now: */
+            std::cout << build_log << "\n";
             abort();
         }
         Progator::Support::FileBufferDestroy(buffer);
@@ -60,7 +64,9 @@ void Progator::Backends::OpenGL::ShaderLoadFragmentCodeFromFile(Progator::Backen
         if(! success )
         {
             glGetShaderInfoLog(shader->vertex_shader, 256, NULL, (GLchar*)&build_log);
-            /* TODO: use validator now: */            
+            
+            /* TODO: use validator now: */
+            std::cout << build_log << "\n";
             abort();
         }
         Progator::Support::FileBufferDestroy(buffer);
@@ -83,7 +89,10 @@ void Progator::Backends::OpenGL::ShaderCompile(Progator::Backends::OpenGL::Shade
     glGetProgramiv(shader->program, GL_LINK_STATUS, &success);
     if(!success)
     {
+        glGetProgramInfoLog(shader->program, 256, NULL, (GLchar*)&build_log);
+        
         /* TODO: use validator now: */
+        std::cout << build_log << "\n";
         abort();
     }
 }
