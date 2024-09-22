@@ -14,6 +14,7 @@ void Solar::Scene::LevelDestroy(Solar::Scene::Level* level)
 void Solar::Scene::LevelInit(Solar::Scene::Level* level, Solar::Core *core)
 {
     level->linked_core = core;
+    level->current_shader = Solar::Engine::ProviderLoadShader(level->linked_core->provider, "BasicView");
 }
 
 void Solar::Scene::LevelTick(Solar::Scene::Level* level)

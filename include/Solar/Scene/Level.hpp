@@ -7,6 +7,8 @@
 #include "Solar/Scene/Camera.hpp"
 #include "Solar/Scene/Level.hpp"
 
+#include "Progator/Progator.hpp"
+
 namespace Solar
 {
     namespace Scene
@@ -19,6 +21,7 @@ namespace Solar
         typedef struct Level
         {
             Solar::Core* linked_core;
+            Progator::Shader* current_shader;
         } Level;
 
         Solar::Scene::Level* LevelNew();
