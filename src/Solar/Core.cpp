@@ -33,6 +33,15 @@ void Solar::CoreInit(Solar::Core* core)
     Progator::WindowSetVerticalSync(core->window, PROGATOR_YES);
     Progator::RendererSetViewport(core->renderer, 800, 640, 0, 0);
     Progator::RendererClear(core->renderer, 0x00000000);
+
+    /* Initialize the provider: */
+    core->provider = Solar::Engine::ProviderNew();
+    Solar::Engine::ProviderInit(
+        core->provider,
+        Solar::Engine::ProviderProperties{.basepath="./Root/", .renderer="OpenGL"},
+        core->pointers,
+        core->validator
+    );
 }
 
 void Solar::CoreQuit(Solar::Core* core)
@@ -41,5 +50,6 @@ void Solar::CoreQuit(Solar::Core* core)
     Progator::WindowDestroy(core->window);
     Progator::PointersDestroy(core->pointers);
     Progator::ValidatorDestroy(core->validator);
+    Solar::Engine::ProviderDestroy(core->provider);
     Progator::Quit();
 }

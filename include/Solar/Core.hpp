@@ -4,6 +4,8 @@
 #include "Progator/Progator.hpp"
 #include "Solar/Types.hpp"
 
+#include "Solar/Engine/Provider.hpp"
+
 namespace Solar
 {
     typedef struct Core
@@ -13,6 +15,7 @@ namespace Solar
         Progator::Renderer* renderer;
         Progator::Pointers* pointers;
         Progator::Validator* validator;
+        Solar::Engine::Provider* provider;
 
         /* Core environment: */
         Solar::U8   state;
