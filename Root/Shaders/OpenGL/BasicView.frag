@@ -1,17 +1,7 @@
 #version 330 core
 
-/*
- * NOTE: there are several uniforms that Progator uses:
- * ProgatorCurrentColor:        (uint): the current color of an object;
- * ProgatorCurrentProjection:   (uint): the using projection (0 = ortho, 1 = pespective);
- * ProgatorCurrentShape:        (uint): the current drawing shape;
- * ProgatorProjectionMatrix:    (mat4): matrix for the projection pipeline;
- * ProgatorViewMatrix:          (mat4): matrix for the view pipeline;
- * ProgatorModelMatrix:         (mat4): matrix for the object pipeline;
- */
-
-uniform uint PrCurrentColor;
-uniform sampler2D CurrentTexture;
+uniform uint        PrCurrentColor;
+uniform sampler2D   CurrentTexture;
 
 in  vec2 current_texture_map;
 in  vec3 current_normals;
@@ -19,10 +9,6 @@ in  vec3 current_fragment_position;
 
 out vec4 fragment_color;
 
-/*
- * NOTE: the format of color passed to the fragment/vertex shader
- * is RGBA (where 8-bit channel), so you must unpack here:
- */
 vec4 ProgatorUnpackColorRGBA8(uint color)
 {
     return vec4(
