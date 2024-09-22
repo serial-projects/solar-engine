@@ -17,7 +17,6 @@ void Solar::Scene::ModeDestroy(Solar::Scene::Mode* mode)
 void Solar::Scene::ModeInit(Solar::Scene::Mode* mode, Solar::Core *core)
 {
     mode->linked_core = core;
-    
     mode->current_level = Solar::Scene::LevelNew();
     Solar::Scene::LevelInit(mode->current_level, mode->linked_core);
 }
