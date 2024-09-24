@@ -16,7 +16,7 @@ namespace Progator
     Progator::Mesh* MeshNew();
     void MeshDestroy(Progator::Mesh* mesh);
     void MeshInit(Progator::Mesh* mesh, Progator::Pointers* pointers, Progator::Validator* validator);
-    void MeshLoadVerTexNor(Progator::Mesh* mesh, Progator::F32 data[], const Progator::U32 amount);
+    void MeshLoadVerTexNor(Progator::Mesh* mesh, const Progator::F32 data[], const Progator::U32 amount);
     void MeshDraw(Progator::Mesh* mesh);
 };
 

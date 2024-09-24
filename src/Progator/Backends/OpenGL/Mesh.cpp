@@ -20,7 +20,7 @@ void Progator::Backends::OpenGL::MeshInit(Progator::Backends::OpenGL::Mesh* mesh
     glGenVertexArrays(1, &mesh->vao);
 }
 
-void Progator::Backends::OpenGL::MeshLoadVerTexNor(Progator::Backends::OpenGL::Mesh* mesh, Progator::F32 data[], const Progator::U32 amount)
+void Progator::Backends::OpenGL::MeshLoadVerTexNor(Progator::Backends::OpenGL::Mesh* mesh, const Progator::F32 data[], const Progator::U32 amount)
 {
     glBindBuffer(GL_ARRAY_BUFFER, mesh->vbo);
     glBindVertexArray(mesh->vao);

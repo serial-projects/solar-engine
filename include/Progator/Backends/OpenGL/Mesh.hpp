@@ -20,7 +20,7 @@ namespace Progator
             Progator::Backends::OpenGL::Mesh* MeshNew();
             void MeshDestroy(Progator::Backends::OpenGL::Mesh* mesh);
             void MeshInit(Progator::Backends::OpenGL::Mesh* mesh, Progator::Validator* validator);
-            void MeshLoadVerTexNor(Progator::Backends::OpenGL::Mesh* mesh, Progator::F32 data[], const Progator::U32 amount);
+            void MeshLoadVerTexNor(Progator::Backends::OpenGL::Mesh* mesh, const Progator::F32 data[], const Progator::U32 amount);
             void MeshDraw(Progator::Backends::OpenGL::Mesh* mesh);
         };
     };

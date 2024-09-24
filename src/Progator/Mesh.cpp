@@ -21,7 +21,7 @@ void Progator::MeshInit(Progator::Mesh* mesh, Progator::Pointers* pointers, Prog
     mesh->pointers->mesh_init(mesh->backend, mesh->validator);
 }
 
-void Progator::MeshLoadVerTexNor(Progator::Mesh* mesh, Progator::F32 data[], const Progator::U32 amount)
+void Progator::MeshLoadVerTexNor(Progator::Mesh* mesh, const Progator::F32 data[], const Progator::U32 amount)
 {
     mesh->pointers->mesh_load_vertexnor(
         mesh->backend,
