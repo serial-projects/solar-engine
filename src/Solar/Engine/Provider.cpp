@@ -59,6 +59,7 @@ Progator::Shader* Solar::Engine::ProviderLoadShader(Solar::Engine::Provider* pro
         const Solar::String calculated_vert_shader_path = (calculated_path + ".vert");
         const Solar::String calculated_frag_shader_path = (calculated_path + ".frag");
 
+        /* TODO: remove or add debug exception here: */
         std::cout 
             << __PRETTY_FUNCTION__
             << ": Loading shader (Vertex: \""

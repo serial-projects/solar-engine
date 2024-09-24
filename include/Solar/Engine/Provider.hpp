@@ -50,6 +50,10 @@ namespace Solar
         void ProviderDestroy(Solar::Engine::Provider* provider);
         void ProviderInit(Solar::Engine::Provider* provider, Solar::Engine::ProviderProperties properties, Progator::Pointers* pointers, Progator::Validator* validator);
         Progator::Shader* ProviderLoadShader(Solar::Engine::Provider* provider, const Solar::String name);
+
+        /* NOTE: those operations on the provider can be cacheable or not: */
+        Progator::Texture* ProviderLoadTexture(Solar::Engine::Provider* provider, const Solar::String name);
+        Progator::Texture* ProviderLoadTextureFromSprite(Solar::Engine::Provider* provider, const Solar::String name);
     };
 };
 
