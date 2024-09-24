@@ -18,10 +18,23 @@ namespace Solar
             /* TODO: implement this: */
         };
 
+        enum LevelDebugStates
+        {
+            WireframeMode   = 0b10000000,
+            Version         = 0b01000000
+        };
+
         typedef struct Level
         {
-            Solar::Core* linked_core;
-            Progator::Shader* current_shader;
+            Solar::Core*                linked_core;
+            Solar::Scene::FreeCamera    camera;
+            Solar::U8                   debug_states = 0;
+
+            /* NOTE: keep in mind that the Solar Engine is an voxel based
+             * engine without many voxels optimizations ;-)
+             */
+            Progator::Shader*   basic_voxel_shader;
+            Progator::Mesh*     basic_voxel_mesh;
         } Level;
 
         Solar::Scene::Level* LevelNew();
