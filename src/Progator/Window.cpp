@@ -27,6 +27,7 @@ void Progator::WindowSetSize(Progator::Window* window, const Progator::U16 width
         width,
         height
     );
+    window->width = width, window->height = height;
 }
 
 void Progator::WindowSetTitle(Progator::Window* window, const Progator::Character *title)

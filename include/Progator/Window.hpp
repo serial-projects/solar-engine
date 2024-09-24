@@ -10,6 +10,8 @@ namespace Progator
         void*                   backend;
         Progator::Pointers*     pointers;
         Progator::Validator*    validator;
+        Progator::U16           width;
+        Progator::U16           height;
     } Window;
     Progator::Window* WindowNew();
     void WindowDestroy(Progator::Window* window);
