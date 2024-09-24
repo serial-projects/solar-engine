@@ -14,10 +14,10 @@ out vec3 current_fragment_position;
 
 void main()
 {
-    gl_Position = ProgatorProjectionMatrix * ProgatorViewMatrix * ProgatorModelMatrix * vec4(position, 1.0f);
+    gl_Position = SolarProjectionMatrix * SolarViewMatrix * SolarModelMatrix * vec4(position, 1.0f);
 
     /* get the fragment position */
-    current_fragment_position = vec3(ProgatorModelMatrix * vec4(position, 1.0f));
+    current_fragment_position = vec3(SolarModelMatrix * vec4(position, 1.0f));
 
     /* pass forward this information: */
     current_texture_map     = texture_coord;
