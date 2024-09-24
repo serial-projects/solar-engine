@@ -12,6 +12,12 @@ namespace Progator
         void*                   backend;
         Progator::Pointers*     pointers;
         Progator::Validator*    validator;
+
+        /* NOTE: keep some information about the viewport: */
+        Progator::U16           width;
+        Progator::U16           height;
+        Progator::U16           x;
+        Progator::U16           y;
     } Renderer;
 
     Progator::Renderer* RendererNew();

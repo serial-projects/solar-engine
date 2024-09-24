@@ -30,6 +30,10 @@ void Progator::RendererSetViewport(Progator::Renderer* renderer, const Progator:
         x,
         y
     );
+
+    /* set the render the viewport property: */
+    renderer->width = width,    renderer->height    = height;
+    renderer->x     = x,        renderer->y         = y;
 }
 
 void Progator::RendererClear(Progator::Renderer* renderer, const Progator::RGBA84 color)
