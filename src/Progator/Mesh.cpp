@@ -18,21 +18,42 @@ void Progator::MeshInit(Progator::Mesh* mesh, Progator::Pointers* pointers, Prog
     mesh->pointers = pointers;
     
     mesh->backend = mesh->pointers->mesh_new();
-    mesh->pointers->mesh_init(mesh->backend, mesh->validator);
+    if(mesh->backend == nullptr)
+    {
+        Progator::ValidatorError(
+            mesh->validator,
+            Progator::ValidatorCodes::FailedToCreateObject,
+            "Failed to create mesh object."
+        );
+    }
+    else
+    {
+        mesh->pointers->mesh_init(mesh->backend, mesh->validator);
+    }
 }
 
 void Progator::MeshLoadVerTexNor(Progator::Mesh* mesh, const Progator::F32 data[], const Progator::U32 amount)
 {
-    mesh->pointers->mesh_load_vertexnor(
-        mesh->backend,
-        data,
-        amount
+    ProgatorHelperPerformWhenValidated(
+        mesh->validator,
+        {
+            mesh->pointers->mesh_load_vertexnor(
+                mesh->backend,
+                data,
+                amount
+            );
+        }
     );
 }
 
 void Progator::MeshDraw(Progator::Mesh* mesh)
 {
-    mesh->pointers->mesh_draw(
-        mesh->backend
+    ProgatorHelperPerformWhenValidated(
+        mesh->validator,
+        {
+            mesh->pointers->mesh_draw(
+                mesh->backend
+            );
+        }
     );
 }

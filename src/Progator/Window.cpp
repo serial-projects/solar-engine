@@ -14,41 +14,74 @@ void Progator::WindowDestroy(Progator::Window* window)
 
 void Progator::WindowInit(Progator::Window* window, Progator::Pointers* pointers, Progator::Validator* validator)
 {
-    window->validator = validator;
-    window->pointers = pointers;
+    window->validator   = validator;
+    window->pointers    = pointers;
+    
     window->backend = window->pointers->window_new();
-    window->pointers->window_init(window->backend, window->validator);
+    if(window->backend == nullptr)
+    {
+        Progator::ValidatorError(
+            window->validator,
+            Progator::ValidatorCodes::FailedToCreateObject,
+            "Failed to create window object."
+        );
+    }
+    else
+    {
+        window->pointers->window_init(window->backend, window->validator);
+    }
 }
 
 void Progator::WindowSetSize(Progator::Window* window, const Progator::U16 width, const Progator::U16 height)
 {
-    window->pointers->window_set_size(
-        window->backend,
-        width,
-        height
+    ProgatorHelperPerformWhenValidated(
+        window->validator,
+        {
+            window->pointers->window_set_size(
+                window->backend,
+                width,
+                height
+            );
+            window->width = width;
+            window->height = height;
+        }
     );
-    window->width = width, window->height = height;
 }
 
 void Progator::WindowSetTitle(Progator::Window* window, const Progator::Character *title)
 {
-    window->pointers->window_set_title(
-        window->backend,
-        title
+    ProgatorHelperPerformWhenValidated(
+        window->validator,
+        {
+            window->pointers->window_set_title(
+                window->backend,
+                title
+            );
+        }
     );
 }
 
 void Progator::WindowSetVerticalSync(Progator::Window* window, const Progator::U8 enable)
 {
-    window->pointers->window_set_vertical_sync(
-        window->backend,
-        enable
+    ProgatorHelperPerformWhenValidated(
+        window->validator,
+        {
+            window->pointers->window_set_vertical_sync(
+                window->backend,
+                enable
+            );
+        }
     );
 }
 
 void Progator::WindowDraw(Progator::Window* window)
 {
-    window->pointers->window_draw(
-        window->backend
+    ProgatorHelperPerformWhenValidated(
+        window->validator,
+        {
+            window->pointers->window_draw(
+                window->backend
+            );
+        }
     );
 }

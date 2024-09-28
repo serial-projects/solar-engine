@@ -55,7 +55,8 @@ void Progator::Backends::OpenGL::TextureLoadFromFile(Progator::Backends::OpenGL:
             GL_UNSIGNED_BYTE,
             image->pixels
         );
-
+    
+        /* TODO: check for possible OpenGL errors here: */
         glGenerateMipmap(GL_TEXTURE_2D);
         
         /* done: */

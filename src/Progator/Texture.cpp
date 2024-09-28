@@ -18,22 +18,44 @@ void Progator::TextureInit(Progator::Texture* texture, Progator::Pointers* point
     texture->pointers = pointers;
 
     texture->backend = texture->pointers->texture_new();
-    
-    texture->pointers->texture_init(
-        texture->pointers,
-        texture->validator
-    );
+    if(texture->backend == nullptr)
+    {
+        Progator::ValidatorError(
+            texture->validator,
+            Progator::ValidatorCodes::FailedToCreateObject,
+            "Failed to create texture object."
+        );
+    }
+    else
+    {
+        texture->pointers->texture_init(
+            texture->pointers,
+            texture->validator
+        );
+    }
 }
 
 void Progator::TextureLoadFromFile(Progator::Texture* texture, const Progator::Character* path)
 {
-    texture->pointers->texture_load_from_file(
-        texture->backend,
-        path
+    ProgatorHelperPerformWhenValidated(
+        texture->validator,
+        {
+            texture->pointers->texture_load_from_file(
+                texture->backend,
+                path
+            );
+        }
     );
 }
 
 void Progator::TextureUse(Progator::Texture* texture)
 {
-    texture->pointers->texture_use(texture->backend);
+    ProgatorHelperPerformWhenValidated(
+        texture->validator,
+        {
+            texture->pointers->texture_use(
+                texture->backend
+            );
+        }
+    );
 }

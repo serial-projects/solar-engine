@@ -18,35 +18,55 @@ void Progator::RendererInit(Progator::Renderer* renderer, Progator::Pointers* po
     renderer->validator = validator;
 
     renderer->backend = renderer->pointers->renderer_new();
-    renderer->pointers->renderer_init(renderer->backend, renderer->validator);
+    if(renderer->backend == nullptr)
+    {
+        Progator::ValidatorError(
+            renderer->validator,
+            Progator::ValidatorCodes::FailedToCreateObject,
+            "Failed to create renderer using the provided pointers."
+        );
+    }
+    else
+    {
+        renderer->pointers->renderer_init(renderer->backend, renderer->validator);
+    }
 }
 
 void Progator::RendererSetViewport(Progator::Renderer* renderer, const Progator::U16 width, const Progator::U16 height, const Progator::U16 x, const Progator::U16 y)
 {
-    renderer->pointers->renderer_set_viewport(
-        renderer->backend,
-        width,
-        height,
-        x,
-        y
+    ProgatorHelperPerformWhenValidated(
+        renderer->validator,
+        {
+            renderer->pointers->renderer_set_viewport(renderer->backend, width, height, x, y);
+            renderer->width     = width;
+            renderer->height    = height;
+            renderer->x = x;
+            renderer->y = y;
+        }
     );
-
-    /* set the render the viewport property: */
-    renderer->width = width,    renderer->height    = height;
-    renderer->x     = x,        renderer->y         = y;
 }
 
 void Progator::RendererClear(Progator::Renderer* renderer, const Progator::RGBA84 color)
 {
-    renderer->pointers->renderer_clear(
-        renderer->backend,
-        color
+    ProgatorHelperPerformWhenValidated(
+        renderer->validator,
+        {
+            renderer->pointers->renderer_clear(
+                renderer->backend,
+                color
+            );
+        }
     );
 }
 
 void Progator::RendererDraw(Progator::Renderer* renderer)
 {
-    renderer->pointers->renderer_draw(
-        renderer->backend
+    ProgatorHelperPerformWhenValidated(
+        renderer->validator,
+        {
+            renderer->pointers->renderer_draw(
+                renderer->backend
+            );
+        }
     );
 }

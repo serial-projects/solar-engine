@@ -40,6 +40,10 @@ void Progator::Backends::OpenGL::WindowInit(Progator::Backends::OpenGL::Window* 
     /* Initialize GLEW: */
     glewExperimental = GL_TRUE;
     glewInit();
+
+    /* NOTE: attach the message debug system: */
+    glEnable(GL_DEBUG_OUTPUT);
+    glDebugMessageCallback(Progator::Backends::OpenGL::MessageCallback, 0);
 }
 
 void Progator::Backends::OpenGL::WindowSetSize(Progator::Backends::OpenGL::Window* window, const Progator::U16 width, const Progator::U16 height)

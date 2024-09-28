@@ -68,22 +68,48 @@ Progator::Shader* Solar::Engine::ProviderLoadShader(Solar::Engine::Provider* pro
             << calculated_frag_shader_path
             << "\")\n";
 
-        /* TODO: set the validator to prevent this: */
-        if(! Solar::Support::DoesFileExist(calculated_vert_shader_path.c_str())) abort();
-        if(! Solar::Support::DoesFileExist(calculated_frag_shader_path.c_str())) abort();
+        // NOTE: this isn't actually necessary, the Progator::ShaderLoadVertexCodeFromFile already
+        // checks if the file exists before trying to load so... Keep going without this code.
 
+        // /* TODO: set the validator to prevent this: */
+        // if(! Solar::Support::DoesFileExist(calculated_vert_shader_path.c_str())) abort();
+        // if(! Solar::Support::DoesFileExist(calculated_frag_shader_path.c_str())) abort();
+
+        /* TODO: make an logging system for when the validator reports an error: */
         /* NOTE: perform the shader loading option: */
-        /* TODO: check for the validator! */
         shader = Progator::ShaderNew();
         Progator::ShaderInit(shader, provider->pointers, provider->validator);
 
         Progator::ShaderLoadVertexCodeFromFile(shader, calculated_vert_shader_path.c_str());
+        ProgatorHelperHandleErrorValidator(
+            provider->validator,
+            {
+                std::cerr << provider->validator->log << "\n";
+                std::exit(-1);
+            }
+        );
+
         Progator::ShaderLoadFragmentCodeFromFile(shader, calculated_frag_shader_path.c_str());
+        ProgatorHelperHandleErrorValidator(
+            provider->validator,
+            {
+                std::cerr << provider->validator->log << "\n";
+                std::exit(-1);
+            }
+        );
+
         Progator::ShaderCompile(shader);
+        ProgatorHelperHandleErrorValidator(
+            provider->validator,
+            {
+                std::cerr << provider->validator->log << "\n";
+                std::exit(-1);
+            }
+        );
 
         Solar::Engine::Package* package = Solar::Engine::PackageNew();
-        package->element = shader;
-        package->type = Solar::Engine::PackageType::Shader;
+        package->element    = shader;
+        package->type       = Solar::Engine::PackageType::Shader;
 
         /* set to cache: */
         provider->storage.insert({cached_key, package});
@@ -99,5 +125,6 @@ Progator::Shader* Solar::Engine::ProviderLoadShader(Solar::Engine::Provider* pro
         shader = (Progator::Shader*)package->element;
     }
     
+    failed_compile_shaders:
     return shader;
 }
