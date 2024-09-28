@@ -22,6 +22,8 @@ namespace Progator
             typedef GLuint  ShaderProgram;
             typedef GLuint  Texture2D;
             typedef GLuint  Framebuffer;
+
+            void MessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* uparameters);
         };
     };
 };
