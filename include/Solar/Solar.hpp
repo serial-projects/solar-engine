@@ -7,5 +7,6 @@
 #include "Solar/Core.hpp"
 #include "Solar/Instance.hpp"
 #include "Solar/Types.hpp"
+#include "Solar/Support/FS.hpp"
 
 #endif
