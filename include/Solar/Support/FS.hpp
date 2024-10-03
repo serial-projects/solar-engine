@@ -8,6 +8,7 @@ namespace Solar
     namespace Support
     {
         bool DoesFileExist(const Solar::Character* path);
+        Solar::String LoadFile(const Solar::Character* path);
     };
 };
 
