@@ -1,6 +1,9 @@
 /* 2020 (C) Solar Engine & Solar Project by Pipes Studios. */
 
 #include "Solar/Solar.hpp"
+#include "Lucie/Lucie.hpp"
+
+#include <iostream>
 
 namespace PC
 {
