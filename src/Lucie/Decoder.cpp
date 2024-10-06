@@ -1,86 +1,245 @@
 #include "Lucie/Decoder.hpp"
 #include <iostream>
 
-/*
- * SingleTableSectionizerValueHolder:
- */
+Lucie::Decoder::SectionizerValidator Lucie::Decoder::SectionizerValidatorNew()
+{
+    Lucie::Decoder::SectionizerValidator validator;
+    validator.log       = Lucie::String();
+    validator.error     = 0;
+    return validator;
+}
 
-void Lucie::Decoder::SingleTableSectionizerValueHolderDestroy(Lucie::Decoder::SingleTableSectionizerValueHolder* value_holder)
+void Lucie::Decoder::SectionizerValidatorReportError(
+    Lucie::Decoder::SectionizerValidator* validator,
+    const Lucie::String reason
+)
+{
+    validator->log      = reason;
+    validator->error    = 1;
+}
+
+Lucie::Decoder::SectionizerState Lucie::Decoder::SectionizerStateNew()
+{
+    Lucie::Decoder::SectionizerState state;
+    state.validator     = Lucie::Decoder::SectionizerValidatorNew();
+    state.tokens        = nullptr;
+    state.token_index   = 0;
+    state.token_amount  = 0;
+    state.current_line  = 1;
+    return state;
+}
+
+Lucie::String Lucie::Decoder::SectionizerStateGetToken(
+    Lucie::Decoder::SectionizerState* sectionizer_state
+)
+{
+    Lucie::String token;
+return_point_after_newline:
+    if(sectionizer_state->token_index > sectionizer_state->token_amount)
+    {
+        Lucie::Decoder::SectionizerValidatorReportError(
+            &sectionizer_state->validator,
+            "Expected token, got EOF."
+        );
+    }
+    else
+    {
+        token = sectionizer_state->tokens->at(sectionizer_state->token_index);
+        sectionizer_state->token_index++;
+        if(token == "\n")
+        {
+            sectionizer_state->current_line++;
+            goto return_point_after_newline;
+        }
+    }
+    return token;
+}
+
+Lucie::String Lucie::Decoder::SectionizerStatePretendGetToken(
+    Lucie::Decoder::SectionizerState* sectionizer_state
+)
+{
+    Lucie::U32 index = sectionizer_state->token_index;
+    Lucie::String token;
+return_point_after_newline:
+    if(index > sectionizer_state->token_amount)
+    {
+        Lucie::Decoder::SectionizerValidatorReportError(
+            &sectionizer_state->validator,
+            "Expected token, got EOF."
+        );
+    }
+    else
+    {
+        token = sectionizer_state->tokens->at(index);
+        index ++;
+        if(token == "\n")
+        {
+            goto return_point_after_newline;
+        }
+    }
+    return token;
+}
+
+Lucie::Decoder::ValueHolder* Lucie::Decoder::ValueHolderCreateNewFromSection(
+    Lucie::Decoder::Section* section
+)
+{
+    Lucie::Decoder::ValueHolder* value_holder = new Lucie::Decoder::ValueHolder;
+    value_holder->type = Lucie::Decoder::ValueHolderTypes::Branch;
+    value_holder->value= section;
+    return value_holder;
+}
+
+Lucie::Decoder::ValueHolder* Lucie::Decoder::ValueHolderNew(Lucie::Integer value)
+{
+    Lucie::Decoder::ValueHolder* value_holder = new Lucie::Decoder::ValueHolder;
+    value_holder->type = Lucie::Decoder::ValueHolderTypes::Integer;
+    value_holder->value = new Lucie::Integer(value);
+    return value_holder;
+}
+
+Lucie::Decoder::ValueHolder* Lucie::Decoder::ValueHolderNew(Lucie::Decimal value)
+{
+    Lucie::Decoder::ValueHolder* value_holder = new Lucie::Decoder::ValueHolder;
+    value_holder->type = Lucie::Decoder::ValueHolderTypes::Decimal;
+    value_holder->value= new Lucie::Decimal(value);
+    return value_holder;
+}
+
+Lucie::Decoder::ValueHolder* Lucie::Decoder::ValueHolderNew(Lucie::String value)
+{
+    Lucie::Decoder::ValueHolder* value_holder = new Lucie::Decoder::ValueHolder;
+    value_holder->type = Lucie::Decoder::ValueHolderTypes::String;
+    value_holder->value= new Lucie::String(value);
+    return value_holder;
+}
+
+Lucie::Decoder::ValueHolder* Lucie::Decoder::ValueHolderNew(Lucie::Boolean value)
+{
+    Lucie::Decoder::ValueHolder* value_holder = new Lucie::Decoder::ValueHolder;
+    value_holder->type = Lucie::Decoder::ValueHolderTypes::Boolean;
+    value_holder->value= new Lucie::Boolean(value);
+    return value_holder;
+}
+
+Lucie::Decoder::ValueHolder* Lucie::Decoder::ValueHolderNew(Lucie::Decoder::ValueHolderList* value)
+{
+    Lucie::Decoder::ValueHolder* value_holder = new Lucie::Decoder::ValueHolder;
+    value_holder->type = Lucie::Decoder::ValueHolderTypes::List;
+    value_holder->value= value;
+    return value_holder;
+}
+Lucie::String Lucie::Decoder::ValueHolderPrint(
+    Lucie::Decoder::ValueHolder* value_holder,
+    const Lucie::U8 depth
+)
+{
+    Lucie::String printed_value;
+    switch(value_holder->type)
+    {
+        case Lucie::Decoder::ValueHolderTypes::Integer:
+            printed_value = std::to_string(*(Lucie::Integer*)(value_holder->value));
+            break;
+        case Lucie::Decoder::ValueHolderTypes::Decimal:
+            printed_value = std::to_string(*(Lucie::Decimal*)(value_holder->value));
+            break;
+        case Lucie::Decoder::ValueHolderTypes::String:
+            printed_value = ("\"" + Lucie::String(*(Lucie::String*)(value_holder->value)) + "\"");
+            break;
+        case Lucie::Decoder::ValueHolderTypes::Boolean:
+            {
+                Lucie::Boolean value    = *(Lucie::Boolean*)(value_holder->value);
+                printed_value           = value ? "yes" : "no";
+            };
+            break;
+        case Lucie::Decoder::ValueHolderTypes::List:
+            {
+                Lucie::Decoder::ValueHolderList* list=
+                    (Lucie::Decoder::ValueHolderList*)(value_holder->value);
+                printed_value = "[";
+                for(Lucie::U32 index=0; index<list->size(); index++)
+                    printed_value += (
+                        Lucie::Decoder::ValueHolderPrint(list->at(index), depth + 1) + 
+                        (index >= (list->size() - 1) ? "" : ", ")
+                    );
+                printed_value += "]";
+            };
+            break;
+        case Lucie::Decoder::ValueHolderTypes::Branch:
+            printed_value = "branch";
+            break;
+        default:
+            break;
+    }
+    return printed_value;
+}
+
+Lucie::String Lucie::Decoder::ValueHolderBranchShow(
+    Lucie::Decoder::ValueHolder* value_holder,
+    const Lucie::U8 depth
+)
+{
+    Lucie::String printed_value;
+
+    /* NOTE: assume the value_holder: */
+    Lucie::Decoder::Section* section = (Lucie::Decoder::Section*)(value_holder->value);
+    for(auto &branch_values : *section)
+    {
+        for(Lucie::U16 index=0; index<(depth * 2); index++) printed_value += " ";
+        printed_value += (
+            branch_values.first
+            + ": "
+            + ( 
+                branch_values.second->type == Lucie::Decoder::ValueHolderTypes::Branch
+                ? ("branch\n" + Lucie::Decoder::ValueHolderBranchShow(branch_values.second, depth + 1))
+                : Lucie::Decoder::ValueHolderPrint(branch_values.second, 0)
+            )
+        );
+        printed_value += "\n";
+    }
+    return printed_value;
+}
+
+void Lucie::Decoder::ValueHolderDestroy(Lucie::Decoder::ValueHolder* value_holder)
 {
     switch(value_holder->type)
     {
-        case Lucie::Decoder::SingleTableSectionizerValueHolderTypes::Integer:
+        case Lucie::Decoder::ValueHolderTypes::Integer:
             delete (Lucie::Integer*)(value_holder->value);
             break;
-        case Lucie::Decoder::SingleTableSectionizerValueHolderTypes::Decimal:
+        case Lucie::Decoder::ValueHolderTypes::Decimal:
             delete (Lucie::Decimal*)(value_holder->value);
             break;
-        case Lucie::Decoder::SingleTableSectionizerValueHolderTypes::String:
+        case Lucie::Decoder::ValueHolderTypes::String:
             delete (Lucie::String*)(value_holder->value);
             break;
-        case Lucie::Decoder::SingleTableSectionizerValueHolderTypes::Boolean:
-            delete (Lucie::Boolean*)(value_holder->value);
+        case Lucie::Decoder::ValueHolderTypes::Boolean:
+            delete (Lucie::String*)(value_holder->value);
             break;
-        case Lucie::Decoder::SingleTableSectionizerValueHolderTypes::List:
-            /* TODO: recursively remove it: */
+        case Lucie::Decoder::ValueHolderTypes::List:
             {
-                Lucie::Decoder::SingleTableSectionizerValueHolderList* list = (Lucie::Decoder::SingleTableSectionizerValueHolderList*)(value_holder->value);
-                for(Lucie::Indexer index = 0; index < list->size(); index++)
-                    Lucie::Decoder::SingleTableSectionizerValueHolderDestroy(list->at(index));
-                delete (Lucie::Decoder::SingleTableSectionizerValueHolderList*)value_holder->value;
-            }
+                Lucie::Decoder::ValueHolderList* list =
+                    (Lucie::Decoder::ValueHolderList*)(value_holder->value);
+                for(Lucie::U32 index=0; index < list->size(); index++)
+                    Lucie::Decoder::ValueHolderDestroy(list->at(index));
+            };
+            delete (Lucie::Decoder::ValueHolderList*)(value_holder->value);
             break;
-        case Lucie::Decoder::SingleTableSectionizerValueHolderTypes::Section:
-            /* NOTE: this is just a mark so no need to delete: */
+        case Lucie::Decoder::ValueHolderTypes::Branch:
+            {
+                Lucie::Decoder::Section* section = 
+                    (Lucie::Decoder::Section*)(value_holder->value);
+                for(auto &section_data : *section) 
+                    Lucie::Decoder::ValueHolderDestroy(section_data.second);
+            };
+            delete (Lucie::Decoder::Section*)(value_holder->value);
             break;
         default:
-            /* anything ? */
-            break;   
-    }
-
-    /* finally deletes the value holder itself. */
+            break;
+    };
     delete value_holder;
 }
-
-Lucie::String Lucie::Decoder::SingleTableSectionizerValueHolderToString(Lucie::Decoder::SingleTableSectionizerValueHolder* value_holder)
-{
-    Lucie::String value_to_string;
-    switch(value_holder->type)
-    {
-        case Lucie::Decoder::SingleTableSectionizerValueHolderTypes::Integer:
-            value_to_string = std::to_string( *(Lucie::Integer*)(value_holder->value) );
-            break;
-        case Lucie::Decoder::SingleTableSectionizerValueHolderTypes::Decimal:
-            value_to_string = std::to_string( *(Lucie::Decimal*)(value_holder->value) );
-            break;
-        case Lucie::Decoder::SingleTableSectionizerValueHolderTypes::String:
-            value_to_string = "\"" + *(Lucie::String*)(value_holder->value) + "\"";
-            break;
-        case Lucie::Decoder::SingleTableSectionizerValueHolderTypes::Boolean:
-            value_to_string = *(Lucie::Boolean*)(value_holder->value) ? "yes" : "no";
-            break;
-        case Lucie::Decoder::SingleTableSectionizerValueHolderTypes::List:
-            {
-                Lucie::Decoder::SingleTableSectionizerValueHolderList* list = (Lucie::Decoder::SingleTableSectionizerValueHolderList*)(value_holder->value);
-                value_to_string = "[";
-                for(Lucie::Indexer index = 0; index < list->size(); index++)
-                    value_to_string += Lucie::Decoder::SingleTableSectionizerValueHolderToString(list->at(index)) + (index >= list->size() - 1 ? "" : ", ");
-                value_to_string += "]";
-            }
-            break;
-        case Lucie::Decoder::SingleTableSectionizerValueHolderTypes::Section:
-            value_to_string = "section";
-            break;
-        default:
-            /* anything ? */
-            break;
-    }
-    return value_to_string;
-}
-
-/*
- * SingleTableSectionizer:
- */
 
 static bool IsTokenInteger(const Lucie::String *token)
 {
@@ -90,14 +249,11 @@ static bool IsTokenInteger(const Lucie::String *token)
     {
         const Lucie::Character character = token->at(index);
         if((character >= '0' && character <= '9') || (character == '-' && index == 0))
-        {
-            /* valid character: */
             continue;
-        }
-        else
-        {
+        else 
+        {   
             result = false;
-            break;
+            break; 
         }
     }
     return result;
@@ -106,7 +262,7 @@ static bool IsTokenInteger(const Lucie::String *token)
 static bool IsTokenDecimal(const Lucie::String *token)
 {
     Lucie::U8 result = 0;
-    for(Lucie::Indexer index = 0; index < token->at(index); index++)
+    for(Lucie::Indexer index = 0; index < token->size(); index++)
     {
         const Lucie::Character character = token->at(index);
         if((character >= '0' && character <= '9'))  { continue;                 }
@@ -116,174 +272,246 @@ static bool IsTokenDecimal(const Lucie::String *token)
     return result == 1;
 }
 
-static Lucie::Decoder::SingleTableSectionizerValueHolder* SingleTableSectionizerBuildValue(
-    Lucie::Text::Tokens*                                tokens,
-    Lucie::Decoder::SingleTableSectionizerValidator*    validator,
-    Lucie::Indexer*                                     indexer,
-    Lucie::Indexer*                                     linec,
-    Lucie::U8                                           depth
+#define LDRSGV_ISBOOL(x)(x=="yes"||x=="true"||x=="no"||x=="false")
+
+Lucie::Decoder::ValueHolder* Lucie::Decoder::RecursiveSectionizerParserGetValue(
+    Lucie::Decoder::SectionizerState* sectionizer_state,
+    const Lucie::U8 depth
 )
 {
-find_another_token:
+    const Lucie::String entrypoint_token = 
+        Lucie::Decoder::SectionizerStateGetToken(sectionizer_state);
     
-    /* NOTE: Take care of the new line situation, there are two things that can happen:
-     * 1-) BuildValue outside an list, then consider the new line and just get another token;
-     * 2-) inside a list, do not consider and leave it to the list controller.
-     */
-    Lucie::String token = tokens->at(*indexer);
-    if(token == "\n" && depth <= 0)
-    {
-        *indexer += 1, *linec += 1;
-        goto find_another_token;
-    }
-
-    Lucie::Character lefthint     = token.at(0);
-    Lucie::Character righthint    = token.at(token.size() - 1);
-    Lucie::Decoder::SingleTableSectionizerValueHolder* value = new Lucie::Decoder::SingleTableSectionizerValueHolder;
+    const Lucie::Character lhc           = entrypoint_token.at(0);
+    const Lucie::Character rhc           = entrypoint_token.at(entrypoint_token.size() - 1);
+    Lucie::Decoder::ValueHolder* value   = nullptr;
     
-    /* FOR integers: */
-    if(IsTokenInteger(&token))
-    {
-        /* NOTE: this requires C++11 to be present due: std::atoi() & std::stof(). */
-        value->value = new Lucie::Integer;
-        value->type  = Lucie::Decoder::SingleTableSectionizerValueHolderTypes::Integer;
-        *(Lucie::Integer*)value->value = std::atoi(token.c_str());
-    }
-    /* FOR decimals: */
-    else if(IsTokenDecimal(&token))
-    {
-        value->value = new Lucie::Decimal;
-        value->type  = Lucie::Decoder::SingleTableSectionizerValueHolderTypes::Decimal;
-        *(Lucie::Decimal*)value->value = std::stof(token.c_str());
-    }
-    /* FOR strings: */
-    else if((lefthint == '"' || lefthint == '\'') && (righthint == lefthint))
-    {
-        value->value = new Lucie::String;
-        value->type  = Lucie::Decoder::SingleTableSectionizerValueHolderTypes::String;
-        *(Lucie::String*)value->value = token.substr(1, token.size() - 2);
-    }
-    /* FOR booleans: */
-    else if((token == "yes" || token == "true") || (token == "false" || token == "no"))
-    {
-        value->value    = new Lucie::Boolean;
-        value->type     = Lucie::Decoder::SingleTableSectionizerValueHolderTypes::Boolean;
-        *(Lucie::Boolean*)value->value = (token == "yes" || token == "true");
-    }
-    /* FOR lists: */
-    else if(token == "[")
-    {
-        /* NOTE: begin recursion here: */
-        value->value    = new Lucie::Decoder::SingleTableSectionizerValueHolderList;
-        value->type     = Lucie::Decoder::SingleTableSectionizerValueHolderTypes::List;
-        Lucie::Decoder::SingleTableSectionizerValueHolderList* list = (Lucie::Decoder::SingleTableSectionizerValueHolderList*)(value->value);
+    /* NOTE: take advantage of C++ overload feature here: */
 
-        *indexer += 1;     /* set to the first token on the list: */
-        while(*indexer < tokens->size())
+    if(IsTokenInteger(&entrypoint_token))
+        value = 
+            Lucie::Decoder::ValueHolderNew(std::atoi(entrypoint_token.c_str()));
+    else if(IsTokenDecimal(&entrypoint_token))
+        value =
+            Lucie::Decoder::ValueHolderNew(std::stof(entrypoint_token.c_str()));
+    else if((lhc=='\''||lhc=='"')&&(lhc==rhc))
+        value = 
+            Lucie::Decoder::ValueHolderNew(entrypoint_token.substr(1, entrypoint_token.size() - 2));
+    else if(LDRSGV_ISBOOL(entrypoint_token))
+        value = 
+            Lucie::Decoder::ValueHolderNew((entrypoint_token=="yes" || entrypoint_token=="true"));
+    else if(entrypoint_token=="[")
+    {
+        /* NOTE: begin subindex: */
+        Lucie::Decoder::ValueHolderList* list = new Lucie::Decoder::ValueHolderList;
+        while(sectionizer_state->token_index <= sectionizer_state->token_amount)
         {
-            const Lucie::String subtoken = tokens->at(*indexer);
-            if(subtoken == "]")                 { break; }
-            else if(subtoken == "\n")           { *indexer += 1, *linec += 1; continue; }
+            const Lucie::String token = 
+                Lucie::Decoder::SectionizerStatePretendGetToken(sectionizer_state);
+            if(token == "]")
+            {
+                /* NOTE: if we pretend to get the value, then get the value now and set the index to
+                 * the next valid position: 
+                 */
+                Lucie::Decoder::SectionizerStateGetToken(sectionizer_state);
+                break;
+            }
             else
-            {                
-                Lucie::Decoder::SingleTableSectionizerValueHolder* list_value = SingleTableSectionizerBuildValue(tokens, validator, indexer, linec, depth + 1);
-                list->push_back(list_value);
+            {
+                list->push_back(
+                    Lucie::Decoder::RecursiveSectionizerParserGetValue(sectionizer_state, depth + 1)
+                );
             }
         }
+        value = Lucie::Decoder::ValueHolderNew(list);
     }
     else
     {
-        validator->report   = Lucie::String("in data definition, invalid token: ") + token;
-        validator->state    = 1;
+        Lucie::Decoder::SectionizerValidatorReportError(
+            &sectionizer_state->validator,
+            "During Get Value, got invalid token = \"" + entrypoint_token + "\""
+        );
 
-        /* NOTE: delete the allocated value since it is not required due failure: */
-        delete value;
+        /* NOTE: to prevent segmentation fault, allocate an 0 value here: 
+         * to disable this behavior, just define the macro: LUCIE_ACCEPT_DANGER:
+         */
+        #ifndef LUCIE_ACCEPT_DANGER
+            value = Lucie::Decoder::ValueHolderNew(0);
+        #endif
     }
 
-    *indexer += 1;
     return value;
 }
 
-static Lucie::String SingleTableSectionizerFlatLocation(
-    std::vector<Lucie::String>* location,
-    const Lucie::Character      separator
-)
-{
-    Lucie::String location_flatten;
-    for(Lucie::Indexer index = 0; index < location->size(); index++)
-        location_flatten += (location->at(index) + separator);
-    return location_flatten;
-}
+#undef LDRSGV_ISBOOL
 
-Lucie::Decoder::SingleTableSectionizedContent* Lucie::Decoder::SingleTableSectionizer(
-    Lucie::Text::Tokens*                                tokens,
-    Lucie::Decoder::SingleTableSectionizerValidator*    validator,
-    const Lucie::Character                              separator
+/*
+ * BUG: consider the depth = 0, there is no section to close, so the program will just keep running
+ * until the last token, but that is MOSTLY fine since files don't contain thousand of empty lines
+ * after its actual end, right?
+ */
+
+Lucie::Decoder::ValueHolder* Lucie::Decoder::RecursiveSectionizerParser(
+    Lucie::Decoder::SectionizerState* sectionizer_state,
+    const Lucie::U8 depth
 )
 {
-    /* Sectionizing: */
-    Lucie::Decoder::SingleTableSectionizedContent* content = new Lucie::Decoder::SingleTableSectionizedContent;
+    Lucie::Decoder::Section* branch = new Lucie::Decoder::Section;
+    Lucie::U16 order = 0;
     
-    /* Location and indexing: */
-    Lucie::Indexer  index           = 0;
-    Lucie::Indexer  length          = tokens->size();
-    Lucie::Indexer  line_counter    = 1;
-    
-    std::vector<Lucie::String> location;
-    
-    /* DO THIS: */
-    while(index < length)
+    while(sectionizer_state->token_index < sectionizer_state->token_amount)
     {
-        /* TODO: ugly but it works: */
-        if(validator->state != 0) break;
+        /* NOTE: before adquiring the token, check for the validator, if the state still 
+         * consistent, then keep parsing, if not, then give up:
+         */
+        if(sectionizer_state->validator.error != 0)
+            break;
 
-        Lucie::String token = tokens->at(index);
-
-        if (token == "section")
+        /* If everything is fine, then keep parsing: */
+        const Lucie::String token = Lucie::Decoder::SectionizerStateGetToken(sectionizer_state);
+        if(token == "section")
         {
-            const Lucie::String name    = tokens->at(index + 1);
-            location.push_back(name);            
-            index += 2;
+            const Lucie::String name = Lucie::Decoder::SectionizerStateGetToken(sectionizer_state);
+            Lucie::Decoder::ValueHolder* branched_section = 
+                Lucie::Decoder::RecursiveSectionizerParser(sectionizer_state, depth + 1);
+            branch->insert({name, branched_section});
+            order++;
         }
-        else if (token == "end")
+        else if(token == "end")
         {
-            /* NOTE: find the last separator: */
-            location.pop_back();
-            index++;
+            /* DONE, quit the loop: */
+            break;
         }
-        else if (token == "set")
+        else if(token == "set")
         {
-            /* Calculate the name: */
-            const Lucie::String name = tokens->at(index + 1); 
-            index += 2;
-
-            /* NOTE: set the adquired_value: */
-            Lucie::Decoder::SingleTableSectionizerValueHolder* adquired_value = SingleTableSectionizerBuildValue(tokens, validator, &index, &line_counter, 0);
-            const Lucie::String actual_name = SingleTableSectionizerFlatLocation(&location, separator) + name;
-            content->insert({actual_name, adquired_value});
-        }
-        else if (token == "\n")
-        {
-            line_counter    ++;
-            index           ++;
+            const Lucie::String name = Lucie::Decoder::SectionizerStateGetToken(sectionizer_state);
+            Lucie::Decoder::ValueHolder* value = 
+                Lucie::Decoder::RecursiveSectionizerParserGetValue(sectionizer_state, 0);
+            branch->insert({name, value});
+            order++;
         }
         else
         {
-            validator->state        = 1;
-            validator->line         = line_counter;
-            validator->report       = Lucie::String("Invalid token: ") + token;
+            Lucie::Decoder::SectionizerValidatorReportError(
+                &sectionizer_state->validator,
+                "Invalid Token = \"" + token + "\""
+            );
             break;
         }
     }
 
     /* DONE: */
-    return content;
+    Lucie::Decoder::ValueHolder* branch_value_holder =
+        Lucie::Decoder::ValueHolderCreateNewFromSection(branch);
+    branch_value_holder->order = order;
+    return branch_value_holder;
 }
 
-void Lucie::Decoder::SingleTableSectionizedContentDestroy(Lucie::Decoder::SingleTableSectionizedContent* content)
+Lucie::Decoder::ValueHolder* Lucie::Decoder::RecursiveSectionizerParserBegin(
+    Lucie::Decoder::SectionizerState* sectionizer_state
+)
 {
-    /* Begin to clean all the unidimensional list here: */
-    for(auto &p : *content)
-        Lucie::Decoder::SingleTableSectionizerValueHolderDestroy(p.second);
-    delete content;
+    /* According the the Lucie Specifications; You can't define any data outside an initial section
+     * so, everything must be inside an section.
+     */
+    return Lucie::Decoder::RecursiveSectionizerParser(sectionizer_state, 0);
+}
+
+/*
+ * LOAD FILE & LOAD BUFFER:
+ */
+
+Lucie::Decoder::ValueHolder* Lucie::Decoder::RecursiveSectionizerLoadFromBuffer(
+    const Lucie::String                 buffer,
+    Lucie::Decoder::SectionizerState*   sectionizer_state
+)
+{
+    /* tokenize the buffer: */
+    Lucie::Text::Tokenizer* tokenizer = Lucie::Text::TokenizerNew();
+    Lucie::Text::TokenizerInit(tokenizer);
+    Lucie::Text::TokenizerFeed(tokenizer, buffer);
+    
+    /* begin the construction of the tree: */
+    sectionizer_state->tokens = &tokenizer->tokens;
+    sectionizer_state->token_amount = tokenizer->tokens.size();
+
+    Lucie::Decoder::ValueHolder* built_section =
+        Lucie::Decoder::RecursiveSectionizerParserBegin(sectionizer_state);
+
+    Lucie::Text::TokenizerDestroy(tokenizer);
+    return built_section;
+}
+
+#include <fstream>
+#include <sstream>
+
+Lucie::Decoder::ValueHolder* Lucie::Decoder::RecursiveSectionizerLoadFromFile(
+    const Lucie::String path,
+    Lucie::Decoder::SectionizerState* sectionizer_state
+)
+{
+    std::ostringstream  buffer;
+    std::ifstream       input(path);
+    buffer              << input.rdbuf();
+
+    /* with the buffer, proceed to read: */
+    return Lucie::Decoder::RecursiveSectionizerLoadFromBuffer( buffer.str(), sectionizer_state);
+}
+
+Lucie::Decoder::ValueHolder* Lucie::Decoder::RecursiveSectionizerGet(
+    Lucie::Decoder::ValueHolder* value_holder,
+    const Lucie::String path
+)
+{
+    std::vector<Lucie::String> split_path;
+    Lucie::String accumulator;
+    for(Lucie::U32 index=0; index<path.size(); index++)
+    { 
+        const Lucie::Character ch = path.at(index);
+        if(ch == '.')   { split_path.push_back(accumulator); accumulator.clear();   }
+        else            { accumulator.push_back(ch);                                }
+    }
+    if(accumulator.size() > 0) split_path.push_back(accumulator);
+    return Lucie::Decoder::RecursiveSectionizerGet( value_holder, &split_path );
+}
+
+static Lucie::Decoder::ValueHolder* __RecursiveSectionGet(
+    Lucie::Decoder::ValueHolder*        current_value,
+    const std::vector<Lucie::String>*   path,
+    const Lucie::U8                     depth
+)
+{
+    Lucie::Decoder::ValueHolder* value = nullptr;
+    if(current_value->type == Lucie::Decoder::ValueHolderTypes::Branch)
+    {
+        Lucie::Decoder::Section* current_section =
+            (Lucie::Decoder::Section*)(current_value->value);
+        const Lucie::String desired_branch = path->at(depth);
+        if(current_section->find(desired_branch) != current_section->end())
+        {
+            /* when depth < path->size() - 1 is true, then: the end of the list. */
+            if(depth >= path->size() - 1)
+                value = current_section->at(desired_branch);
+            else
+                value = __RecursiveSectionGet(
+                    current_section->at(desired_branch),
+                    path,
+                    depth + 1
+                );
+        }
+    }
+    return value;
+}
+
+Lucie::Decoder::ValueHolder* Lucie::Decoder::RecursiveSectionizerGet(
+    Lucie::Decoder::ValueHolder* value_holder,
+    const std::vector<Lucie::String>* path
+)
+{
+    /* NOTE: expect the first to be at least an section. */
+    return __RecursiveSectionGet(
+        value_holder,
+        path,
+        0
+    );
 }

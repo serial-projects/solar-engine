@@ -8,60 +8,75 @@ namespace Lucie
 {
     namespace Decoder
     {
-        /* SINGLE TABLE SECTIONIZER: */
-        
-        /*
-         * NOTE: An simple table sectionizer is fast and honestly enough for most of the Solar Engine
-         * needs, there is no need for fancy recursion and that stuff since Solar doesn't write any
-         * configuration back (it is written in binary on the save file, but that file is not Lucie
-         * anymore).
-         */
 
-        typedef Lucie::String SingleTableSectionizerKey;
-        typedef Lucie::PackedData8 SingleTableSectionizerValueHolderType;
+        /* NOTE: this is an STACK object: */
 
-        typedef struct SingleTableSectionizerValidator
+        typedef struct SectionizerValidator
         {
-            Lucie::U8       state = 0;
-            Lucie::U32      line;
-            Lucie::String   report;
-        } SingleTableSectionizerValidator;
+            Lucie::String   log;
+            Lucie::U8       error;
+        } SectionizerValidator;
 
-        typedef struct SingleTableSectionizerValueHolder
+        Lucie::Decoder::SectionizerValidator SectionizerValidatorNew();
+        void SectionizerValidatorReportError(Lucie::Decoder::SectionizerValidator* validator, const Lucie::String reason);
+
+        typedef struct SectionizerState
         {
-            void *value;
-            Lucie::Decoder::SingleTableSectionizerValueHolderType type = 0;
-        } SingleTableSectionizerValueHolder;
+            Lucie::Decoder::SectionizerValidator validator;
+            Lucie::Text::Tokens* tokens;
+            Lucie::U64 token_index;
+            Lucie::U64 token_amount;
+            Lucie::U32 current_line;
+        } SectionizerState;
+        Lucie::Decoder::SectionizerState SectionizerStateNew();
+        Lucie::String SectionizerStateGetToken(Lucie::Decoder::SectionizerState* sectionizer_state);
+        Lucie::String SectionizerStatePretendGetToken(Lucie::Decoder::SectionizerState* sectionizer_state);
 
-        typedef std::vector<Lucie::Decoder::SingleTableSectionizerValueHolder*> SingleTableSectionizerValueHolderList;
-
-        void SingleTableSectionizerValueHolderDestroy(Lucie::Decoder::SingleTableSectionizerValueHolder* value_holder);
-        Lucie::String SingleTableSectionizerValueHolderToString(Lucie::Decoder::SingleTableSectionizerValueHolder* value_holder);
-
-        enum SingleTableSectionizerValueHolderTypes
+        /* Recursive Hell: */
+        enum ValueHolderTypes
         {
-            Integer         = 0,
+            Integer     = 0,
             Decimal,
             String,
             Boolean,
             List,
-            Section
+            Branch
         };
 
-        typedef std::unordered_map<
-            Lucie::Decoder::SingleTableSectionizerKey,
-            Lucie::Decoder::SingleTableSectionizerValueHolder*
-        > SingleTableSectionizedContent;
+        typedef struct ValueHolder
+        {
+            void            *value;
+            Lucie::U8       type;
+            Lucie::U16      order;
+        } ValueHolder;
 
-        Lucie::Decoder::SingleTableSectionizedContent* SingleTableSectionizer(
-            Lucie::Text::Tokens*                                tokens,
-            Lucie::Decoder::SingleTableSectionizerValidator*    validator,
-            const Lucie::Character                              separator
-        );
+        /* section contains ValueHolder(s) and that value holders can hold more sections: */
+        typedef std::unordered_map<Lucie::String, Lucie::Decoder::ValueHolder*> Section;
+        typedef std::vector<Lucie::Decoder::ValueHolder*> ValueHolderList;
 
+        Lucie::Decoder::ValueHolder* ValueHolderCreateNewFromSection(Lucie::Decoder::Section* section);
+        Lucie::Decoder::ValueHolder* ValueHolderNew(Lucie::Integer value);
+        Lucie::Decoder::ValueHolder* ValueHolderNew(Lucie::Decimal value);
+        Lucie::Decoder::ValueHolder* ValueHolderNew(Lucie::String value);
+        Lucie::Decoder::ValueHolder* ValueHolderNew(Lucie::Boolean value);
+        Lucie::Decoder::ValueHolder* ValueHolderNew(Lucie::Decoder::ValueHolderList* value);
 
-        void SingleTableSectionizedContentDestroy(Lucie::Decoder::SingleTableSectionizedContent* content);
+        Lucie::String ValueHolderPrint(Lucie::Decoder::ValueHolder* value_holder, const Lucie::U8 depth);
+        Lucie::String ValueHolderBranchShow(Lucie::Decoder::ValueHolder* value_holder, const Lucie::U8 depth);
+        void ValueHolderDestroy(Lucie::Decoder::ValueHolder* value_holder);
 
+        /* begin parsing: */
+        Lucie::Decoder::ValueHolder* RecursiveSectionizerParserGetValue(Lucie::Decoder::SectionizerState* sectionizer_state, const Lucie::U8 depth);
+        Lucie::Decoder::ValueHolder* RecursiveSectionizerParser(Lucie::Decoder::SectionizerState* sectionizer_state, const Lucie::U8 depth);
+        Lucie::Decoder::ValueHolder* RecursiveSectionizerParserBegin(Lucie::Decoder::SectionizerState* sectionizer_state);
+
+        /* Load Files & Load From Buffer: */
+        Lucie::Decoder::ValueHolder* RecursiveSectionizerLoadFromBuffer(const Lucie::String buffer, Lucie::Decoder::SectionizerState* sectionizer_state);
+        Lucie::Decoder::ValueHolder* RecursiveSectionizerLoadFromFile(const Lucie::String path, Lucie::Decoder::SectionizerState* sectionizer_state);
+        
+        /* NOTE: get function: */
+        Lucie::Decoder::ValueHolder* RecursiveSectionizerGet(Lucie::Decoder::ValueHolder* value_holder, const Lucie::String path);
+        Lucie::Decoder::ValueHolder* RecursiveSectionizerGet(Lucie::Decoder::ValueHolder* value_holder, const std::vector<Lucie::String>* path);
     };
 };
 

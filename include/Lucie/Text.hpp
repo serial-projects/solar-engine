@@ -26,7 +26,7 @@ namespace Lucie
         {
             Lucie::Text::Tokens tokens;
             Lucie::String       accumulator;
-            Lucie::PackedData8  mode;
+            Lucie::U8           mode;
             Lucie::Character    strdel;
         } Tokenizer;
         Lucie::Text::Tokenizer* TokenizerNew();
