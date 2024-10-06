@@ -44,7 +44,6 @@ void main()
 
     /* pass to the opengl: */
     //fragment_color = vec4(light, 1.0f);
-    
 
     fragment_color = vec4(1.0f, 1.0f, 1.0f, 1.0f);
 } 

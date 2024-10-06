@@ -1,5 +1,5 @@
-# NOTE: Solar Project does not support software acceleration.
-# You must use OpenGL for basic graphics on everywhere.
+// NOTE: Solar Project does not support software acceleration.
+// You must use OpenGL for basic graphics on everywhere.
 
 section engine
 
@@ -19,6 +19,11 @@ section engine
     section renderer
         set allow_custom_renderer, yes
         set default_renderer, "OpenGL"
+        set supported_apis, ["OpenGL", "Vulkan", "Metal", "GLES"]
+        set pallete, [
+            ["x256", yes, 256],
+            ["NV", yes, 1909]
+        ]
     end
 
     section saving
