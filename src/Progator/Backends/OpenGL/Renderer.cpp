@@ -14,6 +14,8 @@ void Progator::Backends::OpenGL::RendererDestroy(Progator::Backends::OpenGL::Ren
 void Progator::Backends::OpenGL::RendererInit(Progator::Backends::OpenGL::Renderer* renderer, Progator::Validator* validator)
 {
     renderer->validator = validator;
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_STENCIL_TEST);
 }
 
 void Progator::Backends::OpenGL::RendererSetViewport(Progator::Backends::OpenGL::Renderer *backend, const Progator::U16 width, const Progator::U16 height, const Progator::U16 x, const Progator::U16 y)
