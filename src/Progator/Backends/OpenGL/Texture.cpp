@@ -1,5 +1,7 @@
 #include "Progator/Backends/OpenGL/Texture.hpp"
 
+#include <iostream>
+
 /*
  * NOTE: Here is required to have SDL_Image on your compilation.
  */
@@ -24,14 +26,17 @@ void Progator::Backends::OpenGL::TextureInit(Progator::Backends::OpenGL::Texture
     glGenTextures(1, &texture->texture);
 }
 
-
 void Progator::Backends::OpenGL::TextureLoadFromFile(Progator::Backends::OpenGL::Texture* texture, const Progator::Character* path)
 {
     SDL_Surface* image = IMG_Load(path);
     if(image == NULL)
     {
-        /* TODO: use validator now: */
-        abort();
+        Progator::ValidatorError(
+            texture->validator,
+            Progator::ValidatorCodes::NoFile,
+            "No file found: \"%s\" to generate texture",
+            path
+        );
     }
     else
     {
@@ -66,6 +71,6 @@ void Progator::Backends::OpenGL::TextureLoadFromFile(Progator::Backends::OpenGL:
 
 void Progator::Backends::OpenGL::TextureUse(Progator::Backends::OpenGL::Texture* texture)
 {
-    glBindTexture(GL_TEXTURE_2D, texture->texture);
     glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture->texture);
 }
