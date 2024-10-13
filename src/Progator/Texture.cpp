@@ -29,7 +29,7 @@ void Progator::TextureInit(Progator::Texture* texture, Progator::Pointers* point
     else
     {
         texture->pointers->texture_init(
-            texture->pointers,
+            texture->backend,
             texture->validator
         );
     }
