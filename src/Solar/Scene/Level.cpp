@@ -32,12 +32,15 @@ void Solar::Scene::LevelInit(Solar::Scene::Level* level, Solar::Core *core)
     level->basic_voxel_mesh = Progator::MeshNew();
     Progator::MeshInit(level->basic_voxel_mesh, level->linked_core->pointers, level->linked_core->validator);
     Progator::MeshLoadVerTexNor(level->basic_voxel_mesh, Solar::Scene::Shapes::CubeWithVertexTextureMapAndNormals, 6 * 6);
+
+    /* some stuff: */
+    level->basic_sun = Solar::Vector3(4.0f, 4.0f, 4.0f);
 }
 
 /* TICK: */
 static void UpdateCurrentShaderUniforms(Solar::Scene::Level* level)
 {
-    /* SolarProjectionMatrix:             (mat4): */
+    /* SolarProjectionMatrix:               (mat4): */
     const Progator::Matrix44 projection = glm::perspective(
         45.0f   ,
         ((float)level->linked_core->renderer->width/(float)level->linked_core->renderer->height),
@@ -46,9 +49,15 @@ static void UpdateCurrentShaderUniforms(Solar::Scene::Level* level)
     );
     Progator::ShaderSUMatrix44(level->basic_voxel_shader, "SolarProjectionMatrix", projection);
 
-    /* SolarViewMatrix:                   (mat4): */
+    /* SolarViewMatrix:                     (mat4): */
     const Progator::Matrix44 view = Solar::Scene::FreeCameraGetViewMatrix(&level->camera);
     Progator::ShaderSUMatrix44(level->basic_voxel_shader, "SolarViewMatrix", view);
+
+    /* SolarWorldBasicSunPosition:          (vec3): */
+    Progator::ShaderSUVector3(level->basic_voxel_shader, "SolarWorldBasicSunPosition", level->basic_sun);
+
+    /* SolarCameraPosition:                 (vec3): */
+    Progator::ShaderSUVector3(level->basic_voxel_shader, "SolarCameraPosition", level->camera.position);
 }
 
 static void TickProcessEngineInternalKeydowns(Solar::Scene::Level* level, SDL_Keysym* keysym)
@@ -100,6 +109,10 @@ void Solar::Scene::LevelTick(Solar::Scene::Level* level)
     if(keyboard[SDL_SCANCODE_S]) Solar::Scene::FreeCameraSetPosition(&level->camera, 1);
     if(keyboard[SDL_SCANCODE_A]) Solar::Scene::FreeCameraSetPosition(&level->camera, 2);
     if(keyboard[SDL_SCANCODE_D]) Solar::Scene::FreeCameraSetPosition(&level->camera, 3);
+    if(keyboard[SDL_SCANCODE_UP])       level->basic_sun += Solar::Vector3(0.0f, 1.0f, 0.0f);
+    if(keyboard[SDL_SCANCODE_DOWN])     level->basic_sun -= Solar::Vector3(0.0f, 1.0f, 0.0f);
+    if(keyboard[SDL_SCANCODE_LEFT])     level->basic_sun += Solar::Vector3(1.0f, 0.0f, 0.0f);
+    if(keyboard[SDL_SCANCODE_RIGHT])    level->basic_sun -= Solar::Vector3(1.0f, 0.0f, 0.0f);
 
     /* TODO: keep updating the scene: */
     UpdateCurrentShaderUniforms(level);
@@ -107,11 +120,14 @@ void Solar::Scene::LevelTick(Solar::Scene::Level* level)
 
 static void DrawVoxel(Solar::Scene::Level* level, Solar::Vector3 position)
 {
-    /* SolarModelMatrix:              (mat4): */
+    /* SolarModelMatrix:                (mat4): */
     Progator::Matrix44 model    = glm::mat4(1.0f);
     model                       = glm::translate(model, position);
     model                       = glm::scale(model, Progator::Vector3(1.0f, 1.0f, 1.0f));
     Progator::ShaderSUMatrix44(level->basic_voxel_shader, "SolarModelMatrix", model);
+
+    /* SolarCurrentVoxelPosition:       (mat4): */
+    Progator::ShaderSUVector3(level->basic_voxel_shader, "SolarCurrentVoxelPosition", position);
 
     /* Draw the mesh: */
     Progator::MeshDraw(level->basic_voxel_mesh);
@@ -126,7 +142,12 @@ void Solar::Scene::LevelDraw(Solar::Scene::Level* level)
      * and has no other purpose but to debug where the level is located on:
      */
     Progator::ShaderUse(level->basic_voxel_shader);
-    DrawVoxel(level, Solar::Vector3(0.0f, 0.0f, 0.0f));
+    
+    for(Solar::U8 x=0; x<=20; x++)
+        for(Solar::U8 z=0; z<=20; z++)
+            DrawVoxel(level, Solar::Vector3((float)x, 0.0f, (float)z));
+    
+    DrawVoxel(level, level->basic_sun);
 
     Progator::WindowDraw(level->linked_core->window);
 }
