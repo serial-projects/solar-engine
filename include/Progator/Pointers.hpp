@@ -22,6 +22,7 @@ namespace Progator
         typedef void(*WindowSetSize)(void *backend, const Progator::U16 width, const Progator::U16 height);
         typedef void(*WindowSetTitle)(void *backend, const Progator::Character *title);
         typedef void(*WindowSetVerticalSync)(void *backend, const Progator::U8 enable);
+        typedef void(*WindowSetIcon)(void* backend, const Progator::Character* path);
         typedef void(*WindowDraw)(void *backend);
 
         /* Renderer: */
@@ -75,6 +76,7 @@ namespace Progator
         Progator::Integrators::WindowSetSize            window_set_size;
         Progator::Integrators::WindowSetTitle           window_set_title;
         Progator::Integrators::WindowSetVerticalSync    window_set_vertical_sync;
+        Progator::Integrators::WindowSetIcon            window_set_icon;
         Progator::Integrators::WindowDraw               window_draw;
 
         /* Progator/Renderer: */

@@ -23,6 +23,7 @@ void Progator::PointersUseOpenGLBackend(Progator::Pointers* pointers)
     register_opengl_function(window_set_size, WindowSetSize);
     register_opengl_function(window_set_title, WindowSetTitle);
     register_opengl_function(window_set_vertical_sync, WindowSetVerticalSync);
+    register_opengl_function(window_set_icon, WindowSetIcon);
     register_opengl_function(window_draw, WindowDraw);
     
     /* RENDERER: */
