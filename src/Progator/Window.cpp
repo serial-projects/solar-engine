@@ -85,3 +85,21 @@ void Progator::WindowDraw(Progator::Window* window)
         }
     );
 }
+
+#include <SDL2/SDL_image.h>
+
+void Progator::WindowSetIcon(Progator::Window* window, const Progator::Character* path)
+{
+    ProgatorHelperPerformWhenValidated(
+        window->validator,
+        {
+            /* NOTE: since everything is SDL, we don't need any backend function to set the icon
+             * of an window, we just need to tell SDL to load the image for us.
+             */
+            window->pointers->window_set_icon(
+                window->backend,
+                path
+            );
+        }
+    );
+}

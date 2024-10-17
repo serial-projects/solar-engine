@@ -1,6 +1,8 @@
 #include "Progator/Backends/OpenGL/Window.hpp"
 #include "Progator/Values.hpp"
 
+#include <SDL2/SDL_image.h>
+
 Progator::Backends::OpenGL::Window* Progator::Backends::OpenGL::WindowNew()
 {
     Progator::Backends::OpenGL::Window* proto = new Progator::Backends::OpenGL::Window;
@@ -80,6 +82,25 @@ void Progator::Backends::OpenGL::WindowSetVerticalSync(Progator::Backends::OpenG
             SDL_GL_SetSwapInterval(0);
             break;
     };
+}
+
+void Progator::Backends::OpenGL::WindowSetIcon(Progator::Backends::OpenGL::Window* backend, const Progator::Character* path)
+{
+    SDL_Surface* image_surface = IMG_Load(path);
+    if(image_surface != NULL)
+    {
+        SDL_SetWindowIcon(backend->os_window, image_surface);
+        SDL_FreeSurface(image_surface);
+    }
+    else
+    {
+        Progator::ValidatorError(
+            backend->validator,
+            Progator::ValidatorCodes::NoFile,
+            "No file %s found to set window icon",
+            path
+        );
+    }
 }
 
 void Progator::Backends::OpenGL::WindowDraw(Progator::Backends::OpenGL::Window* window)

@@ -19,6 +19,7 @@ namespace Progator
     void WindowSetSize(Progator::Window* window, const Progator::U16 width, const Progator::U16 height);
     void WindowSetTitle(Progator::Window* window, const Progator::Character *title);
     void WindowSetVerticalSync(Progator::Window* window, const Progator::U8 enable);
+    void WindowSetIcon(Progator::Window* window, const Progator::Character* path);
     void WindowDraw(Progator::Window* window);
 };
 
