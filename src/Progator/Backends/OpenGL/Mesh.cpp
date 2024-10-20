@@ -27,7 +27,7 @@ void Progator::Backends::OpenGL::MeshLoadVerTexNor(Progator::Backends::OpenGL::M
 
     /* NOTE: MeshLoadVerTexNor() only accepts triangles as inputs! */
     const Progator::U64 amount_data = sizeof(Progator::F32) * (amount * (3 + 2 + 3));
-    
+
     glBufferData(GL_ARRAY_BUFFER, amount_data, data, GL_STATIC_DRAW);
     
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, (3 + 2 + 3) * sizeof(Progator::F32), (void*)0);
