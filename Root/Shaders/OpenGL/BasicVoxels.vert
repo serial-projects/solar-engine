@@ -7,6 +7,7 @@ layout (location = 2) in vec3 normals;
 uniform mat4 SolarProjectionMatrix;
 uniform mat4 SolarViewMatrix;
 uniform mat4 SolarModelMatrix;
+uniform vec3 SolarCurrentVoxelPosition;
 
 out vec2 current_texture_map;
 out vec3 current_normals;
