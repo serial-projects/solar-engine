@@ -1,6 +1,8 @@
 #include "Solar/Scene/Level.hpp"
 #include "Solar/Scene/Shapes.hpp"
 
+#include "Solar/Support/FS.hpp"
+
 /* NOTE: Solar Engine is a VOXEL based RPG engine, it has support for 3D but everything must be
  * inside an cell and the camera is always on the top.
  */
@@ -29,12 +31,20 @@ void Solar::Scene::LevelInit(Solar::Scene::Level* level, Solar::Core *core)
     
     /* Initialize the basic voxels: */
     level->basic_voxel_shader = Solar::Engine::ProviderLoadShader(level->linked_core->provider, "BasicVoxels");
+
     level->basic_voxel_mesh = Progator::MeshNew();
     Progator::MeshInit(level->basic_voxel_mesh, level->linked_core->pointers, level->linked_core->validator);
     Progator::MeshLoadVerTexNor(level->basic_voxel_mesh, Solar::Scene::Shapes::CubeWithVertexTextureMapAndNormals, 6 * 6);
 
+    /* Load model: */
+    level->root_model = Solar::Scene::ModelNew();
+    Solar::Scene::ModelInit(level->root_model, level->linked_core);
+    Solar::Scene::ModelLoadShader(level->root_model, "BasicVoxels");
+    Solar::Scene::ModelLoadTexture(level->root_model, "SolarEngineBasicGrass00");
+
     /* some stuff: */
     level->basic_sun = Solar::Vector3(4.0f, 4.0f, 4.0f);
+    level->basic_voxel_texture = Solar::Engine::ProviderLoadTexture(level->linked_core->provider, "SolarEngineBasicGrass00");
 }
 
 /* TICK: */
@@ -109,10 +119,10 @@ void Solar::Scene::LevelTick(Solar::Scene::Level* level)
     if(keyboard[SDL_SCANCODE_S]) Solar::Scene::FreeCameraSetPosition(&level->camera, 1);
     if(keyboard[SDL_SCANCODE_A]) Solar::Scene::FreeCameraSetPosition(&level->camera, 2);
     if(keyboard[SDL_SCANCODE_D]) Solar::Scene::FreeCameraSetPosition(&level->camera, 3);
-    if(keyboard[SDL_SCANCODE_UP])       level->basic_sun += Solar::Vector3(0.0f, 1.0f, 0.0f);
-    if(keyboard[SDL_SCANCODE_DOWN])     level->basic_sun -= Solar::Vector3(0.0f, 1.0f, 0.0f);
-    if(keyboard[SDL_SCANCODE_LEFT])     level->basic_sun += Solar::Vector3(1.0f, 0.0f, 0.0f);
-    if(keyboard[SDL_SCANCODE_RIGHT])    level->basic_sun -= Solar::Vector3(1.0f, 0.0f, 0.0f);
+    if(keyboard[SDL_SCANCODE_UP])       level->basic_sun += Solar::Vector3(0.0f, 0.1f, 0.0f);
+    if(keyboard[SDL_SCANCODE_DOWN])     level->basic_sun -= Solar::Vector3(0.0f, 0.1f, 0.0f);
+    if(keyboard[SDL_SCANCODE_LEFT])     level->basic_sun += Solar::Vector3(0.1f, 0.0f, 0.0f);
+    if(keyboard[SDL_SCANCODE_RIGHT])    level->basic_sun -= Solar::Vector3(0.1f, 0.0f, 0.0f);
 
     /* TODO: keep updating the scene: */
     UpdateCurrentShaderUniforms(level);
@@ -133,6 +143,21 @@ static void DrawVoxel(Solar::Scene::Level* level, Solar::Vector3 position)
     Progator::MeshDraw(level->basic_voxel_mesh);
 }
 
+static void DrawMesh(Solar::Scene::Level* level, Solar::Vector3 position, Progator::Mesh* mesh)
+{
+    /* SolarModelMatrix:                (mat4): */
+    Progator::Matrix44 model    = glm::mat4(1.0f);
+    model                       = glm::translate(model, position);
+    model                       = glm::scale(model, Progator::Vector3(1.0f, 1.0f, 1.0f));
+    Progator::ShaderSUMatrix44(level->basic_voxel_shader, "SolarModelMatrix", model);
+
+    /* SolarCurrentVoxelPosition:       (mat4): */
+    Progator::ShaderSUVector3(level->basic_voxel_shader, "SolarCurrentVoxelPosition", position);
+
+    /* Draw the mesh: */
+    Progator::MeshDraw(mesh);
+}
+
 void Solar::Scene::LevelDraw(Solar::Scene::Level* level)
 {
     /* TODO: implement should redraw to prevent drawing useless frames: */
@@ -141,13 +166,17 @@ void Solar::Scene::LevelDraw(Solar::Scene::Level* level)
     /* NOTE: this the root node and it is always located on the center of the level.
      * and has no other purpose but to debug where the level is located on:
      */
+    Progator::TextureUse(level->basic_voxel_texture);
     Progator::ShaderUse(level->basic_voxel_shader);
-    
+
+    /*
     for(Solar::U8 x=0; x<=20; x++)
         for(Solar::U8 z=0; z<=20; z++)
             DrawVoxel(level, Solar::Vector3((float)x, 0.0f, (float)z));
+    */
     
     DrawVoxel(level, level->basic_sun);
+    Solar::Scene::ModelDrawEverything(level->root_model);
 
     Progator::WindowDraw(level->linked_core->window);
 }
