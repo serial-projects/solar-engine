@@ -20,10 +20,6 @@ section engine
         set allow_custom_renderer, yes
         set default_renderer, "OpenGL"
         set supported_apis, ["OpenGL", "Vulkan", "Metal", "GLES"]
-        set pallete, [
-            ["x256", yes, 256],
-            ["NV", yes, 1909]
-        ]
     end
 
     section saving
