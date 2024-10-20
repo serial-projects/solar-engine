@@ -1,5 +1,7 @@
 #include "Solar/Core.hpp"
 
+#include <iostream>
+
 Solar::Core* Solar::CoreNew()
 {
     Solar::Core* proto = new Solar::Core;
@@ -31,6 +33,18 @@ void Solar::CoreInit(Solar::Core* core)
     Progator::WindowSetSize(core->window, 800, 640);
     Progator::WindowSetTitle(core->window, "[Solar Engine]");
     Progator::WindowSetVerticalSync(core->window, PROGATOR_YES);
+    
+    /* NOTE: try to open the icon, if possible, then keep the icon: */
+    Progator::WindowSetIcon(core->window, "./Root/WindowIcon.png");
+    ProgatorHelperTreatErrorValidator(
+        core->validator, 
+        {
+            std::cerr
+                << core->validator->log
+                << "\n";
+        }
+    );
+
     Progator::RendererSetViewport(core->renderer, 800, 640, 0, 0);
     Progator::RendererClear(core->renderer, 0x00000000);
 
