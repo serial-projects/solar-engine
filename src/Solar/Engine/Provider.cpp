@@ -9,9 +9,14 @@ Solar::Engine::Package* Solar::Engine::PackageNew()
     return proto;    
 }
 
-inline void PackageDestroyShader(Solar::Engine::Package* package)
+inline static void PackageDestroyShader(Solar::Engine::Package* package)
 {
     Progator::ShaderDestroy( (Progator::Shader*)package->element );
+}
+
+inline static void PackageDestroyTexture(Solar::Engine::Package* package)
+{
+    Progator::TextureDestroy( (Progator::Texture*)package->element );
 }
 
 void Solar::Engine::PackageDestroy(Solar::Engine::Package* package)
@@ -121,7 +126,56 @@ Progator::Shader* Solar::Engine::ProviderLoadShader(Solar::Engine::Provider* pro
         Solar::Engine::Package* package = provider->storage[cached_key];
         shader = (Progator::Shader*)package->element;
     }
-    
-    failed_compile_shaders:
     return shader;
+}
+
+Progator::Texture* Solar::Engine::ProviderLoadTexture(Solar::Engine::Provider* provider, const Solar::String name)
+{
+    const Solar::String cache_key       = ("Texture" + name);
+    Progator::Texture* found_texture;
+    if(provider->storage.find(cache_key) == provider->storage.end())
+    {
+        /* not yet on cache: */
+        const Solar::String image_path = provider->properties.basepath + "Textures/" + name + ".png";
+        std::cout
+            << __PRETTY_FUNCTION__
+            << ": Loading texture = "
+            << image_path
+            << "\n";
+        
+        Progator::Texture* new_texture = Progator::TextureNew();
+        Progator::TextureInit(new_texture, provider->pointers, provider->validator);
+        Progator::TextureLoadFromFile(new_texture, image_path.c_str());
+
+        /* NOTE: everything good? */
+        ProgatorHelperHandleErrorValidator(
+            provider->validator,
+            {
+                std::cerr
+                    << provider->validator->log
+                    << "\n";
+                std::exit(-1);
+            }
+        );
+        
+
+        Solar::Engine::Package* new_package = Solar::Engine::PackageNew();
+        new_package->element = new_texture;
+        new_package->type = Solar::Engine::PackageType::Texture;
+        
+        provider->storage.insert({cache_key, new_package});
+        found_texture = (Progator::Texture*)new_package->element;
+    }
+    else
+    {
+        std::cout
+            << __PRETTY_FUNCTION__
+            << ": image already on cache = "
+            << name
+            << "\n";
+        Solar::Engine::Package* cached_package = provider->storage[cache_key];
+        found_texture = (Progator::Texture*)cached_package->element;
+    }
+
+    return found_texture;
 }
