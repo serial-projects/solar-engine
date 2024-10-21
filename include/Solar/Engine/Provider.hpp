@@ -3,6 +3,7 @@
 
 #include "Solar/Types.hpp"
 #include "Progator/Progator.hpp"
+#include "Solar/Support/DotObj/Loader.hpp"
 
 namespace Solar
 {
@@ -20,8 +21,9 @@ namespace Solar
 
         enum PackageType
         {
-            Shader      = 0,
+            Shader                      = 0,
             Texture,
+            LoadedDotObjMesh,
             Font
         };
 
@@ -49,7 +51,10 @@ namespace Solar
         Solar::Engine::Provider* ProviderNew();
         void ProviderDestroy(Solar::Engine::Provider* provider);
         void ProviderInit(Solar::Engine::Provider* provider, Solar::Engine::ProviderProperties properties, Progator::Pointers* pointers, Progator::Validator* validator);
+
+        /* LoadShader(), LoadMeshFromDotObj(), ... */
         Progator::Shader* ProviderLoadShader(Solar::Engine::Provider* provider, const Solar::String name);
+        Solar::Support::DotObj::MeshTable* ProviderLoadMeshFromDotObj(Solar::Engine::Provider* provider, const Solar::String name);
 
         /* NOTE: those operations on the provider can be cacheable or not: */
         Progator::Texture* ProviderLoadTexture(Solar::Engine::Provider* provider, const Solar::String name);
