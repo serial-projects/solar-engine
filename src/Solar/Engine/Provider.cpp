@@ -19,13 +19,29 @@ inline static void PackageDestroyTexture(Solar::Engine::Package* package)
     Progator::TextureDestroy( (Progator::Texture*)package->element );
 }
 
+inline static void PackageDestroyLoadedDotObjMesh(Solar::Engine::Package* package)
+{
+    Solar::Support::DotObj::InterpreterDeleteBuiltMeshTable(
+        (Solar::Support::DotObj::MeshTable*)package->element
+    );
+}
+
 void Solar::Engine::PackageDestroy(Solar::Engine::Package* package)
 {
     /* Delete from memory the package: */
     switch(package->type)
     {
-        case Solar::Engine::PackageType::Shader:    PackageDestroyShader(package); break;
-        default:                                    break;
+        case Solar::Engine::PackageType::Shader:   
+            PackageDestroyShader(package);
+            break;
+        case Solar::Engine::PackageType::Texture:
+            PackageDestroyTexture(package);
+            break;
+        case Solar::Engine::PackageType::LoadedDotObjMesh:
+            PackageDestroyLoadedDotObjMesh(package);
+            break;
+        default:
+            break;
     };
 
     /* Remove from memory: */
@@ -127,6 +143,56 @@ Progator::Shader* Solar::Engine::ProviderLoadShader(Solar::Engine::Provider* pro
         shader = (Progator::Shader*)package->element;
     }
     return shader;
+}
+
+Solar::Support::DotObj::MeshTable* Solar::Engine::ProviderLoadMeshFromDotObj(
+    Solar::Engine::Provider* provider,
+    const Solar::String name
+)
+{
+    const Solar::String cache_key = ("DotObjMesh" + name);
+    Solar::Support::DotObj::MeshTable* found_mesh;
+    std::cout << "A" << "\n";
+    if(provider->storage.find(cache_key) == provider->storage.end())
+    {
+        const Solar::String dotobj_path = (provider->properties.basepath + "Meshes/" + name + ".obj");
+        std::cout
+            << __PRETTY_FUNCTION__
+            << ": Loading mesh = "
+            << dotobj_path
+            << "\n";
+        
+        /* set the interpreter: */
+        Solar::Support::DotObj::Interpreter* interpreter =
+            Solar::Support::DotObj::InterpreterLoadFromFile(dotobj_path);
+        Solar::Support::DotObj::MeshTable* mesh_table = 
+            Solar::Support::DotObj::InterpreterBuildMeshTable(
+                interpreter,
+                provider->pointers,
+                provider->validator
+            );
+        Solar::Support::DotObj::InterpreterDestroy(interpreter);
+        
+        /* built the package: */
+        Solar::Engine::Package* new_package = Solar::Engine::PackageNew();
+        new_package->element = mesh_table;
+        new_package->type = Solar::Engine::PackageType::LoadedDotObjMesh;
+        provider->storage.insert({cache_key, new_package});
+        
+        /* set the mesh: */
+        found_mesh = (Solar::Support::DotObj::MeshTable*)mesh_table;
+    }
+    else
+    {
+        std::cout
+            << __PRETTY_FUNCTION__
+            << ": Mesh already on cache = "
+            << name
+            << "\n";
+        Solar::Engine::Package* cached_package = provider->storage[cache_key];
+        found_mesh = (Solar::Support::DotObj::MeshTable*)cached_package->element;
+    }
+    return found_mesh;
 }
 
 Progator::Texture* Solar::Engine::ProviderLoadTexture(Solar::Engine::Provider* provider, const Solar::String name)

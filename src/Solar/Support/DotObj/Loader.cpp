@@ -75,11 +75,11 @@ Solar::Support::DotObj::MeshTable* Solar::Support::DotObj::InterpreterBuildMeshT
 {
     Solar::Support::DotObj::MeshTable* mesh_table = new
         Solar::Support::DotObj::MeshTable;
-    for(auto &value : interpreter->objects)
+    for(auto value : interpreter->objects)
         mesh_table->insert(
             {
                 value.first,
-                BuildProgatorMesh(&value.second->constructed_buffer, pointers, validator)
+                BuildProgatorMesh(value.second, pointers, validator)
             }
         );
     return mesh_table;
