@@ -34,10 +34,7 @@ namespace Solar
             void ValidatorDestroy(Solar::Support::DotObj::Validator* validator);
 
             /* data: */
-            typedef struct ObjectData
-            {
-                std::vector<Solar::F32>     constructed_buffer;
-            } ObjectData;
+            typedef std::vector<Solar::F32> ObjectData;
             Solar::Support::DotObj::ObjectData* ObjectDataNew();
             void ObjectDataDestroy(Solar::Support::DotObj::ObjectData* object_data);
 

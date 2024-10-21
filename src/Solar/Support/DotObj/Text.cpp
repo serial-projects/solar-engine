@@ -48,7 +48,10 @@ void Solar::Support::DotObj::ObjectsDestroy(
     Solar::Support::DotObj::Objects* objects
 )
 {
-    for(auto &value : *objects) Solar::Support::DotObj::ObjectDataDestroy(value.second);
+    for(auto value : *objects)
+    {
+        Solar::Support::DotObj::ObjectDataDestroy(value.second);
+    }
 }
 
 /* 
@@ -228,6 +231,7 @@ void Solar::Support::DotObj::InterpreterDestroy(
     Solar::Support::DotObj::Interpreter* interpreter
 )
 {
+    Solar::Support::DotObj::ValidatorDestroy(interpreter->validator);
     Solar::Support::DotObj::ObjectsDestroy(&interpreter->objects);
     delete interpreter;
 }
@@ -249,7 +253,7 @@ void Solar::Support::DotObj::InterpreterInit(
 
     /* set the objects: */
     interpreter->current_object = "main";
-    interpreter->objects["main"] = Solar::Support::DotObj::ObjectDataNew();
+    interpreter->objects.insert({"main", Solar::Support::DotObj::ObjectDataNew()});
 }
 
 /*
@@ -403,13 +407,13 @@ namespace InterpreterOpcodes
         #endif
 
         #define VPUSH3(VE)                                              \
-            current_object_data->constructed_buffer.push_back(VE.x);    \
-            current_object_data->constructed_buffer.push_back(VE.y);    \
-            current_object_data->constructed_buffer.push_back(VE.z);
+            current_object_data->push_back(VE.x);                       \
+            current_object_data->push_back(VE.y);                       \
+            current_object_data->push_back(VE.z);
         
         #define VPUSH2(VE)                                              \
-            current_object_data->constructed_buffer.push_back(VE.x);    \
-            current_object_data->constructed_buffer.push_back(VE.y);
+            current_object_data->push_back(VE.x);                       \
+            current_object_data->push_back(VE.y);
 
         /* NOTE: push all the data into the buffer: */
         VPUSH3(XVE); VPUSH2(XVT); VPUSH3(XVN);
