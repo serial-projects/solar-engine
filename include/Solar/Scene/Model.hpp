@@ -49,11 +49,19 @@ namespace Solar
         Solar::Scene::Model* ModelNew();
         void ModelDestroy(Solar::Scene::Model* model);
         void ModelInit(Solar::Scene::Model* model, Solar::Core* core);
+
+        /* Load Functions: */
         void ModelLoadShader(Solar::Scene::Model* model, const Solar::String tag_name);
         void ModelLoadTexture(Solar::Scene::Model* model, const Solar::String tag_name);
-        void ModelLoadMesh(Solar::Scene::Model* model, const Solar::String path);
+        void ModelLoadMesh(Solar::Scene::Model* model, const Solar::String tag_name);
+        
+        /* Drawing Functions: */
         void ModelDraw(Solar::Scene::Model* model);
+        void ModelDraw(Solar::Scene::Model* model, Solar::Vector3 position);
+
+        /* Drawing Everything Function: */
         void ModelDrawEverything(Solar::Scene::Model* model);
+        void ModelDrawEverything(Solar::Scene::Model* model, Solar::Vector3 position);
     };
 };
 

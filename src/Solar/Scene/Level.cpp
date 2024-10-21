@@ -21,33 +21,68 @@ void Solar::Scene::LevelDestroy(Solar::Scene::Level* level)
 /*
  * INIT:
  */
-
 void Solar::Scene::LevelInit(Solar::Scene::Level* level, Solar::Core *core)
 {
     level->linked_core = core;
 
     /* Create the cameras: */
     level->camera = Solar::Scene::FreeCameraNew();
-    
-    /* Initialize the basic voxels: */
-    level->basic_voxel_shader = Solar::Engine::ProviderLoadShader(level->linked_core->provider, "BasicVoxels");
-
-    level->basic_voxel_mesh = Progator::MeshNew();
-    Progator::MeshInit(level->basic_voxel_mesh, level->linked_core->pointers, level->linked_core->validator);
-    Progator::MeshLoadVerTexNor(level->basic_voxel_mesh, Solar::Scene::Shapes::CubeWithVertexTextureMapAndNormals, 6 * 6);
 
     /* Load model: */
-    level->root_model = Solar::Scene::ModelNew();
-    Solar::Scene::ModelInit(level->root_model, level->linked_core);
-    Solar::Scene::ModelLoadShader(level->root_model, "BasicVoxels");
-    Solar::Scene::ModelLoadTexture(level->root_model, "SolarEngineBasicGrass00");
+    Solar::Scene::Model* voxel_model = Solar::Scene::ModelNew();
+    Solar::Scene::ModelInit(voxel_model, level->linked_core);
+    Solar::Scene::ModelLoadShader(voxel_model, "BasicVoxel");
+    Solar::Scene::ModelLoadTexture(voxel_model, "SolarEngineBasicGrass00");
+    Solar::Scene::ModelLoadMesh(voxel_model, "BasicVoxel");
+
+    /* add to the voxels: */
+    level->models.insert({"voxel", voxel_model});
 
     /* some stuff: */
     level->basic_sun = Solar::Vector3(4.0f, 4.0f, 4.0f);
-    level->basic_voxel_texture = Solar::Engine::ProviderLoadTexture(level->linked_core->provider, "SolarEngineBasicGrass00");
 }
 
 /* TICK: */
+static void UpdateModelShader(Solar::Scene::Level* level, Solar::Scene::Model* model)
+{
+    /* PERSPECTIVE: */
+    const Progator::Matrix44 projection = glm::perspective(
+        45.0f,
+        ((float)level->linked_core->renderer->width/(float)level->linked_core->renderer->height),
+        0.1f,
+        256.0f
+    );
+    Progator::ShaderSUMatrix44(model->shader, "SolarProjectionMatrix", projection);
+
+    /* VIEW: */
+    const Progator::Matrix44 view = Solar::Scene::FreeCameraGetViewMatrix(&level->camera);
+    Progator::ShaderSUMatrix44(model->shader, "SolarViewMatrix", view);
+
+    /* BASIC SUN POSITION: */
+    Progator::ShaderSUVector3(model->shader, "SolarWorldBasicSunPosition", level->basic_sun);
+
+    /* CAMERA POSITION: */
+    Progator::ShaderSUVector3(model->shader, "SolarCameraPosition", level->camera.position);
+}
+
+static void UpdateModelsShaders(Solar::Scene::Level* level)
+{
+    // Solar::Scene::Model* model = level->root_model;
+    // const Progator::Matrix44 projection = glm::perspective(
+    //     45.0f,
+    //     ((float)level->linked_core->renderer->width/(float)level->linked_core->renderer->height),
+    //     0.1f,
+    //     256.0f
+    // );
+    // Progator::ShaderSUMatrix44(model->shader, "SolarProjectionMatrix", projection);
+    // const Progator::Matrix44 view = Solar::Scene::FreeCameraGetViewMatrix(&level->camera);
+    // Progator::ShaderSUMatrix44(model->shader, "SolarViewMatrix", view);
+    // Progator::ShaderSUVector3(model->shader, "SolarWorldBasicSunPosition", level->basic_sun);
+    // Progator::ShaderSUVector3(model->shader, "SolarCameraPosition", level->camera.position);
+    for(auto &model : level->models)
+        UpdateModelShader(level, model.second);
+}
+
 static void UpdateCurrentShaderUniforms(Solar::Scene::Level* level)
 {
     /* SolarProjectionMatrix:               (mat4): */
@@ -125,37 +160,24 @@ void Solar::Scene::LevelTick(Solar::Scene::Level* level)
     if(keyboard[SDL_SCANCODE_RIGHT])    level->basic_sun -= Solar::Vector3(0.1f, 0.0f, 0.0f);
 
     /* TODO: keep updating the scene: */
-    UpdateCurrentShaderUniforms(level);
+    UpdateModelsShaders(level);
 }
 
 static void DrawVoxel(Solar::Scene::Level* level, Solar::Vector3 position)
 {
-    /* SolarModelMatrix:                (mat4): */
-    Progator::Matrix44 model    = glm::mat4(1.0f);
-    model                       = glm::translate(model, position);
-    model                       = glm::scale(model, Progator::Vector3(1.0f, 1.0f, 1.0f));
-    Progator::ShaderSUMatrix44(level->basic_voxel_shader, "SolarModelMatrix", model);
+    // /* SolarModelMatrix:                (mat4): */
+    // Progator::Matrix44 model    = glm::mat4(1.0f);
+    // model                       = glm::translate(model, position);
+    // model                       = glm::scale(model, Progator::Vector3(1.0f, 1.0f, 1.0f));
+    // Progator::ShaderSUMatrix44(level->basic_voxel_shader, "SolarModelMatrix", model);
 
-    /* SolarCurrentVoxelPosition:       (mat4): */
-    Progator::ShaderSUVector3(level->basic_voxel_shader, "SolarCurrentVoxelPosition", position);
+    // /* SolarCurrentVoxelPosition:       (mat4): */
+    // Progator::ShaderSUVector3(level->basic_voxel_shader, "SolarCurrentVoxelPosition", position);
 
-    /* Draw the mesh: */
-    Progator::MeshDraw(level->basic_voxel_mesh);
-}
-
-static void DrawMesh(Solar::Scene::Level* level, Solar::Vector3 position, Progator::Mesh* mesh)
-{
-    /* SolarModelMatrix:                (mat4): */
-    Progator::Matrix44 model    = glm::mat4(1.0f);
-    model                       = glm::translate(model, position);
-    model                       = glm::scale(model, Progator::Vector3(1.0f, 1.0f, 1.0f));
-    Progator::ShaderSUMatrix44(level->basic_voxel_shader, "SolarModelMatrix", model);
-
-    /* SolarCurrentVoxelPosition:       (mat4): */
-    Progator::ShaderSUVector3(level->basic_voxel_shader, "SolarCurrentVoxelPosition", position);
-
-    /* Draw the mesh: */
-    Progator::MeshDraw(mesh);
+    // /* Draw the mesh: */
+    // Progator::MeshDraw(level->basic_voxel_mesh);
+    Solar::Scene::Model* voxel_model = level->models.at("voxel");
+    Solar::Scene::ModelDrawEverything(voxel_model, position);
 }
 
 void Solar::Scene::LevelDraw(Solar::Scene::Level* level)
@@ -166,17 +188,11 @@ void Solar::Scene::LevelDraw(Solar::Scene::Level* level)
     /* NOTE: this the root node and it is always located on the center of the level.
      * and has no other purpose but to debug where the level is located on:
      */
-    Progator::TextureUse(level->basic_voxel_texture);
-    Progator::ShaderUse(level->basic_voxel_shader);
 
-    /*
     for(Solar::U8 x=0; x<=20; x++)
         for(Solar::U8 z=0; z<=20; z++)
             DrawVoxel(level, Solar::Vector3((float)x, 0.0f, (float)z));
-    */
-    
     DrawVoxel(level, level->basic_sun);
-    Solar::Scene::ModelDrawEverything(level->root_model);
 
     Progator::WindowDraw(level->linked_core->window);
 }
@@ -184,4 +200,6 @@ void Solar::Scene::LevelDraw(Solar::Scene::Level* level)
 void Solar::Scene::LevelQuit(Solar::Scene::Level* level)
 {
     /* TODO: do saving and other crap here: */
+    for(auto &model : level->models)
+        Solar::Scene::ModelDestroy(model.second);
 }

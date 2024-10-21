@@ -47,19 +47,11 @@ void Solar::Scene::ModelLoadTexture(Solar::Scene::Model* model, const Solar::Str
     model->texture = Solar::Engine::ProviderLoadTexture(model->linked_core->provider, tag_name);
 }
 
-void Solar::Scene::ModelLoadMesh(Solar::Scene::Model* model, const Solar::String path)
+void Solar::Scene::ModelLoadMesh(Solar::Scene::Model* model, const Solar::String tag_name)
 {
     /* DO IT HERE: */
-    Solar::Support::DotObj::Interpreter* interpreter =
-        Solar::Support::DotObj::InterpreterLoadFromFile(path);
-    Solar::Support::DotObj::MeshTable* mesh_table = 
-        Solar::Support::DotObj::InterpreterBuildMeshTable(
-            interpreter, 
-            model->linked_core->pointers,
-            model->linked_core->validator
-        );
-    
-    model->loaded_meshes = mesh_table;
+    model->loaded_meshes =
+        Solar::Engine::ProviderLoadMeshFromDotObj(model->linked_core->provider, tag_name);
     model->current_mesh  = model->loaded_meshes->at("main");
 }
 
@@ -80,6 +72,15 @@ void Solar::Scene::ModelDraw(Solar::Scene::Model* model)
     }
 }
 
+void Solar::Scene::ModelDraw(Solar::Scene::Model* model, Solar::Vector3 position)
+{
+    model->position = position;
+    ModelCalculateModelMatrix(model);
+    
+    /* redirect to the normal drawing function: */
+    Solar::Scene::ModelDraw(model);
+}
+
 void Solar::Scene::ModelDrawEverything(Solar::Scene::Model* model)
 {
     if(model->shader != nullptr)
@@ -95,4 +96,13 @@ void Solar::Scene::ModelDrawEverything(Solar::Scene::Model* model)
     {
         Progator::MeshDraw(value.second);
     }
+}
+
+void Solar::Scene::ModelDrawEverything(Solar::Scene::Model* model, Solar::Vector3 position)
+{
+    model->position = position;
+    ModelCalculateModelMatrix(model);
+
+    /* redirect to the normal drawing function: */
+    Solar::Scene::ModelDrawEverything(model);
 }

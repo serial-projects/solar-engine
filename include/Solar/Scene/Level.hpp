@@ -24,12 +24,18 @@ namespace Solar
             Version         = 0b01000000
         };
 
+        typedef std::unordered_map<Solar::String, Solar::Scene::Model*> ModelTable;
+
         typedef struct Level
         {
             Solar::Core*                linked_core;
             Solar::Scene::FreeCamera    camera;
             Solar::U8                   debug_states = 0;
+
             Solar::Scene::Model*        root_model;
+            Solar::Scene::Model*        voxel_model;
+            
+            Solar::Scene::ModelTable    models;
 
             /* NOTE: keep in mind that the Solar Engine is an voxel based
              * engine without many voxels optimizations ;-)
