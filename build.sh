@@ -1,7 +1,10 @@
-#!/bin/bash
-exec_cc(){
-    echo "[::] - $1"
-    $1
-}
+#!/bin/sh
+do_everything() {
+	# Set to ninja so we can have good stuff:
+	cmake . -G Ninja -DCMAKE_BUILD_TYPE=Debug
 
-exec_cc "/usr/bin/g++ $(find -name *.cpp | grep src) -o ./bin/Solar -g -O2 -pipe -lSDL2 -lGLEW -lglm -lGL -lm -I./include/"
+	# Do cleanup & do not use cache:
+	ninja -v clean
+	ninja -v -j$(nproc)
+}
+do_everything
