@@ -17,33 +17,57 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 find_package(GLEW REQUIRED)
 find_package(SDL2 REQUIRED)
 
+# Set the binary output for the libraries:
+function(set_library_binary_output target)
+    set_target_properties(
+        ${target}
+        PROPERTIES
+        ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${target}/"
+        LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${target}/"
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/${target}/"
+    )
+endfunction()
+
+# Function to add the includes:
+function(add_lower_solar_engine_includes target)
+    target_include_directories(${target} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/Logica/include/)
+    target_include_directories(${target} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/Sojson/include/)
+    target_include_directories(${target} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/Fera/include/)
+endfunction()
+
 # Logica Build:
 function(build_logica)
-    file(GLOB_RECURSE LOGICA_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/Logica/*.cpp)
+    file(GLOB_RECURSE LOGICA_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/Logica/src/Logica/*.cpp)
     add_library(Logica ${LOGICA_SOURCES})
-    target_include_directories(Logica PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+    set_library_binary_output(Logica)
+    add_lower_solar_engine_includes(Logica)
 endfunction()
 
 # Sojson Build:
 function(build_sojson)
-    file(GLOB_RECURSE SOJSON_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/Sojson/*.cpp)
+    file(GLOB_RECURSE SOJSON_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/Sojson/src/Sojson/*.cpp)
     add_library(Sojson ${SOJSON_SOURCES})
-    target_include_directories(Sojson PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
+    # NOTE: Sojson is directly dependent on the Logica, as everything else: 
     target_link_libraries(Sojson PUBLIC Logica)
+
+    set_library_binary_output(Sojson)
+    add_lower_solar_engine_includes(Sojson)
 endfunction()
 
 # Fera Build:
 function(build_fera)
-    file(GLOB_RECURSE FERA_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/Fera/*.cpp)
+    file(GLOB_RECURSE FERA_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/Fera/src/Fera/*.cpp)
     add_library(Fera ${FERA_SOURCES})
-    target_include_directories(Fera PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
     target_link_libraries(Fera PUBLIC Logica)
+    set_library_binary_output(Fera)
+    add_lower_solar_engine_includes(Fera)
 endfunction()
 
 # Testing with main:
 function(build_sojson_test_unit)
     add_executable(SojsonTest ${CMAKE_CURRENT_SOURCE_DIR}/Tests/Sojson.cpp)
-    target_include_directories(SojsonTest PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include/)
+    add_lower_solar_engine_includes(SojsonTest)
     set_target_properties(SojsonTest PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Tests/)
     target_link_libraries(SojsonTest PUBLIC Logica)
     target_link_libraries(SojsonTest PUBLIC Sojson)
@@ -52,7 +76,7 @@ endfunction()
 
 function(build_fera_backends_obj_test_unit)
     add_executable(FeraBackendOBJTestUnit ${CMAKE_CURRENT_SOURCE_DIR}/Tests/FeraBackendsOBJ.cpp)
-    target_include_directories(FeraBackendOBJTestUnit PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include/)
+    add_lower_solar_engine_includes(FeraBackendOBJTestUnit)
     set_target_properties(FeraBackendOBJTestUnit PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Tests/)
     target_link_libraries(FeraBackendOBJTestUnit PUBLIC Logica)
     target_link_libraries(FeraBackendOBJTestUnit PUBLIC Sojson)
@@ -63,7 +87,7 @@ endfunction()
 
 # Lower Modules:
 function(build_solar_engine_lower_modules)
-    message("*** Building Solar RPG Engine Lower Modules ***") 
+    message("*** Building Solar RPG Engine Lower Modules ***")
     cmake_language(CALL build_logica)
     cmake_language(CALL build_sojson)
     cmake_language(CALL build_fera)
