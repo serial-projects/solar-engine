@@ -31,7 +31,7 @@ namespace Progator
             typedef void(*WindowSetSize)(void* window, const Progator::Types::Specifics::Window::Size width, const Progator::Types::Specifics::Window::Size height);
             typedef void(*WindowSetPosition)(void* window, const Progator::Types::Specifics::Window::Position x, const Progator::Types::Specifics::Window::Size y);
             typedef void(*WindowSetTitle)(void* window, const Progator::Types::Basic::CH8* title);
-            typedef void(*WindowSetIcon)(void* window, const SDL_Surface* surface);
+            typedef void(*WindowSetIcon)(void* window, SDL_Surface* surface);
             typedef Progator::Types::Specifics::Window::Id(*WindowGetIdentity)(void* window);
 
             /* Renderer: */    
@@ -40,7 +40,7 @@ namespace Progator
             typedef void(*RendererInit)(void* renderer, void* window, Logica::Control::Validator* validator);
             typedef void(*RendererAttachAnotherWindow)(void* renderer, void* window);
             typedef void(*RendererUse)(void* renderer);
-            typedef void(*RendererSetViewport)(void* renderer, Progator::Types::Specifics::Renderer::Viewport& viewport);
+            typedef void(*RendererSetViewport)(void* renderer, const Progator::Types::Specifics::Renderer::Viewport& viewport);
             typedef void(*RendererAdjustVerticalSynchronization)(void* renderer, const Progator::Types::Basic::Boolean do_vsync);
             typedef void(*RendererClear)(void* renderer, const Progator::Types::Basic::U32 color);
             typedef void(*RendererDraw)(void* renderer);    

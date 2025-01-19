@@ -23,9 +23,9 @@ namespace Progator
         void WindowDestroy(Progator::Base::Window* window);
         void WindowInit(Progator::Base::Window* window, Progator::Base::Pointers* pointers, Logica::Control::Validator* validator);
         void windowSetSize(Progator::Base::Window* window, const Progator::Types::Specifics::Window::Size width, const Progator::Types::Specifics::Window::Size height);
-        void WindowSetPosition(Progator::Base::Window* window, const Progator::Types::Specifics::Window::Position x, const Progator::Types::Specifics::Window::Size y);
+        void WindowSetPosition(Progator::Base::Window* window, const Progator::Types::Specifics::Window::Position x, const Progator::Types::Specifics::Window::Position y);
         void WindowSetTitle(Progator::Base::Window* window, const Progator::Types::Basic::CH8* title);
-        void WindowSetIcon(Progator::Base::Window* window, const SDL_Surface* surface);
+        void WindowSetIcon(Progator::Base::Window* window, SDL_Surface* surface);
         Progator::Types::Specifics::Window::Id WindowGetIdentity(Progator::Base::Window* window);
     };
 };
