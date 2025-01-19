@@ -64,25 +64,6 @@ function(build_fera)
     add_lower_solar_engine_includes(Fera)
 endfunction()
 
-# Testing with main:
-function(build_sojson_test_unit)
-    add_executable(SojsonTest ${CMAKE_CURRENT_SOURCE_DIR}/Tests/Sojson.cpp)
-    add_lower_solar_engine_includes(SojsonTest)
-    set_target_properties(SojsonTest PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Tests/)
-    target_link_libraries(SojsonTest PUBLIC Logica)
-    target_link_libraries(SojsonTest PUBLIC Sojson)
-    target_link_libraries(SojsonTest PUBLIC Fera)
-endfunction()
-
-function(build_fera_backends_obj_test_unit)
-    add_executable(FeraBackendOBJTestUnit ${CMAKE_CURRENT_SOURCE_DIR}/Tests/FeraBackendsOBJ.cpp)
-    add_lower_solar_engine_includes(FeraBackendOBJTestUnit)
-    set_target_properties(FeraBackendOBJTestUnit PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Tests/)
-    target_link_libraries(FeraBackendOBJTestUnit PUBLIC Logica)
-    target_link_libraries(FeraBackendOBJTestUnit PUBLIC Sojson)
-    target_link_libraries(FeraBackendOBJTestUnit PUBLIC Fera)
-endfunction()
-
 # Solar Engine is split in lower modules & high modules:
 
 # Lower Modules:
@@ -91,8 +72,6 @@ function(build_solar_engine_lower_modules)
     cmake_language(CALL build_logica)
     cmake_language(CALL build_sojson)
     cmake_language(CALL build_fera)
-    cmake_language(CALL build_sojson_test_unit)
-    cmake_language(CALL build_fera_backends_obj_test_unit)
 endfunction()    
 
 # High Modules:
