@@ -1,3 +1,25 @@
-bin
+# Ignore everything I don't want ;-)
+
+# NOTE: I use cmake .. -G Ninja & ninja -j$(nproc) to build the whole project
+# So, it must work fine if you just run that (on linux, gentoo to be more specific).
+
+/build*/
+/CMakeFiles/
+/Demos/
+.ninja_*
+build.ninja
+CMakeCache.txt
+cmake_install.cmake
+*.a
 *.o
-bin/Solar
+*.so
+*.dll
+*Test
+/.vscode/
+build.sh
+/Tests/
+/lib/
+/bin/
+
+# NOTE: this more of an personal note so I could remember:
+TODO.md
