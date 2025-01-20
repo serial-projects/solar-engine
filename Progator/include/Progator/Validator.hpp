@@ -11,6 +11,7 @@ namespace Progator
             No = 0,
             
             /* General Errors (on Base/Object): */
+            FailedInitializeSDL,
 
             /// @brief For bad memory errors.
             BadAllocation,
