@@ -1,6 +1,9 @@
 #include "Logica/Control/Validator.hpp"
 #include <cstdarg>
 
+/* TODO: remove the debug! */
+#include <iostream>
+
 Logica::Control::ValidatorValues::ValidatorValues()
 {
     this->code = 0;
@@ -42,6 +45,12 @@ void Logica::Control::Validator::SetError(
 
     this->values.buffer = Logica::Types::Basic::String(__buffer);
     this->values.code = code;
+
+    std::cout
+        << __PRETTY_FUNCTION__
+        << ": "
+        << this->values.buffer
+        << "\n";
 
     /* NOTE: finally call the call back (if possible): */
     if(this->when_error_callback_f != nullptr)
