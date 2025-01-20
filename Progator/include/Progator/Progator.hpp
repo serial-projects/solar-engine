@@ -5,4 +5,10 @@
 #include "Progator/Base.hpp"
 #include "Progator/Validator.hpp"
 
+namespace Progator
+{
+    void Init(Logica::Control::Validator* validator);
+    void Quit(Logica::Control::Validator* validator);
+};
+
 #endif
