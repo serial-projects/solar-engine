@@ -20,7 +20,7 @@ build.sh
 /Tests/
 /lib/
 /bin/
-App
+/App/App
 
 # NOTE: this more of an personal note so I could remember:
 TODO.md
