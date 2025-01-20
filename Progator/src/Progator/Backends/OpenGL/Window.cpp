@@ -86,7 +86,7 @@ void Progator::Backends::OpenGL::WindowSetIcon(
     );
 }
 
-Progator::Types::Specifics::Window::Id WindowGetIdentity(
+Progator::Types::Specifics::Window::Id Progator::Backends::OpenGL::WindowGetIdentity(
     Progator::Backends::OpenGL::Window* window
 )
 {
