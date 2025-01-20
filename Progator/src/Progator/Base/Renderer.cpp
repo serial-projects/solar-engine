@@ -1,8 +1,8 @@
 #include "Progator/Base/Renderer.hpp"
 
-Progator::Base::Renderer Progator::Base::RendererNew()
+Progator::Base::Renderer* Progator::Base::RendererNew()
 {
-    Progator::Base::Renderer renderer;
+    Progator::Base::Renderer* renderer = new Progator::Base::Renderer;
     return renderer;
 }
 
@@ -11,6 +11,7 @@ void Progator::Base::RendererDestroy(
 )
 {
     renderer->pointers->renderer_destroy(renderer->backend);
+    delete renderer;
 }
 
 void Progator::Base::RendererInit(

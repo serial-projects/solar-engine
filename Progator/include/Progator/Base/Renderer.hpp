@@ -19,7 +19,7 @@ namespace Progator
             Progator::Types::Specifics::Renderer::Viewport viewport;
             Logica::Control::Validator* validator;
         };
-        Progator::Base::Renderer RendererNew();
+        Progator::Base::Renderer* RendererNew();
         void RendererDestroy(Progator::Base::Renderer* renderer);
         void RendererInit(Progator::Base::Renderer* renderer, Progator::Base::Window* window, Progator::Base::Pointers* pointers, Logica::Control::Validator* validator);
         void RendererAttachAnotherWindow(Progator::Base::Renderer* renderer, Progator::Base::Window* window);

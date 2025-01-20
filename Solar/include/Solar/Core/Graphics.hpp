@@ -10,8 +10,8 @@ namespace Solar
         struct Graphics
         {
             Progator::Base::Pointers pointers;
-            Progator::Base::Window window;
-            Progator::Base::Renderer renderer;
+            Progator::Base::Window* window;
+            Progator::Base::Renderer* renderer;
             Logica::Control::Validator validator;
         };
         Solar::Core::Graphics GraphicsNew();

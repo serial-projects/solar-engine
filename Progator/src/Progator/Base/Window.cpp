@@ -1,8 +1,8 @@
 #include "Progator/Base/Window.hpp"
 
-Progator::Base::Window Progator::Base::WindowNew()
+Progator::Base::Window* Progator::Base::WindowNew()
 {
-    Progator::Base::Window window;
+    Progator::Base::Window* window = new Progator::Base::Window;
     return window;
 }
 
@@ -10,6 +10,7 @@ void Progator::Base::WindowDestroy(Progator::Base::Window* window)
 {
     /* Delete the window: */
     window->pointers->window_destroy(window->backend);
+    delete window;
 }
 
 void Progator::Base::WindowInit(
@@ -28,7 +29,7 @@ void Progator::Base::WindowInit(
      */
 
     window->backend = window->pointers->window_new();
-    window->pointers->window_init(window->pointers, window->validator);
+    window->pointers->window_init(window->backend, window->validator);
     
     /* TODO: on the future, make some cool bitwise operation to set the window on the center.
      */

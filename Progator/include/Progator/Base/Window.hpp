@@ -19,7 +19,7 @@ namespace Progator
             Progator::Types::Specifics::Window::Id id;
             Logica::Control::Validator* validator;
         };
-        Progator::Base::Window WindowNew();
+        Progator::Base::Window* WindowNew();
         void WindowDestroy(Progator::Base::Window* window);
         void WindowInit(Progator::Base::Window* window, Progator::Base::Pointers* pointers, Logica::Control::Validator* validator);
         void windowSetSize(Progator::Base::Window* window, const Progator::Types::Specifics::Window::Size width, const Progator::Types::Specifics::Window::Size height);
