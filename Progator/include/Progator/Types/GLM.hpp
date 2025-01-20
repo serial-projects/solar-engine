@@ -1,9 +1,6 @@
 #ifndef ProgatorTypesGLM_hpp
 #define ProgatorTypesGLM_hpp
 
-#ifndef ProgatorSupportGLM_hpp
-#define ProgatorSupportGLM_hpp
-
 #define GLM_ENABLE_EXPERIMENTAL
 
 #include <glm/glm.hpp>
