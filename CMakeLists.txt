@@ -1,4 +1,4 @@
-# Entire Solar Engine
+# Solar Engine CMAKE Script:
 cmake_minimum_required(VERSION 3.9)
 
 project(
@@ -6,18 +6,17 @@ project(
     VERSION 1.0.00
 )
 
-# Set Requirements:
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED true)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
-# Find some packages on your system.
 find_package(GLEW REQUIRED)
 find_package(SDL2 REQUIRED)
 
-# Set the binary output for the libraries:
+# Function that set the binary output to the target folder to keep Solar RPG Engine Folder
+# Organization, every project inside their projects.
 function(set_library_binary_output target)
     set_target_properties(
         ${target}
@@ -28,14 +27,23 @@ function(set_library_binary_output target)
     )
 endfunction()
 
-# Function to add the includes:
+# Functions that expose the includes to the compiler:
+
 function(add_lower_solar_engine_includes target)
     target_include_directories(${target} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/Logica/include/)
     target_include_directories(${target} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/Sojson/include/)
     target_include_directories(${target} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/Fera/include/)
 endfunction()
 
-# Logica Build:
+function(add_high_solar_engine_includes target)
+    target_include_directories(${target} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/Progator/include/)
+    target_include_directories(${target} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/Solar/include/)
+endfunction()
+
+#
+# Lower Modules
+#
+
 function(build_logica)
     file(GLOB_RECURSE LOGICA_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/Logica/src/Logica/*.cpp)
     add_library(Logica ${LOGICA_SOURCES})
@@ -43,7 +51,6 @@ function(build_logica)
     add_lower_solar_engine_includes(Logica)
 endfunction()
 
-# Sojson Build:
 function(build_sojson)
     file(GLOB_RECURSE SOJSON_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/Sojson/src/Sojson/*.cpp)
     add_library(Sojson ${SOJSON_SOURCES})
@@ -55,7 +62,6 @@ function(build_sojson)
     add_lower_solar_engine_includes(Sojson)
 endfunction()
 
-# Fera Build:
 function(build_fera)
     file(GLOB_RECURSE FERA_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/Fera/src/Fera/*.cpp)
     add_library(Fera ${FERA_SOURCES})
@@ -64,25 +70,69 @@ function(build_fera)
     add_lower_solar_engine_includes(Fera)
 endfunction()
 
-# Solar Engine is split in lower modules & high modules:
+#
+# High Modules
+#
 
-# Lower Modules:
+function(build_progator)
+    file(GLOB_RECURSE PROGATOR_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/Progator/src/Progator/*.cpp)
+    add_library(Progator ${PROGATOR_SOURCES})
+    target_link_libraries(Progator PUBLIC Logica)
+    target_link_libraries(Progator PRIVATE SDL2)
+    set_library_binary_output(Progator)
+    add_lower_solar_engine_includes(Progator)
+    add_high_solar_engine_includes(Progator)
+endfunction()
+
+function(build_solar)
+    file(GLOB_RECURSE SOLAR_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/Solar/src/Solar/*.cpp)
+    add_library(Solar ${SOLAR_SOURCES})
+    target_link_libraries(Solar PUBLIC Logica)
+    target_link_libraries(Solar PUBLIC Sojson)
+    target_link_libraries(Solar PUBLIC Fera)
+    target_link_libraries(Solar PUBLIC Progator)
+    target_link_libraries(Solar PRIVATE SDL2)
+    set_library_binary_output(Solar)
+    add_lower_solar_engine_includes(Solar)
+    add_high_solar_engine_includes(Solar)
+endfunction()
+
+# Build all the lower modules in their dependency order:
 function(build_solar_engine_lower_modules)
-    message("*** Building Solar RPG Engine Lower Modules ***")
     cmake_language(CALL build_logica)
     cmake_language(CALL build_sojson)
     cmake_language(CALL build_fera)
 endfunction()    
 
-# High Modules:
+# Build all the high modules in their dependency order:
 function(build_solar_engine_high_modules)
-    message("*** Build Solar RPG Engine High Modules ***")
+    cmake_language(CALL build_progator)
+    cmake_language(CALL build_solar)
 endfunction()
 
-# Entire Engine:
+#
+# Build the Application (Game itself or main.cpp)
+#
+
+function(build_app)
+    add_executable(App ${CMAKE_CURRENT_SOURCE_DIR}/App/main.cpp)
+    target_link_libraries(App PUBLIC Logica)
+    target_link_libraries(App PUBLIC Sojson)
+    target_link_libraries(App PUBLIC Fera)
+    target_link_libraries(App PUBLIC Progator)
+    target_link_libraries(App PRIVATE SDL2)
+    set_library_binary_output(App)
+    add_lower_solar_engine_includes(App)
+    add_high_solar_engine_includes(App)
+endfunction()
+
+#
+# Builds the Entire Engine
+#
+
 function(build_solar_engine)
     cmake_language(CALL build_solar_engine_lower_modules)
     cmake_language(CALL build_solar_engine_high_modules)
+    cmake_language(CALL build_app)
 endfunction()
-
 cmake_language(CALL build_solar_engine)

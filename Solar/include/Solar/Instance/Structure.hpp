@@ -5,6 +5,7 @@
 
 namespace Solar
 {
+    /// @brief Contains the whole game instance with core, etc.
     struct Instance
     {
         /// @brief This is the core that is to be shared all around, contains everything to the
@@ -14,11 +15,6 @@ namespace Solar
 
     Solar::Instance InstanceNew();
     void InstanceDestroy(Solar::Instance* instance);
-    void InstanceInit(Solar::Instance* instance);
-    void InstanceTick(Solar::Instance* instance);
-    void InstanceDraw(Solar::Instance* instance);
-    void InstanceLoop(Solar::Instance* instance);
-    void InstanceQuit(Solar::Instance* instance);
 };
 
 #endif
