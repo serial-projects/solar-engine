@@ -14,6 +14,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 find_package(GLEW REQUIRED)
 find_package(SDL2 REQUIRED)
+find_package(OpenGL REQUIRED)
+find_package(glm REQUIRED)
 
 # Function that set the binary output to the target folder to keep Solar RPG Engine Folder
 # Organization, every project inside their projects.
@@ -78,7 +80,12 @@ function(build_progator)
     file(GLOB_RECURSE PROGATOR_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/Progator/src/Progator/*.cpp)
     add_library(Progator ${PROGATOR_SOURCES})
     target_link_libraries(Progator PUBLIC Logica)
-    target_link_libraries(Progator PRIVATE SDL2)
+
+    # Third party libraries:
+    target_link_libraries(Progator PUBLIC SDL2)
+    target_link_libraries(Progator PUBLIC GLEW)
+    target_link_libraries(Progator PUBLIC GL)
+
     set_library_binary_output(Progator)
     add_lower_solar_engine_includes(Progator)
     add_high_solar_engine_includes(Progator)
@@ -91,7 +98,10 @@ function(build_solar)
     target_link_libraries(Solar PUBLIC Sojson)
     target_link_libraries(Solar PUBLIC Fera)
     target_link_libraries(Solar PUBLIC Progator)
-    target_link_libraries(Solar PRIVATE SDL2)
+
+    # Third party libraries:
+    target_link_libraries(Solar PUBLIC SDL2)
+
     set_library_binary_output(Solar)
     add_lower_solar_engine_includes(Solar)
     add_high_solar_engine_includes(Solar)
@@ -120,7 +130,7 @@ function(build_app)
     target_link_libraries(App PUBLIC Sojson)
     target_link_libraries(App PUBLIC Fera)
     target_link_libraries(App PUBLIC Progator)
-    target_link_libraries(App PRIVATE SDL2)
+    target_link_libraries(App PUBLIC Solar)
     set_library_binary_output(App)
     add_lower_solar_engine_includes(App)
     add_high_solar_engine_includes(App)
