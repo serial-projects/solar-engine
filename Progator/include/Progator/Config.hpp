@@ -5,7 +5,7 @@
 #define PROGATOR_VERSION                        10000
 #define PROGATOR_VERSION_STR                    "1.0.000"
 #define PROGATOR_VERSION_CODENAME               "Ghost"
-#define PROGATOR_VERSION_FULLNAME               "Progator $ " PROGATOR_VERSION_STR " (" PROGATOR_VERSION_CODENAME ")"
+#define PROGATOR_VERSION_FULLNAME               "Progator Project, v." PROGATOR_VERSION_STR " or: \"" PROGATOR_VERSION_CODENAME "\""
 
 // Debugging?
 #define PROGATOR_DEBUG

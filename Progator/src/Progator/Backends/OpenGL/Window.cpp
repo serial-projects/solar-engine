@@ -1,5 +1,6 @@
 #include "Progator/Backends/OpenGL/Window.hpp"
 #include "Progator/Validator.hpp"
+#include "Progator/Config.hpp"
 
 Progator::Backends::OpenGL::Window* Progator::Backends::OpenGL::WindowNew()
 {
@@ -22,7 +23,7 @@ void Progator::Backends::OpenGL::WindowInit(
 {
     window->validator = validator;
     window->os_window = SDL_CreateWindow(
-        "[Progator Initial Window (OpenGL Backend 3.3 Core)]",
+        "[" PROGATOR_VERSION_FULLNAME " (OpenGL 3.3 Backend)]",
         SDL_WINDOWPOS_CENTERED,
         SDL_WINDOWPOS_CENTERED,
         800,
@@ -35,7 +36,6 @@ void Progator::Backends::OpenGL::WindowInit(
             "Failed to initialize OpenGL Backend due SDL_CreateWindow error: %s",
             SDL_GetError()
         );
-    
 }
 
 void Progator::Backends::OpenGL::WindowSetSize(
