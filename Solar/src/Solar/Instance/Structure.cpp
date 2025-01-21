@@ -11,5 +11,6 @@ void Solar::InstanceDestroy(
 )
 {
     /* Destroy the instance: */
+    Solar::Modes::Scene::ModeDestroy(&instance->scene_mode);
     Solar::Core::SharedDestroy(&instance->shared_core);
 }

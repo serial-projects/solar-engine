@@ -5,4 +5,5 @@ void Solar::InstanceInit(
 )
 {
     Solar::Core::SharedInit(&instance->shared_core);
+    Solar::Modes::Scene::ModeInit(&instance->scene_mode, &instance->shared_core);
 }

@@ -13,8 +13,13 @@ namespace Solar
         struct Shared
         {
             /// @brief contain instance information like state, tick_counter, etc.
-            Solar::Core::Basics     basics;
-            Solar::Core::Graphics   graphics;
+            Solar::Core::Basics             basics;
+
+            /// @brief contain all the units.
+            Solar::Core::Graphics::Units    units;
+
+            /// @brief contain the validator.
+            Logica::Control::Validator      validator;
         };
         Solar::Core::Shared SharedNew();
         void SharedDestroy(Solar::Core::Shared* shared);

@@ -5,14 +5,5 @@ void Solar::InstanceTick(
 )
 {
     /* Pump the events: */
-    SDL_Event event;
-    while(SDL_PollEvent(&event))
-    {
-        switch(event.type)
-        {
-            case SDL_QUIT:
-                instance->shared_core.basics.state = 0;
-                break;
-        };
-    }
+    Solar::Modes::Scene::ModeTick(&instance->scene_mode);
 }

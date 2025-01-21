@@ -6,11 +6,5 @@ void Solar::InstanceDraw(
 )
 {
     /* Draw the window: */
-    Progator::Base::RendererClear(
-        instance->shared_core.graphics.renderer,
-        0x00000000
-    );
-    Progator::Base::RendererDraw(
-        instance->shared_core.graphics.renderer
-    );
+    Solar::Modes::Scene::ModeDraw(&instance->scene_mode);
 }
