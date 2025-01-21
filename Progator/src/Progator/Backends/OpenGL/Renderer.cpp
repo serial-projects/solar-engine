@@ -94,6 +94,7 @@ void Progator::Backends::OpenGL::RendererInit(
             << glGetString(GL_RENDERER)
             << "\n"
             << __PRETTY_FUNCTION__
+            << ": GL Version = "
             << glGetString(GL_VERSION)
             << "\n";
     #endif
