@@ -3,6 +3,7 @@
 
 #include "Solar/Core/Basics.hpp"
 #include "Solar/Core/Graphics.hpp"
+#include "Solar/Core/Provider.hpp"
 
 namespace Solar
 {
@@ -18,9 +19,13 @@ namespace Solar
             /// @brief contain all the units.
             Solar::Core::Graphics::Units    units;
 
+            /// @brief contains all the packages.
+            Solar::Core::Provider::Warehouse warehouse;
+
             /// @brief contain the validator.
             Logica::Control::Validator      validator;
         };
+
         Solar::Core::Shared SharedNew();
         void SharedDestroy(Solar::Core::Shared* shared);
         void SharedInit(Solar::Core::Shared* shared);

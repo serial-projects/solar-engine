@@ -1,0 +1,5 @@
+#ifndef SolarModesSceneLevelStructure_hpp
+#define SolarModesSceneLevelStructure_hpp
+
+
+#endif
