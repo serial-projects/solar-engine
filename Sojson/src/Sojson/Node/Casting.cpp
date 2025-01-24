@@ -4,6 +4,13 @@ std::optional<Sojson::RepresentativeTypes::Integer> Sojson::CastNode::Integer(
     Sojson::Node* node
 )
 {
+    /* NOTE: using NodeGet() might return null sometimes, so ignore null and mark as impossible to
+     * cast values.
+     */
+    if(node == nullptr)
+        return std::nullopt;
+    
+    /* if the node isn't null: */
     if(node->type == Sojson::NodeTypes::Integer)
     {
         Sojson::RepresentativeTypes::Integer value;
@@ -18,6 +25,9 @@ std::optional<Sojson::RepresentativeTypes::Decimal> Sojson::CastNode::Decimal(
     Sojson::Node* node
 )
 {
+    if(node == nullptr)
+        return std::nullopt;
+
     if(node->type == Sojson::NodeTypes::Decimal)
     {
         Sojson::RepresentativeTypes::Decimal value;
@@ -32,6 +42,9 @@ std::optional<Sojson::RepresentativeTypes::String> Sojson::CastNode::String(
     Sojson::Node* node
 )
 {
+    if(node == nullptr)
+        return std::nullopt;
+
     if(node->type == Sojson::NodeTypes::String)
     {
         Sojson::RepresentativeTypes::String value;
@@ -46,6 +59,9 @@ std::optional<Sojson::RepresentativeTypes::Boolean> Sojson::CastNode::Boolean(
     Sojson::Node* node
 )
 {
+    if(node == nullptr)
+        return std::nullopt;
+
     if(node->type == Sojson::NodeTypes::Boolean)
     {
         Sojson::RepresentativeTypes::Boolean value;
