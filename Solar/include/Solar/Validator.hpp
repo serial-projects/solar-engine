@@ -11,6 +11,14 @@ namespace Solar
             /// @brief When there is no error.
             Ok = 0,
 
+            /// @brief When an invalid site is inserted.
+            WarehouseInvalidSite,
+
+            /// @brief For when the Load::Datafile function has found no file.
+            WarehouseLoadDataFileNoFile,
+
+            WarehouseLoadDataFileSojsonSyntaxError,
+
             /// @brief For impossible errors.
             Unknown = UINT8_MAX
         };

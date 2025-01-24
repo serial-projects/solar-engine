@@ -12,7 +12,7 @@ namespace Solar
         {
             namespace Load
             {
-                Sojson::Node* Datafile(Solar::Core::Provider::Warehouse* warehouse, const Solar::Types::Basic::String& site);
+                Sojson::Node* DataFile(Solar::Core::Provider::Warehouse* warehouse, const Solar::Types::Basic::String& site);
             };
         };
     };

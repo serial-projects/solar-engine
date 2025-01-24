@@ -1,5 +1,6 @@
 #include "Solar/Core/Provider/Load/Datafile.hpp"
 #include "Solar/Core/Provider/Site.hpp"
+#include "Solar/Validator.hpp"
 
 #include <iostream>
 
@@ -15,10 +16,11 @@ static Sojson::Node* __SolarCoreProviderLoadDataFileFromFile(
     /* handle errors: */
     if(instance.validator.GetCode() != Sojson::Decode::InstanceErrors::Ok)
     {
-        std::cout
-            << __PRETTY_FUNCTION__
-            << ": failed to open file!\n";
-        std::abort();
+        warehouse->validator.SetError(
+            Solar::ValidatorCodes::WarehouseLoadDataFileSojsonSyntaxError,
+            "bad syntax: %s",
+            instance.validator.GetBuffer().c_str()
+        );
     }
     else
         Sojson::Decode::InstanceDestroy(&instance);
@@ -26,12 +28,12 @@ static Sojson::Node* __SolarCoreProviderLoadDataFileFromFile(
 }
 
 
-static Sojson::Node* __SolarCoreProviderLoadDatafile(
+static Sojson::Node* __SolarCoreProviderLoadDataFile(
     Solar::Core::Provider::Warehouse* warehouse,
     const Solar::Core::Provider::SitePathAndKeyResult& path_and_key
 )
 {
-    Sojson::Node* parsed_file;
+    Sojson::Node* parsed_file = nullptr;
 
     /* Solve for the file to be loaded:
      * First = the site pattern is = root:/SomeFolder/File (we just lack the extension)
@@ -58,18 +60,17 @@ static Sojson::Node* __SolarCoreProviderLoadDatafile(
     }
     else
     {
-        std::cout
-            << __PRETTY_FUNCTION__
-            << ": no file = "
-            << file_path
-            << "\n";
-        std::abort();
+        warehouse->validator.SetError(
+            Solar::ValidatorCodes::WarehouseLoadDataFileNoFile,
+            "unable to open data file: %s",
+            file_path.c_str()
+        );
     }
 
     return parsed_file;
 }
 
-Sojson::Node* Solar::Core::Provider::Load::Datafile(
+Sojson::Node* Solar::Core::Provider::Load::DataFile(
     Solar::Core::Provider::Warehouse* warehouse,
     const Solar::Types::Basic::String& site
 )
@@ -89,16 +90,20 @@ Sojson::Node* Solar::Core::Provider::Load::Datafile(
         auto content = Solar::Core::Provider::FromSiteGetAndSolvePathAndKey(warehouse, site);
         if(!content.has_value())
         {
-            std::cout
-                << __PRETTY_FUNCTION__
-                << ": invalid site = "
-                << site
-                << "\n";
-            std::abort();
+            warehouse->validator.SetError(
+                Solar::ValidatorCodes::WarehouseInvalidSite,
+                "invalid site: %s",
+                site.c_str()
+            );
+            goto skip_point_due_error;
         }
         
         /* keep going: */
-        current_node = __SolarCoreProviderLoadDatafile(warehouse, content.value());
+        current_node = __SolarCoreProviderLoadDataFile(warehouse, content.value());
+        if(current_node == nullptr)
+            goto skip_point_due_error;
+        
+        /* if not error, then cache the package on the system: */
         Solar::Core::Provider::WarehouseAddCache(
             warehouse,
             cache_tag,
@@ -106,5 +111,6 @@ Sojson::Node* Solar::Core::Provider::Load::Datafile(
             (void*)current_node
         );
     }
+    skip_point_due_error:
     return current_node;
 }
