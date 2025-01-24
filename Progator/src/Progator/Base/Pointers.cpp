@@ -61,6 +61,7 @@ void Progator::Base::PointersSetOpenGLMode(
     AVO(window_init, WindowInit);
     AVO(window_set_size, WindowSetSize);
     AVO(window_set_position, WindowSetPosition);
+    AVO(window_set_title, WindowSetTitle);
     AVO(window_set_icon, WindowSetIcon);
     AVO(window_get_identity, WindowGetIdentity);
 
