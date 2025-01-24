@@ -43,7 +43,7 @@ void Progator::Base::WindowInit(
     window->id = window->pointers->window_get_identity(window->backend);
 }
 
-void Progator::Base::windowSetSize(
+void Progator::Base::WindowSetSize(
     Progator::Base::Window* window,
     const Progator::Types::Specifics::Window::Size width,
     const Progator::Types::Specifics::Window::Size height
