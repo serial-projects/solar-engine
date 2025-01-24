@@ -1,5 +1,7 @@
 #include "Solar/Core/Provider/Warehouse.hpp"
 
+#include <iostream>
+
 Solar::Core::Provider::Warehouse Solar::Core::Provider::WarehouseNew()
 {
     Solar::Core::Provider::Warehouse warehouse;
@@ -32,4 +34,41 @@ void Solar::Core::Provider::WarehouseAddPath(
 )
 {
     warehouse->paths.insert({key, path});
+}
+
+std::optional<Solar::Types::Basic::String> Solar::Core::Provider::WarehouseGetPath(
+    Solar::Core::Provider::Warehouse* warehouse,
+    const Solar::Types::Basic::String& key
+)
+{
+    if(warehouse->paths.find(key) == warehouse->paths.end())
+        return std::nullopt;
+    return warehouse->paths.at(key);
+}
+
+void Solar::Core::Provider::WarehouseAddCache(
+    Solar::Core::Provider::Warehouse *warehouse,
+    const Solar::Types::Basic::String &key,
+    const Solar::Types::Basic::U8 type,
+    void *content
+)
+{
+    if(warehouse->packages.find(key) == warehouse->packages.end())
+    {
+        /* NOTE: actually create the package. */
+        Solar::Core::Provider::Package* package = Solar::Core::Provider::PackageNew();
+        Solar::Core::Provider::PackageInit(package, content, type);
+        warehouse->packages.insert({ key, package });
+    }
+    else
+    {
+        /* NOTE: if that ever happen, it means there is a bug on the cache key system that is
+         * in some way dissonant with the actual key! */
+        std::cout
+            << __PRETTY_FUNCTION__
+            << ": already cached package = "
+            << key
+            << ", potentially bug?\n";
+        std::abort();
+    }
 }

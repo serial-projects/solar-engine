@@ -52,9 +52,24 @@ namespace Solar
                 Solar::Types::Basic::U64    lastuse;
             };
 
+            /// @brief Creates an new package to be set on the warehouse.
+            /// @return the package on the heap.
             Solar::Core::Provider::Package* PackageNew();
+
+            /// @brief Destroys the package (free from memory);
+            /// @param package the package to be destroyed.
             void PackageDestroy(Solar::Core::Provider::Package* package);
+
+            /// @brief Initialize the package.
+            /// @param package the package to be initialized.
+            /// @param content the pointer to your content (void*).
+            /// @param type the type of the package.
             void PackageInit(Solar::Core::Provider::Package* package, void* content, const Solar::Types::Basic::U8 type);
+            
+            /// @brief This function will get the pointer for you AND set the lastuse to now.
+            /// @param package the package to get.
+            /// @return the pointer of the package.
+            void* PackageGet(Solar::Core::Provider::Package* package);
         };
     };
 };

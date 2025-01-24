@@ -77,3 +77,11 @@ void Solar::Core::Provider::PackageInit(
     package->content    = content;
     package->type       = type;
 }
+
+void *Solar::Core::Provider::PackageGet(
+    Solar::Core::Provider::Package *package
+)
+{
+    package->lastuse = SDL_GetTicks64();
+    return package->content;
+}

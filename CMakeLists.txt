@@ -12,6 +12,13 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")    
+    if(PROJECT_USE_ASAN)
+        add_compile_options(-fsanitize=address)
+        add_link_options(-fsanitize=address)     
+    endif()
+endif()
+
 find_package(GLEW REQUIRED)
 find_package(SDL2 REQUIRED)
 find_package(OpenGL REQUIRED)

@@ -10,9 +10,9 @@ void Solar::Core::SharedDestroy(
     Solar::Core::Shared* shared
 )
 {
+    Solar::Core::Provider::WarehouseDestroy(&shared->warehouse);
     Solar::Core::Graphics::UnitsDestroy(&shared->units);
     Solar::Core::BasicsDestroy(&shared->basics);
-    
     Progator::Quit(&shared->validator);
 }
 
@@ -28,5 +28,12 @@ void Solar::Core::SharedInit(
         &shared->units,
         Progator::Base::PointersBackend::OpenGL
     );
+
+    /* Init the warehouse: */
+    shared->warehouse = Solar::Core::Provider::WarehouseNew();
+    Solar::Core::Provider::WarehouseInit(&shared->warehouse, &shared->units);
+    Solar::Core::Provider::WarehouseAddPath(&shared->warehouse, "root", "./Game/");
+
+    /* Init the basics: */
     Solar::Core::BasicsInit(&shared->basics);
 }
