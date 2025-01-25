@@ -35,6 +35,6 @@
 
         // The amount of draw in a single instance, 1 s = n draw, use '0' for VSYNC, this will
         // disable timings.
-        "draw_rate":    0
+        "draw_rate":    60
     }
 }
