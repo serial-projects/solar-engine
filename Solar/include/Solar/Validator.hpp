@@ -17,6 +17,7 @@ namespace Solar
             /// @brief For when the Load::Datafile function has found no file.
             WarehouseLoadDataFileNoFile,
 
+            /// @brief For when the Load::DataFile found an error on the Sojson parsing stage.
             WarehouseLoadDataFileSojsonSyntaxError,
 
             /// @brief For impossible errors.
