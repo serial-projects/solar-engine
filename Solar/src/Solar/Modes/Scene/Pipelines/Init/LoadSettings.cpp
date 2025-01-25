@@ -55,7 +55,7 @@ static void __SolarModesScenePipelinesInitLoadSettingsEngineSection(
     Sojson::Node* input
 )
 {
-    Sojson::Node* engine_node = Sojson::NodeGet(input, "renderer");
+    Sojson::Node* engine_node = Sojson::NodeGet(input, "engine");
     Sojson::Node* engine_tick_rate;
     Sojson::Node* engine_draw_rate;
     
