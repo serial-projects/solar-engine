@@ -194,3 +194,59 @@ void Progator::Backends::OpenGL::ShaderUse(
 {
     glUseProgram(shader->program);
 }
+
+/* Here begins the Set Uniform Function Factory: */
+#define OPENGL_UNIFORM_NO_LOCATION_FOUND                -1
+#define GenericSetUniformFunction(half_type, type, callback)                                        \
+void Progator::Backends::OpenGL::ShaderSetUniform##half_type(                                       \
+    Progator::Backends::OpenGL::Shader* shader,                                                     \
+    Progator::Backends::OpenGL::Renderer* renderer,                                                 \
+    const Progator::Types::Basic::CH8* key,                                                               \
+    type value                                                                                      \
+)                                                                                                   \
+{                                                                                                   \
+    const Progator::Types::Basic::I32 uniform_location = glGetUniformLocation(shader->program, key);\
+    if(uniform_location != OPENGL_UNIFORM_NO_LOCATION_FOUND) callback                               \
+}
+
+GenericSetUniformFunction(
+    Matrix44,
+    const Progator::Types::GLM::Matrix44,
+    { glUniformMatrix4fv(uniform_location, 1, GL_FALSE, glm::value_ptr(value)); }
+);
+
+GenericSetUniformFunction(
+    Matrix33,
+    const Progator::Types::GLM::Matrix33,
+    { glUniformMatrix3fv(uniform_location, 1, GL_FALSE, glm::value_ptr(value)); }
+);
+
+GenericSetUniformFunction(
+    Vector4,
+    const Progator::Types::GLM::Vector4,
+    { glUniform4fv(uniform_location, 1, glm::value_ptr(value)); }
+);
+
+GenericSetUniformFunction(
+    Vector3,
+    const Progator::Types::GLM::Vector3,
+    { glUniform3fv(uniform_location, 1, glm::value_ptr(value)); }
+);
+
+GenericSetUniformFunction(
+    I32,
+    const Progator::Types::Basic::I32,
+    { glUniform1i(uniform_location, value); }
+);
+
+GenericSetUniformFunction(
+    U32,
+    const Progator::Types::Basic::U32,
+    { glUniform1ui(uniform_location, value); }
+);
+
+GenericSetUniformFunction(
+    F32,
+    const Progator::Types::Basic::F32,
+    { glUniform1f(uniform_location, value); }
+);
