@@ -121,7 +121,7 @@ void Progator::Backends::OpenGL::ShaderSetGeometryCode(
 {
     __ProgatorBackendsOpenGLShaderSetCode(
         shader,
-        &shader->fragment,
+        &shader->geometry,
         GL_GEOMETRY_SHADER,
         PROGATOR_SHADER_FRAGMENT_SLOT,
         code,
