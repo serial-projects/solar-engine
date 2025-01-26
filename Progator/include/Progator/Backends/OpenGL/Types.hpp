@@ -17,6 +17,7 @@ namespace Progator
                 typedef GLuint VertexBufferObject;
                 typedef GLuint VertexAttributeObject;
 
+                typedef GLuint AnyShader;
                 typedef GLuint VertexShader;
                 typedef GLuint FragmentShader;
                 typedef GLuint GeometryShader;

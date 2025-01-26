@@ -27,6 +27,21 @@ namespace Progator
             /// @brief For when the GLEW did not initialize.
             FailedInitializeOpenGLBackendDueBadGLEWInit,
 
+            /// @brief For when the vertex shaders doesn't compile.
+            FailedCompileVertexShader,
+
+            /// @brief For when the fragment shader doesn't compile.
+            FailedCompileFragmentShader,
+
+            /// @brief For when the geometry shader doesn't compile.
+            FailedCompileGeometryShader,
+
+            /// @brief When linking failed.
+            FailedLinkShaders,
+
+            /// @brief Exclusive for when the ShaderUse() fails.
+            FailedUseShaders,
+
             /// @brief For impossible errors.
             Unknown = UINT8_MAX
         };
