@@ -43,7 +43,26 @@ namespace Progator
             typedef void(*RendererSetViewport)(void* renderer, const Progator::Types::Specifics::Renderer::Viewport& viewport);
             typedef void(*RendererAdjustVerticalSynchronization)(void* renderer, const Progator::Types::Basic::Boolean do_vsync);
             typedef void(*RendererClear)(void* renderer, const Progator::Types::Basic::U32 color);
-            typedef void(*RendererDraw)(void* renderer);    
+            typedef void(*RendererDraw)(void* renderer);
+
+            /* Shader: */
+            typedef void*(*ShaderNew)();
+            typedef void(*ShaderDestroy)(void* shader, void* renderer);
+            typedef void(*ShaderInit)(void* shader, void* renderer, Logica::Control::Validator* validator);
+            typedef void(*ShaderSetVertexCode)(void* shader, void* renderer, const Progator::Types::Basic::CH8* code);
+            typedef void(*ShaderSetFragmentCode)(void* shader, void* renderer, const Progator::Types::Basic::CH8* code);
+            typedef void(*ShaderSetGeometryCode)(void* shader, void* renderer, const Progator::Types::Basic::CH8* code);
+            typedef void(*ShaderLink)(void* shader, void* renderer);
+            typedef void(*ShaderCompile)(void* shader, void* renderer);
+            typedef void(*ShaderClean)(void* shader, void* renderer);
+            typedef void(*ShaderUse)(void* shader, void* renderer);
+            typedef void(*ShaderSetUniformMatrix44)(void* shader, void* renderer, const Progator::Types::Basic::CH8* key, const Progator::Types::GLM::Matrix44 value);
+            typedef void(*ShaderSetUniformMatrix33)(void* shader, void* renderer, const Progator::Types::Basic::CH8* key, const Progator::Types::GLM::Matrix33 value);
+            typedef void(*ShaderSetUniformVector4)(void* shader, void* renderer, const Progator::Types::Basic::CH8* key, const Progator::Types::GLM::Vector4 value);
+            typedef void(*ShaderSetUniformVector3)(void* shader, void* renderer, const Progator::Types::Basic::CH8* key, const Progator::Types::GLM::Vector3 value);
+            typedef void(*ShaderSetUniformI32)(void* shader, void* renderer, const Progator::Types::Basic::CH8* key, const Progator::Types::Basic::I32 value);
+            typedef void(*ShaderSetUniformU32)(void* shader, void* renderer, const Progator::Types::Basic::CH8* key, const Progator::Types::Basic::U32 value);
+            typedef void(*ShaderSetUniformF32)(void* shader, void* renderer, const Progator::Types::Basic::CH8* key, const Progator::Types::Basic::F32 value);
         };
 
         /// @brief contains the pointers for the backend functions.
@@ -69,7 +88,27 @@ namespace Progator
             Progator::Base::BackendBinding::RendererAdjustVerticalSynchronization renderer_adjust_vertical_synchronization;
             Progator::Base::BackendBinding::RendererClear renderer_clear;
             Progator::Base::BackendBinding::RendererDraw renderer_draw;
+            
+            /* Shader Pointers: */
+            Progator::Base::BackendBinding::ShaderNew shader_new;
+            Progator::Base::BackendBinding::ShaderDestroy shader_destroy;
+            Progator::Base::BackendBinding::ShaderInit shader_init;
+            Progator::Base::BackendBinding::ShaderSetVertexCode shader_set_vertex_code;
+            Progator::Base::BackendBinding::ShaderSetFragmentCode shader_set_fragment_code;
+            Progator::Base::BackendBinding::ShaderSetGeometryCode shader_set_geometry_code;
+            Progator::Base::BackendBinding::ShaderLink shader_link;
+            Progator::Base::BackendBinding::ShaderCompile shader_compile;
+            Progator::Base::BackendBinding::ShaderClean shader_clean;
+            Progator::Base::BackendBinding::ShaderUse shader_use;
+            Progator::Base::BackendBinding::ShaderSetUniformMatrix44 shader_set_uniform_matrix44;
+            Progator::Base::BackendBinding::ShaderSetUniformMatrix33 shader_set_uniform_matrix33;
+            Progator::Base::BackendBinding::ShaderSetUniformVector4 shader_set_uniform_vector4;
+            Progator::Base::BackendBinding::ShaderSetUniformVector3 shader_set_uniform_vector3;
+            Progator::Base::BackendBinding::ShaderSetUniformI32 shader_set_uniform_i32;
+            Progator::Base::BackendBinding::ShaderSetUniformU32 shader_set_uniform_u32;
+            Progator::Base::BackendBinding::ShaderSetUniformF32 shader_set_uniform_f32;
 
+            /* mode: */
             Progator::Types::Basic::U8 mode;
         };
         /// @brief Creates a new Pointers for your selected backend (use Set<Backend>Mode function)!
