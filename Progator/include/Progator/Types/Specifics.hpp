@@ -3,5 +3,6 @@
 
 #include "Progator/Types/Specifics/Renderer.hpp"
 #include "Progator/Types/Specifics/Window.hpp"
+#include "Progator/Types/Specifics/Mesh.hpp"
 
 #endif

@@ -61,6 +61,17 @@ void Progator::Base::PointersInit(
     pointers->shader_set_uniform_i32 = nullptr;
     pointers->shader_set_uniform_u32 = nullptr;
     pointers->shader_set_uniform_f32 = nullptr;
+
+    /* Mesh: */
+    pointers->mesh_new = nullptr;
+    pointers->mesh_destroy = nullptr;
+    pointers->mesh_init = nullptr;
+    pointers->mesh_set_buffer = nullptr;
+    pointers->mesh_set_layout = nullptr;
+    pointers->mesh_enable_layout = nullptr;
+    pointers->mesh_disable_layout = nullptr;
+    pointers->mesh_set_vertices = nullptr;
+    pointers->mesh_draw = nullptr;
 }
 
 // (A)ssign (V)alue to (O)penGL (Backend)
@@ -113,4 +124,15 @@ void Progator::Base::PointersSetOpenGLMode(
     AVO(shader_set_uniform_i32, ShaderSetUniformI32);
     AVO(shader_set_uniform_u32, ShaderSetUniformU32);
     AVO(shader_set_uniform_f32, ShaderSetUniformF32);
+
+    /* Set the mesh: */
+    AVO(mesh_new, MeshNew);
+    AVO(mesh_destroy, MeshDestroy);
+    AVO(mesh_init, MeshInit);
+    AVO(mesh_set_buffer, MeshSetBuffer);
+    AVO(mesh_set_layout, MeshSetLayout);
+    AVO(mesh_enable_layout, MeshEnableLayout);
+    AVO(mesh_disable_layout, MeshDisableLayout);
+    AVO(mesh_set_vertices, MeshSetVertices);
+    AVO(mesh_draw, MeshDraw);
 }

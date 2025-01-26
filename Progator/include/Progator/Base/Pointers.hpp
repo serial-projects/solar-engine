@@ -63,6 +63,17 @@ namespace Progator
             typedef void(*ShaderSetUniformI32)(void* shader, void* renderer, const Progator::Types::Basic::CH8* key, const Progator::Types::Basic::I32 value);
             typedef void(*ShaderSetUniformU32)(void* shader, void* renderer, const Progator::Types::Basic::CH8* key, const Progator::Types::Basic::U32 value);
             typedef void(*ShaderSetUniformF32)(void* shader, void* renderer, const Progator::Types::Basic::CH8* key, const Progator::Types::Basic::F32 value);
+        
+            /* Mesh: */
+            typedef void*(*MeshNew)();
+            typedef void(*MeshDestroy)(void* mesh, void* renderer);
+            typedef void(*MeshInit)(void* mesh, void* renderer, Logica::Control::Validator* validator);
+            typedef void(*MeshSetBuffer)(void* mesh, void* renderer, const Progator::Types::Basic::F32* data, const Progator::Types::Basic::U32 size);
+            typedef void(*MeshSetLayout)(void* mesh, void* renderer, const Progator::Types::Specifics::Mesh::Layout layout);
+            typedef void(*MeshEnableLayout)(void* mesh, void* renderer, const Progator::Types::Basic::U8 layout);
+            typedef void(*MeshDisableLayout)(void* mesh, void* renderer, const Progator::Types::Basic::U8 layout);
+            typedef void(*MeshSetVertices)(void* mesh, void* renderer, const Progator::Types::Basic::U64 size);
+            typedef void(*MeshDraw)(void* mesh, void* renderer);
         };
 
         /// @brief contains the pointers for the backend functions.
@@ -107,6 +118,17 @@ namespace Progator
             Progator::Base::BackendBinding::ShaderSetUniformI32 shader_set_uniform_i32;
             Progator::Base::BackendBinding::ShaderSetUniformU32 shader_set_uniform_u32;
             Progator::Base::BackendBinding::ShaderSetUniformF32 shader_set_uniform_f32;
+
+            /* Mesh Pointers: */
+            Progator::Base::BackendBinding::MeshNew mesh_new;
+            Progator::Base::BackendBinding::MeshDestroy mesh_destroy;
+            Progator::Base::BackendBinding::MeshInit mesh_init;
+            Progator::Base::BackendBinding::MeshSetBuffer mesh_set_buffer;
+            Progator::Base::BackendBinding::MeshSetLayout mesh_set_layout;
+            Progator::Base::BackendBinding::MeshEnableLayout mesh_enable_layout;
+            Progator::Base::BackendBinding::MeshDisableLayout mesh_disable_layout;
+            Progator::Base::BackendBinding::MeshSetVertices mesh_set_vertices;
+            Progator::Base::BackendBinding::MeshDraw mesh_draw;
 
             /* mode: */
             Progator::Types::Basic::U8 mode;
