@@ -123,7 +123,7 @@ void Progator::Backends::OpenGL::ShaderSetGeometryCode(
         shader,
         &shader->geometry,
         GL_GEOMETRY_SHADER,
-        PROGATOR_SHADER_FRAGMENT_SLOT,
+        PROGATOR_SHADER_GEOMETRY_SLOT,
         code,
         Progator::ValidatorCodes::FailedCompileGeometryShader,
         "Failed to compile geometry shader due: %s"
