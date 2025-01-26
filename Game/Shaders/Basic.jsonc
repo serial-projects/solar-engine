@@ -1,0 +1,11 @@
+{
+    "backends":
+    {
+        "opengl":
+        {
+            "vertex":   "root:/Shaders/OpenGL/Basic.vert",
+            "fragment": "root:/Shaders/OpenGL/Basic.frag",
+            "geometry": null
+        }
+    }
+}
