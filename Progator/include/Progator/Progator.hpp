@@ -4,6 +4,7 @@
 #include "Progator/Types.hpp"
 #include "Progator/Base.hpp"
 #include "Progator/Validator.hpp"
+#include "Progator/Objects.hpp"
 
 namespace Progator
 {

@@ -55,6 +55,7 @@ namespace Solar
             void WarehouseAddPath(Solar::Core::Provider::Warehouse* warehouse, const Solar::Types::Basic::String& key, const Solar::Types::Basic::String& path);
             std::optional<Solar::Types::Basic::String> WarehouseGetPath(Solar::Core::Provider::Warehouse* warehouse, const Solar::Types::Basic::String& key);
             void WarehouseAddCache(Solar::Core::Provider::Warehouse* warehouse, const Solar::Types::Basic::String& key, const Solar::Types::Basic::U8 type, void* content);
+            void WarehouseAddCacheWithRenderingUnitOwnership(Solar::Core::Provider::Warehouse* warehouse, const Solar::Types::Basic::String& key, const Solar::Types::Basic::U8 type, void* content, Solar::Core::Graphics::Unit* rendering_unit);
         };
     };
 };

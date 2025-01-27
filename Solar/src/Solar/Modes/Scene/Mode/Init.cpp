@@ -17,4 +17,11 @@ void Solar::Modes::Scene::ModeInit(
      * instance, meaning this functions will probably run a single time). */
     Solar::Modes::Scene::Pipelines::Init::LoadSettings(mode);
     Solar::Modes::Scene::Pipelines::Init::LoadStory(mode);
+
+    /* Test shader: */
+    Solar::Core::Provider::Load::Shader(
+        &mode->shared->warehouse,
+        "root:Shaders/Basic",
+        "main"
+    );
 }

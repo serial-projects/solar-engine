@@ -59,7 +59,7 @@ Solar::Core::Graphics::Unit* Solar::Core::Graphics::UnitsGetUnit(
 )
 {
     Solar::Core::Graphics::Unit* unit = nullptr;
-    if(graphics->units.find(key) == graphics->units.end())
+    if(graphics->units.find(key) != graphics->units.end())
         unit = graphics->units.at(key);
     return unit;
 }

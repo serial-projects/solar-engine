@@ -49,7 +49,10 @@ void Solar::Core::Provider::PackageDestroy(
             break;
         case Solar::Core::Provider::PackageTypes::Shader:
             {
-
+                Progator::Objects::ShaderDestroy(
+                    (Progator::Objects::Shader*)(package->content),
+                    package->rendering_unit_ownership->renderer
+                );
             };
             break;
         case Solar::Core::Provider::PackageTypes::Mesh:
@@ -76,6 +79,9 @@ void Solar::Core::Provider::PackageInit(
     package->lastuse    = SDL_GetTicks64();
     package->content    = content;
     package->type       = type;
+    
+    /* set this to NULL since most of the time it is NULL. */
+    package->rendering_unit_ownership = nullptr;
 }
 
 void *Solar::Core::Provider::PackageGet(
@@ -84,4 +90,12 @@ void *Solar::Core::Provider::PackageGet(
 {
     package->lastuse = SDL_GetTicks64();
     return package->content;
+}
+
+void Solar::Core::Provider::PackageSetRenderingUnitOwnership(
+    Solar::Core::Provider::Package* package,
+    Solar::Core::Graphics::Unit* rendering_unit
+)
+{
+    package->rendering_unit_ownership = rendering_unit;
 }

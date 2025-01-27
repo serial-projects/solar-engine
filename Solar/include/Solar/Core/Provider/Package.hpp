@@ -2,6 +2,7 @@
 #define SolarCoreProviderPackage_hpp
 
 #include "Solar/Types.hpp"
+#include "Solar/Core/Graphics.hpp"
 
 namespace Solar
 {
@@ -43,13 +44,14 @@ namespace Solar
             /// @brief An package contains the content, type and last use.
             struct Package
             {
-                void*                       content;
+                void*                           content;
+                Solar::Core::Graphics::Unit*    rendering_unit_ownership;
                 
                 /* NOTE: on the future, merge this! 
                  * Sugestion: 0, 0, 0, 0 = type + ... = last use, so u60 for the last use.
                  */
-                Solar::Types::Basic::U8     type;
-                Solar::Types::Basic::U64    lastuse;
+                Solar::Types::Basic::U8         type;
+                Solar::Types::Basic::U64        lastuse;
             };
 
             /// @brief Creates an new package to be set on the warehouse.
@@ -70,6 +72,13 @@ namespace Solar
             /// @param package the package to get.
             /// @return the pointer of the package.
             void* PackageGet(Solar::Core::Provider::Package* package);
+
+            /// @brief Assign an rendering_unit father for the package, this is done since an
+            /// rendering in Progator can have multiple instances (it means you can have multiple)
+            /// windows with multiple packages.
+            /// @param package the package to set.
+            /// @param rendering_unit the rendering_unit father.
+            void PackageSetRenderingUnitOwnership(Solar::Core::Provider::Package* package, Solar::Core::Graphics::Unit* rendering_unit);
         };
     };
 };

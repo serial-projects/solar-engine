@@ -72,3 +72,31 @@ void Solar::Core::Provider::WarehouseAddCache(
         std::abort();
     }
 }
+
+void Solar::Core::Provider::WarehouseAddCacheWithRenderingUnitOwnership(
+    Solar::Core::Provider::Warehouse* warehouse,
+    const Solar::Types::Basic::String& key,
+    const Solar::Types::Basic::U8 type,
+    void* content,
+    Solar::Core::Graphics::Unit* rendering_unit
+)
+{
+    if(warehouse->packages.find(key) == warehouse->packages.end())
+    {
+        Solar::Core::Provider::Package* package = Solar::Core::Provider::PackageNew();
+        Solar::Core::Provider::PackageInit(package, content, type);
+        Solar::Core::Provider::PackageSetRenderingUnitOwnership(package, rendering_unit);
+        warehouse->packages.insert({ key, package });
+    }
+    else
+    {
+        /* NOTE: if that ever happen, it means there is a bug on the cache key system that is
+         * in some way dissonant with the actual key! */
+        std::cout
+            << __PRETTY_FUNCTION__
+            << ": already cached package = "
+            << key
+            << ", potentially bug?\n";
+        std::abort();
+    }
+}

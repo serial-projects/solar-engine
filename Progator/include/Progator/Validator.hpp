@@ -8,7 +8,7 @@ namespace Progator
         enum ValidatorCodes
         {
             /// @brief Nothing.
-            No = 0,
+            Ok = 0,
             
             /* General Errors (on Base/Object): */
             FailedInitializeSDL,
