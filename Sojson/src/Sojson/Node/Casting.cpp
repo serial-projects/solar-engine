@@ -1,6 +1,6 @@
 #include "Sojson/Node/Casting.hpp"
 
-std::optional<Sojson::RepresentativeTypes::Integer> Sojson::CastNode::Integer(
+Sojson::CastNode::Possibly::Integer Sojson::CastNode::Integer(
     Sojson::Node* node
 )
 {
@@ -21,7 +21,7 @@ std::optional<Sojson::RepresentativeTypes::Integer> Sojson::CastNode::Integer(
         return std::nullopt;
 }
 
-std::optional<Sojson::RepresentativeTypes::Decimal> Sojson::CastNode::Decimal(
+Sojson::CastNode::Possibly::Decimal Sojson::CastNode::Decimal(
     Sojson::Node* node
 )
 {
@@ -38,7 +38,7 @@ std::optional<Sojson::RepresentativeTypes::Decimal> Sojson::CastNode::Decimal(
         return std::nullopt;
 }
 
-std::optional<Sojson::RepresentativeTypes::String> Sojson::CastNode::String(
+Sojson::CastNode::Possibly::String Sojson::CastNode::String(
     Sojson::Node* node
 )
 {
@@ -55,7 +55,7 @@ std::optional<Sojson::RepresentativeTypes::String> Sojson::CastNode::String(
         return std::nullopt;
 }
 
-std::optional<Sojson::RepresentativeTypes::Boolean> Sojson::CastNode::Boolean(
+Sojson::CastNode::Possibly::Boolean Sojson::CastNode::Boolean(
     Sojson::Node* node
 )
 {
