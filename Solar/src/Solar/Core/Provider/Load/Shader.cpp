@@ -313,8 +313,8 @@ Progator::Objects::Shader* Solar::Core::Provider::Load::Shader(
     else
     {
         /* 1-) get the rendering unit: */
-        Solar::Core::Graphics::Unit* rendering_unit
-            = Solar::Core::Graphics::UnitsGetUnit(warehouse->units, render_unit_key);
+        Solar::Core::Graphics::Unit* rendering_unit =
+            Solar::Core::Graphics::UnitsGetUnit(warehouse->units, render_unit_key);
         if(rendering_unit == nullptr)
         {
             warehouse->validator.SetError(

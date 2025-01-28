@@ -1,13 +1,13 @@
 {
     "type":         "OBJ",
-    "path":         "root:/Meshes/OBJ/Cube.obj",
+    "file":         "root:Meshes/OBJ/Cube.obj",
     
     /* NOTE: this is specific for the OBJ parser */
     "OBJ":
     {
-        "Faces":    3,
         "Vsize":    3,
         "VTsize":   2,
-        "VNsize":   3
+        "VNsize":   3,
+        "Fsize":    3
     }
 }

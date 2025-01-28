@@ -9,6 +9,7 @@ namespace Fera
     {
         /// @brief The MeshUnit* is also an Mesh, since everything has a root.
         typedef Fera::Meshing::MeshUnit Mesh;
+
         Fera::Meshing::Mesh* MeshNew();
         void MeshDestroy(Fera::Meshing::MeshUnit* mesh_unit);
         void MeshInit(Fera::Meshing::MeshUnit* mesh_unit);

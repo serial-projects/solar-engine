@@ -29,6 +29,18 @@ namespace Solar
             /// @brief Failed to compile shader.
             WarehouseFailedCompileShader,
 
+            /// @brief In case your mesh file is not valid or is missing something.
+            WarehouseInvalidMeshRecipe,
+
+            /// @brief The mesh file not found.
+            WarehouseMeshFileNotFound,
+
+            /// @brief The mesh file is not a valid OBJ file.
+            WarehouseMeshInvalidOBJ,
+
+            /// @brief Some syntax error with the OBJ (anything that Fera got stuck).
+            WarehouseMeshBadOBJFile,
+
             /// @brief For impossible errors.
             Unknown = UINT8_MAX
         };

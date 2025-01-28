@@ -21,30 +21,41 @@ void Fera::Backends::OBJ::Interpreter::InstanceInit(
     Logica::Types::Stream::Buffer* buffer
 )
 {
-    instance->tokenizer_rules.is_token_delimiter = [](Logica::Types::Basic::I32 ch)
+    instance->tokenizer_rules = Logica::Texting::Tokenizer::Rules();
+    instance->tokenizer_rules.is_token_delimiter = [](
+        Logica::Types::Basic::I32 ch
+    )
     {
         return (
-            ch == ' ' ||
-            ch == '\t'||
+            ch == ' '  ||
+            ch == '\t' ||
             ch == '\n'
         );
     };
-    instance->tokenizer_rules.is_token_string_delimiter = [](Logica::Types::Basic::I32 ch)
+    
+    instance->tokenizer_rules.is_token_string_delimiter = [](
+        Logica::Types::Basic::I32 ch
+    )
     {
         return (
             ch == '\''||
             ch == '"'
         );
     };
-    instance->tokenizer_rules.is_token_highlight = [](Logica::Types::Basic::I32 ch)
+    
+    instance->tokenizer_rules.is_token_highlight = [](
+        Logica::Types::Basic::I32 ch
+    )
     {
         return (false);
     };
+
     instance->tokenizer_rules.comment_starter = '#';
     instance->tokenizer_rules.comment_single_line_hint = 0;
     instance->tokenizer_rules.comment_delimited_hint = 0;
 
     /* set the tokenizer: */
+    instance->tokenizer = Logica::Texting::Tokenizer::Instance();
     instance->tokenizer.SetRules(&instance->tokenizer_rules);
     instance->tokenizer.SetBuffer(buffer);
 

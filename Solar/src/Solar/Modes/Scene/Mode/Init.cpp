@@ -24,4 +24,9 @@ void Solar::Modes::Scene::ModeInit(
         "root:Shaders/Basic",
         "main"
     );
+
+    Solar::Core::Provider::Load::RawMesh(
+        &mode->shared->warehouse,
+        "root:Meshes/Cube"
+    );
 }

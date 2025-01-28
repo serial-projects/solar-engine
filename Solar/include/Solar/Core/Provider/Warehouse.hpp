@@ -7,6 +7,7 @@
 //      /home/user/game/Settings.json
 //      Everything that comes after the ':' is a key, no matter if there is another splits.
 // @ -> split reserved for certain objects;
+// ? -> split for the renderer;
 
 // NOTE: for naming objects on the cache is:
 //  + Data Files (Sojson):          PATH: KEY
