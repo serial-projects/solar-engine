@@ -25,8 +25,10 @@ void Solar::Modes::Scene::ModeInit(
         "main"
     );
 
-    Solar::Core::Provider::Load::RawMesh(
+    Solar::Core::Provider::Load::Mesh(
         &mode->shared->warehouse,
-        "root:Meshes/Cube"
+        "root:Meshes/Cube",
+        "Cube.*",
+        "main"
     );
 }

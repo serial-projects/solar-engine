@@ -2,8 +2,12 @@
 #include "Solar/Core/Provider/Load/Mesh.hpp"
 #include "Solar/Core/Provider/Load/RawMesh.hpp"
 
+#include "Solar/Core/Provider/Load/Helpers/Mesh/Surf.hpp"
+
 #include "Solar/Config.hpp"
 #include "Solar/Validator.hpp"
+
+#include <iostream>
 
 Progator::Objects::Mesh* Solar::Core::Provider::Load::Mesh(
     Solar::Core::Provider::Warehouse* warehouse,
@@ -38,6 +42,29 @@ Progator::Objects::Mesh* Solar::Core::Provider::Load::Mesh(
         }
         
         /* NOTE: load the raw mesh: */
+        Fera::Meshing::Mesh* raw_mesh = 
+            Solar::Core::Provider::Load::RawMesh(warehouse, site);
+        if(raw_mesh == nullptr)
+            goto skip_due_invalid_rendering_unit;
+        
+        /* TODO: check: */
+        Fera::Meshing::MeshUnitTypes::Object load_object =
+            Solar::Core::Provider::Load::Helpers::Mesh::Surf(
+                warehouse,
+                raw_mesh,
+                object
+            );
+        
+        for(Solar::Types::Basic::I32 index=0; index<load_object.size(); ++index)
+            std::cout
+                << __PRETTY_FUNCTION__
+                << ": ["
+                << index
+                << "] = "
+                << load_object.at(index)
+                << "\n";
+
+        std::abort();
     }
     skip_due_invalid_rendering_unit:
     return current_mesh;

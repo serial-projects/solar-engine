@@ -53,11 +53,7 @@ namespace Fera
             {
                 /// @brief Impossible values.
                 Nothing = 0,
-
-                /// @brief Basic Data, that is data already done to be drawn, an sequence of
-                /// F32 ready to be put on the screen.
-                Data,
-
+                
                 /// @brief When an object contains another subobject inside.
                 Object,
 
@@ -82,7 +78,6 @@ namespace Fera
         /// @brief All the typedefs for the types.
         namespace MeshUnitTypes
         {
-            typedef std::vector<Fera::Types::F32> Buffer;
             typedef std::unordered_map<Fera::Types::String, Fera::Meshing::MeshUnit*> Group;
             typedef std::vector<Fera::Types::F32> Object;
         };

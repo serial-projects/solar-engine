@@ -15,13 +15,6 @@ void Fera::Meshing::MeshUnitDestroy(
         case Fera::Meshing::MeshUnitValueTypes::Nothing:
             /* Nothing allocated, then ignore: */
             break;
-        case Fera::Meshing::MeshUnitValueTypes::Data:
-            {
-                Fera::Meshing::MeshUnitTypes::Buffer* bv =
-                    (Fera::Meshing::MeshUnitTypes::Buffer*)(mesh_unit->value);
-                delete bv;
-            };
-            break;
         case Fera::Meshing::MeshUnitValueTypes::Group:
             {
                 /* GROUP means it is a group of MeshUnits! */

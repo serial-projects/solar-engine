@@ -41,6 +41,9 @@ namespace Solar
             /// @brief Some syntax error with the OBJ (anything that Fera got stuck).
             WarehouseMeshBadOBJFile,
 
+            /// @brief When a mesh is not found (Surf function).
+            WarehouseMeshNotFound,
+
             /// @brief For impossible errors.
             Unknown = UINT8_MAX
         };

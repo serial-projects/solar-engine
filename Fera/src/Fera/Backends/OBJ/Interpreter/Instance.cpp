@@ -182,5 +182,4 @@ void Fera::Backends::OBJ::Interpreter::InstanceGenerateObject(
         (Fera::Meshing::MeshUnitTypes::Object*)object_unit->value;
     for(auto content : instance->working_object)
         object->push_back(content);
-    return;
 }
