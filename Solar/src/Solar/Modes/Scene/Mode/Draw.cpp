@@ -30,10 +30,6 @@ void Solar::Modes::Scene::ModeDraw(
             "main"
         );
     
-    std::cout
-        << __PRETTY_FUNCTION__
-        << ": HI\n";
-
     Progator::Objects::MeshDraw(mesh, main_unit->renderer);
     Progator::Objects::ShaderUse(shader, main_unit->renderer);
 
