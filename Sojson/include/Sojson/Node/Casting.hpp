@@ -19,7 +19,7 @@ namespace Sojson
             typedef std::optional<Sojson::RepresentativeTypes::Decimal> Decimal;
             typedef std::optional<Sojson::RepresentativeTypes::String> String;
             typedef std::optional<Sojson::RepresentativeTypes::Boolean> Boolean;
-            typedef std::optional<Sojson::RepresentativeTypes::List> List;
+            typedef std::optional<Sojson::RepresentativeTypes::List*> List;
         };
 
         Sojson::CastNode::Possibly::Integer Integer(Sojson::Node* node);

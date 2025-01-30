@@ -81,8 +81,8 @@ Sojson::CastNode::Possibly::List Sojson::CastNode::List(
 
     if(node->type == Sojson::NodeTypes::List)
     {
-        Sojson::RepresentativeTypes::List value;
-        value = *(Sojson::RepresentativeTypes::List*)(node->value);
+        Sojson::RepresentativeTypes::List* value;
+        value = (Sojson::RepresentativeTypes::List*)(node->value);
         return value;
     }
     else
