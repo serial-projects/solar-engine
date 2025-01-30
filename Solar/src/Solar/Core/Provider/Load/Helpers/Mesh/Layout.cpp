@@ -3,15 +3,6 @@
 
 #include <iostream>
 
-/// @brief Table to get the size of the types.
-static std::unordered_map<Solar::Types::Basic::String, Solar::Types::Basic::U8>
-__SolarCoreProviderLoadHelpersMeshGetMeshLayoutsTypeSize = 
-{
-    {"float",   sizeof(Progator::Types::Basic::F32)},
-    {"uint",    sizeof(Progator::Types::Basic::U32)},
-    {"int",     sizeof(Progator::Types::Basic::I32)}
-};
-
 static std::optional<Solar::Types::Basic::U8>
 __SolarCoreProviderLoadHelpersMeshGetMeshLayoutsGetLayoutFullsize(
     Sojson::RepresentativeTypes::List* layout
@@ -22,27 +13,11 @@ __SolarCoreProviderLoadHelpersMeshGetMeshLayoutsGetLayoutFullsize(
     {
         /* NOTE: we don't actually need the name, we just need: type and amount fields. */
         Sojson::Node* layout_node = layout->at(index);
-        Sojson::Node* layout_type_node = Sojson::NodeGet(layout_node, "type");
-        Sojson::Node* layout_size_node = Sojson::NodeGet(layout_node, "amount");
-        auto possible_layout_type_node = Sojson::CastNode::String(layout_type_node);
+        Sojson::Node* layout_size_node = Sojson::NodeGet(layout_node, "size");
         auto possible_layout_size_node = Sojson::CastNode::Integer(layout_size_node);
-        if(possible_layout_size_node.has_value() && possible_layout_type_node.has_value())
+        if(possible_layout_size_node.has_value())
         {
-            if(
-                __SolarCoreProviderLoadHelpersMeshGetMeshLayoutsTypeSize.find(
-                    possible_layout_type_node.value()
-                ) == __SolarCoreProviderLoadHelpersMeshGetMeshLayoutsTypeSize.end()
-            )
-            {
-                /* fail, since we need to count: */
-                return std::nullopt;
-            }
-            total_layout_size += (
-                __SolarCoreProviderLoadHelpersMeshGetMeshLayoutsTypeSize.at(
-                    possible_layout_type_node.value()
-                )
-                * possible_layout_size_node.value()
-            );
+            total_layout_size += possible_layout_size_node.value();
         }
         else
             /* fail, since we need to count: */
@@ -74,9 +49,11 @@ Solar::Core::Provider::Load::Helpers::Mesh::GetMeshLayouts(
     }
 
     /* get the entire size of the mesh: */
-    auto maybe_layout_size = __SolarCoreProviderLoadHelpersMeshGetMeshLayoutsGetLayoutFullsize(
-        possible_layout_node.value()
-    );
+    auto maybe_layout_size = 
+        __SolarCoreProviderLoadHelpersMeshGetMeshLayoutsGetLayoutFullsize(
+            possible_layout_node.value()
+        );
+    
     if(!maybe_layout_size)
     {
         warehouse->validator.SetError(
@@ -101,21 +78,25 @@ Solar::Core::Provider::Load::Helpers::Mesh::GetMeshLayouts(
     {
         Progator::Types::Specifics::Mesh::Layout layout;
         Sojson::Node* layout_node = possible_layout_node.value()->at(index);
-        Sojson::Node* layout_type_node = Sojson::NodeGet(layout_node, "type");
-        Sojson::Node* layout_size_node = Sojson::NodeGet(layout_node, "amount");
-        auto possible_layout_type_node = Sojson::CastNode::String(layout_type_node);
+        Sojson::Node* layout_size_node = Sojson::NodeGet(layout_node, "size");
         auto possible_layout_size_node = Sojson::CastNode::Integer(layout_size_node);
+        
+        std::cout
+            << __PRETTY_FUNCTION__
+            << ": "
+            << (int)possible_layout_size_node.value()
+            << " | "
+            << (int)maybe_layout_size.value()
+            << "\n";
 
         layout.id           = index;
-        layout.size         = maybe_layout_size.value();
-        layout.stride       = 
-            __SolarCoreProviderLoadHelpersMeshGetMeshLayoutsTypeSize.at(
-                possible_layout_type_node.value()
-            );
-        layout.stride_size  = possible_layout_size_node.value();
+        layout.size         = possible_layout_size_node.value();
+        layout.stride       = maybe_layout_size.value();
         layout.padding      = current_padding;
-        current_padding     += (layout.stride * layout.stride_size);
         building_layouts.push_back(layout);
+
+        /* push the current padding: */
+        current_padding     += possible_layout_size_node.value();
     }
     
     return building_layouts;

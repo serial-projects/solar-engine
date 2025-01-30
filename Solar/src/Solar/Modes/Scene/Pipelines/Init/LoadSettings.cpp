@@ -1,6 +1,8 @@
 #include "Solar/Modes/Scene/Pipelines/Init/LoadSettings.hpp"
 #include "Solar/Config.hpp"
 
+#include <iostream>
+
 static void __SolarModesScenePipelinesInitLoadSettingsWindowSection(
     Solar::Modes::Scene::Mode* mode,
     Sojson::Node* input
@@ -47,6 +49,44 @@ static void __SolarModesScenePipelinesInitLoadSettingsRendererSection(
     Sojson::Node* input
 )
 {
+    /* Load the viewport: */
+    Sojson::Node* renderer_node = Sojson::NodeGet(input, "renderer");
+    if(renderer_node)
+    {
+        Sojson::Node* viewport_node = Sojson::NodeGet(renderer_node, "viewport");
+        Sojson::Node* viewport_x_node;
+        Sojson::Node* viewport_y_node;
+        Sojson::Node* viewport_width_node;
+        Sojson::Node* viewport_height_node;
+        if(!viewport_node) goto post_viewport;
+        viewport_x_node = Sojson::NodeGet(viewport_node, "x");
+        viewport_y_node = Sojson::NodeGet(viewport_node, "y");
+        viewport_width_node = Sojson::NodeGet(viewport_node, "width");
+        viewport_height_node = Sojson::NodeGet(viewport_node, "height");
+        auto possibly_viewport_x = Sojson::CastNode::Integer(viewport_x_node);
+        auto possibly_viewport_y = Sojson::CastNode::Integer(viewport_y_node);
+        auto possibly_viewport_width = Sojson::CastNode::Integer(viewport_width_node);
+        auto possibly_viewport_height = Sojson::CastNode::Integer(viewport_height_node);
+        /* begin the convertion: */
+        std::cout
+            << __PRETTY_FUNCTION__
+            << ": Setting viewport!\n";
+        Progator::Base::RendererSetViewport(
+            mode->shared->units.main->renderer,
+            {
+                .width  =
+                    (Progator::Types::Specifics::Renderer::Size)possibly_viewport_width.value_or(0),
+                .height =
+                    (Progator::Types::Specifics::Renderer::Size)possibly_viewport_height.value_or(0),
+                .x      = 
+                    (Progator::Types::Specifics::Renderer::Position)possibly_viewport_x.value_or(0),
+                .y      = 
+                    (Progator::Types::Specifics::Renderer::Position)possibly_viewport_y.value_or(0)
+            }
+        );
+    }
+    /* in case the viewport field is not present: */
+    post_viewport:
     return;
 }
 

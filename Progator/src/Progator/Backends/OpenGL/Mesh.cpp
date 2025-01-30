@@ -1,4 +1,7 @@
 #include "Progator/Backends/OpenGL/Mesh.hpp"
+#include "Progator/Config.hpp"
+
+#include <iostream>
 
 Progator::Backends::OpenGL::Mesh* Progator::Backends::OpenGL::MeshNew()
 {
@@ -49,6 +52,7 @@ void Progator::Backends::OpenGL::MeshSetBuffer(
         data,
         GL_STATIC_DRAW
     );
+    mesh->vertices = size;
 }
 
 void Progator::Backends::OpenGL::MeshSetLayout(
@@ -58,15 +62,39 @@ void Progator::Backends::OpenGL::MeshSetLayout(
 )
 {
     __ProgatorBackendsOpenGLMeshSetBuffers(mesh);
-    GLsizei stride_result   = (GLsizei)(layout.stride_size) * (GLsizei)(layout.stride);
-    void* layout_pointer    = (void*)(sizeof(Progator::Types::Basic::F32) * layout.padding);
+    void* pointer = 
+        (void*)(sizeof(Progator::Types::Basic::F32) * (std::size_t)(layout.padding));
+    GLsizei stride =
+        sizeof(Progator::Types::Basic::F32) * (std::size_t)(layout.stride);
+
+    #ifdef PROGATOR_DEBUG
+    std::cout
+        << __PRETTY_FUNCTION__
+        << ": LAYOUT = {"
+        << "id = "
+        << (int)layout.id
+        << ", size = "
+        << (int)layout.size
+        << ", stride = "
+        << (int)stride
+        << ", padding = "
+        << (int)layout.padding
+        << "}\n"
+        << __PRETTY_FUNCTION__
+        << ": LAYOUT["
+        << (int)layout.id
+        << "] layout_pointer = "
+        << pointer
+        << "\n";
+    #endif
+
     glVertexAttribPointer(
         (GLuint)(layout.id),
         (GLuint)(layout.size),
         GL_FLOAT,
         GL_FALSE,
-        stride_result,
-        layout_pointer
+        stride,
+        pointer
     );
     glEnableVertexAttribArray(layout.id);
 }

@@ -21,11 +21,6 @@ namespace Progator
 
                     /// @brief Size of all the entire layout.
                     Progator::Types::Basic::U8 size;
-                    
-                    /// @brief You want this to be the result of the stride for an layout, like:
-                    /// instead of sizeof(float), use stride_size = sizeof(float) & stride =
-                    /// stride_size * stride (or 3 x 3 (for an vec3 for example) ...)
-                    Progator::Types::Basic::U8 stride_size;
 
                     /// @brief the amount of values on the current layout.
                     Progator::Types::Basic::U8 stride;

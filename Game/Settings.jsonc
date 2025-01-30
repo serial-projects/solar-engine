@@ -24,7 +24,16 @@
     "renderer":
     {
         // Set the renderer backend.
-        "backend":      "OpenGL"
+        "backend":      "OpenGL",
+
+        // Set the viewport.
+        "viewport":
+        {
+            "x":        0,
+            "y":        0,
+            "width":    800,
+            "height":   640
+        }
     },
 
     // Engine Configurations:

@@ -86,11 +86,6 @@ void Fera::Backends::OBJ::Interpreter::InstanceStep(
         /* then get the opcode: */
         /* Fera::Backends::OBJ::Interpreter:: */
         Fera::Types::String opcode = instance->tokenizer.GetToken(true);
-        std::cout
-            << __PRETTY_FUNCTION__
-            << ": Parsing opcode = "
-            << opcode
-            << "\n";
         if(instance->tokenizer.GetState() == Logica::Texting::Tokenizer::InstanceStatus::Running)
             Fera::Backends::OBJ::Interpreter::InstancePerformOpcode(instance, opcode);
         else

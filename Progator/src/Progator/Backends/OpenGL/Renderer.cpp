@@ -130,6 +130,20 @@ void Progator::Backends::OpenGL::RendererSetViewport(
     Progator::Types::Specifics::Renderer::Viewport& viewport
 )
 {
+    #ifdef PROGATOR_DEBUG
+        std::cout
+            << __PRETTY_FUNCTION__
+            << ": Setting Viewport = "
+            << (int)viewport.width
+            << "x"
+            << (int)viewport.height
+            << " at: "
+            << (int)viewport.x
+            << ", "
+            << (int)viewport.y
+            << " position!\n";
+    #endif
+
     glViewport(
         (GLint)(viewport.x),
         (GLint)(viewport.y),

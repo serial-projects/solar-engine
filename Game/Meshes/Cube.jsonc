@@ -5,9 +5,9 @@
     "layouts":
     [
         // 0 = position, 1 = texcoord, 2 = normal
-        {"name": "position", "type": "float", "amount": 3},
-        {"name": "texcoord", "type": "float", "amount": 2},
-        {"name": "normal",   "type": "float", "amount": 3}
+        {"name": "position", "size": 3},
+        {"name": "texcoord", "size": 2},
+        {"name": "normal",   "size": 3}
     ],
 
     /* NOTE: this is specific for the OBJ parser */
