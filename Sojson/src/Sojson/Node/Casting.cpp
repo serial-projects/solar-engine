@@ -71,3 +71,20 @@ Sojson::CastNode::Possibly::Boolean Sojson::CastNode::Boolean(
     else
         return std::nullopt;
 }
+
+Sojson::CastNode::Possibly::List Sojson::CastNode::List(
+    Sojson::Node* node
+)
+{
+    if(node == nullptr)
+        return std::nullopt;
+
+    if(node->type == Sojson::NodeTypes::List)
+    {
+        Sojson::RepresentativeTypes::List value;
+        value = *(Sojson::RepresentativeTypes::List*)(node->value);
+        return value;
+    }
+    else
+        return std::nullopt;
+}
