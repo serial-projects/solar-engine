@@ -261,13 +261,13 @@ inline void Logica::Texting::Tokenizer::Instance::__RewindBuffer(
 )
 {
     const Logica::Types::Basic::Size current_position = this->buffer->GetPosition();
-    std::cout
-        << __PRETTY_FUNCTION__
-        << ": rewind from = "
-        << current_position
-        << " -> "
-        << current_position - amount
-        << "\n";
+    // std::cout
+    //     << __PRETTY_FUNCTION__
+    //     << ": rewind from = "
+    //     << current_position
+    //     << " -> "
+    //     << current_position - amount
+    //     << "\n";
     this->buffer->SetPosition(current_position - amount);
 }
 
