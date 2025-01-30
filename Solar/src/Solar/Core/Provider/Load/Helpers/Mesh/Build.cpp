@@ -24,6 +24,7 @@ Progator::Objects::Mesh* Solar::Core::Provider::Load::Helpers::Mesh::Build(
     );
 
     /* set the layouts: */
+    Solar::Types::Basic::U8 layout_counter = 0;
     for(
         Solar::Types::Basic::U8 index=0;
         index < layouts.size() && index < UINT8_MAX;
@@ -40,7 +41,16 @@ Progator::Objects::Mesh* Solar::Core::Provider::Load::Helpers::Mesh::Build(
             rendering_unit->renderer,
             index
         );
+        /* here, count the layout for the final SetVertices() function. */
+        layout_counter += layouts.at(index).size;
     }
+
+    /* set the vertices: */
+    Progator::Objects::MeshSetVertices(
+        mesh,
+        rendering_unit->renderer,
+        layout_counter
+    );
 
     /* done: */
     return mesh;

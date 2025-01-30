@@ -1,7 +1,9 @@
 #include "Progator/Backends/OpenGL/Mesh.hpp"
 #include "Progator/Config.hpp"
 
-#include <iostream>
+#ifdef PROGATOR_DEBUG
+    #include <iostream>
+#endif
 
 Progator::Backends::OpenGL::Mesh* Progator::Backends::OpenGL::MeshNew()
 {
@@ -46,6 +48,16 @@ void Progator::Backends::OpenGL::MeshSetBuffer(
 )
 {
     __ProgatorBackendsOpenGLMeshSetBuffers(mesh);
+    #ifdef PROGATOR_DEBUG
+        std::cout
+            << __PRETTY_FUNCTION__
+            << ": data = "
+            << data
+            << ", size = "
+            << size
+            << "\n";
+    #endif
+
     glBufferData(
         GL_ARRAY_BUFFER,
         size * sizeof(Progator::Types::Basic::F32),
@@ -125,7 +137,17 @@ void Progator::Backends::OpenGL::MeshSetVertices(
     const Progator::Types::Basic::U64 size
 )
 {
-    mesh->vertices = size;
+    /* NOTE: this is not the MOST recommended way since we are dividing the number 
+     * and bad precision MAY be a mistake...
+     */
+    mesh->vertices = (Progator::Types::Basic::U64)(mesh->vertices / size);
+    #ifdef PROGATOR_DEBUG
+        std::cout
+            << __PRETTY_FUNCTION__
+            << ": mesh->vertices = "
+            << mesh->vertices
+            << "\n";
+    #endif
 }
 
 void Progator::Backends::OpenGL::MeshDraw(

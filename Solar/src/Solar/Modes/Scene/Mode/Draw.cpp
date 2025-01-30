@@ -25,8 +25,8 @@ void Solar::Modes::Scene::ModeDraw(
     Progator::Objects::Mesh* mesh = 
         Solar::Core::Provider::Load::Mesh(
             &mode->shared->warehouse,
-            "root:Meshes/Cube",
-            "Cube.*",
+            "root:Meshes/Square",
+            "Square.*",
             "main"
         );
     
