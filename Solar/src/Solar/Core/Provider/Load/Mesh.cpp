@@ -3,6 +3,8 @@
 #include "Solar/Core/Provider/Load/RawMesh.hpp"
 
 #include "Solar/Core/Provider/Load/Helpers/Mesh/Surf.hpp"
+#include "Solar/Core/Provider/Load/Helpers/Mesh/Layout.hpp"
+#include "Solar/Core/Provider/Load/Helpers/Mesh/Build.hpp"
 
 #include "Solar/Config.hpp"
 #include "Solar/Validator.hpp"
@@ -41,13 +43,12 @@ Progator::Objects::Mesh* Solar::Core::Provider::Load::Mesh(
             goto skip_due_invalid_rendering_unit;
         }
         
-        /* NOTE: load the raw mesh: */
-        Fera::Meshing::Mesh* raw_mesh = 
-            Solar::Core::Provider::Load::RawMesh(warehouse, site);
-        if(raw_mesh == nullptr)
-            goto skip_due_invalid_rendering_unit;
+        /* NOTE: load the recipe & raw mesh: */
+        Sojson::Node* recipe = Solar::Core::Provider::Load::DataFile(warehouse, site);
+        Fera::Meshing::Mesh* raw_mesh = Solar::Core::Provider::Load::RawMesh(warehouse, site);
+        if(raw_mesh == nullptr) goto skip_due_invalid_rendering_unit;
         
-        /* TODO: check: */
+        /* TODO: make this return optional since this function CAN fail. */
         Fera::Meshing::MeshUnitTypes::Object load_object =
             Solar::Core::Provider::Load::Helpers::Mesh::Surf(
                 warehouse,
@@ -55,16 +56,28 @@ Progator::Objects::Mesh* Solar::Core::Provider::Load::Mesh(
                 object
             );
         
-        for(Solar::Types::Basic::I32 index=0; index<load_object.size(); ++index)
-            std::cout
-                << __PRETTY_FUNCTION__
-                << ": ["
-                << index
-                << "] = "
-                << load_object.at(index)
-                << "\n";
+        /* Get the layout: */
+        auto layouts = Solar::Core::Provider::Load::Helpers::Mesh::GetMeshLayouts(
+            warehouse,
+            site,
+            recipe
+        );
+        if(!layouts.has_value()) goto skip_due_invalid_rendering_unit;
 
-        std::abort();
+        /* Finally, build the mesh: */
+        current_mesh = Solar::Core::Provider::Load::Helpers::Mesh::Build(
+            rendering_unit,
+            load_object,
+            layouts.value()
+        );
+
+        Solar::Core::Provider::WarehouseAddCacheWithRenderingUnitOwnership(
+            warehouse,
+            cache_tag,
+            Solar::Core::Provider::PackageTypes::Mesh,
+            (void*)current_mesh,
+            rendering_unit
+        );
     }
     skip_due_invalid_rendering_unit:
     return current_mesh;
