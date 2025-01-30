@@ -57,7 +57,10 @@ void Solar::Core::Provider::PackageDestroy(
             break;
         case Solar::Core::Provider::PackageTypes::Mesh:
             {
-
+                Progator::Objects::MeshDestroy(
+                    (Progator::Objects::Mesh*)(package->content),
+                    package->rendering_unit_ownership->renderer
+                );
             };
             break;
         /* probably bug ? */
