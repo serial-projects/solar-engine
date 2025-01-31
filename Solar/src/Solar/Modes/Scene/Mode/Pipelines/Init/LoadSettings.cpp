@@ -116,7 +116,7 @@ static void __SolarModesScenePipelinesInitLoadSettingsEngineSection(
     }
 }
 
-void Solar::Modes::Scene::Pipelines::Init::LoadSettings(
+void Solar::Modes::Scene::ModePipelines::Init::LoadSettings(
     Solar::Modes::Scene::Mode *mode
 )
 {

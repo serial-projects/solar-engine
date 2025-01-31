@@ -9,7 +9,7 @@ namespace Solar
     {
         namespace Scene
         {
-            namespace Pipelines
+            namespace ModePipelines
             {
                 namespace Init
                 {

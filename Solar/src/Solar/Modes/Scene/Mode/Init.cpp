@@ -15,8 +15,8 @@ void Solar::Modes::Scene::ModeInit(
 
     /* Begin the Init pipeline for the scene mode (the scene mode is initialized once only per
      * instance, meaning this functions will probably run a single time). */
-    Solar::Modes::Scene::Pipelines::Init::LoadSettings(mode);
-    Solar::Modes::Scene::Pipelines::Init::LoadStory(mode);
+    Solar::Modes::Scene::ModePipelines::Init::LoadSettings(mode);
+    Solar::Modes::Scene::ModePipelines::Init::LoadStory(mode);
 
     /* Test shader: */
     Solar::Core::Provider::Load::Shader(
