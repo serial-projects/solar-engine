@@ -1,5 +1,5 @@
-#ifndef SolarModesScenePipelinesInitLoadSettings_hpp
-#define SolarModesScenePipelinesInitLoadSettings_hpp
+#ifndef SolarModesSceneModePipelinesInitLoadSettings_hpp
+#define SolarModesSceneModePipelinesInitLoadSettings_hpp
 
 #include "Solar/Modes/Scene/Mode/Structure.hpp"
 

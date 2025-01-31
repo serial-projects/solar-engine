@@ -1,6 +1,6 @@
 #include "Solar/Modes/Scene/Mode/Init.hpp"
-#include "Solar/Modes/Scene/Pipelines/Init/LoadSettings.hpp"
-#include "Solar/Modes/Scene/Pipelines/Init/LoadStory.hpp"
+#include "Solar/Modes/Scene/Mode/Pipelines/Init/LoadSettings.hpp"
+#include "Solar/Modes/Scene/Mode/Pipelines/Init/LoadStory.hpp"
 
 void Solar::Modes::Scene::ModeInit(
     Solar::Modes::Scene::Mode* mode,

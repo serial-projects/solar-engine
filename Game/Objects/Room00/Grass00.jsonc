@@ -1,0 +1,25 @@
+{
+    "name":             "Grass",
+    "tag":              "Grass00",
+    
+    // Generics:
+    "properties":
+    {
+        "size":         [1, 1, 1],
+        "position":     [0, 0, 0],
+        "rotation":     [0, 0, 0]
+    },
+    
+    // Draw Properties:
+    "draw":
+    {
+        // This is a single block without animation.
+        "has_animation": false,
+
+        "mesh":
+        [
+            // This will get the Meshes/Cube and the Cube.* (with all the sides).
+            {"name": "root:Meshes/Cube", "object": "Cube.*", "shader": "root:Shaders/Basic"}
+        ]
+    }
+}

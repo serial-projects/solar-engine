@@ -1,4 +1,4 @@
-#include "Solar/Modes/Scene/Pipelines/Init/LoadSettings.hpp"
+#include "Solar/Modes/Scene/Mode/Pipelines/Init/LoadSettings.hpp"
 #include "Solar/Config.hpp"
 
 #include <iostream>
