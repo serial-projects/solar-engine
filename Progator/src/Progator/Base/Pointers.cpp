@@ -135,4 +135,11 @@ void Progator::Base::PointersSetOpenGLMode(
     AVO(mesh_disable_layout, MeshDisableLayout);
     AVO(mesh_set_vertices, MeshSetVertices);
     AVO(mesh_draw, MeshDraw);
+
+    /* Set the Uniform Buffer Object */
+    AVO(uniform_buffer_object_new, UniformBufferObjectNew);
+    AVO(uniform_buffer_object_destroy, UniformBufferObjectDestroy);
+    AVO(uniform_buffer_object_init, UniformBufferObjectInit);
+    AVO(uniform_buffer_object_attach_shader, UniformBufferObjectAttachShader);
+    AVO(uniform_buffer_object_set_data, UniformBufferObjectSetData);
 }

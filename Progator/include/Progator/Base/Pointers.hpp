@@ -74,6 +74,13 @@ namespace Progator
             typedef void(*MeshDisableLayout)(void* mesh, void* renderer, const Progator::Types::Basic::U8 layout);
             typedef void(*MeshSetVertices)(void* mesh, void* renderer, const Progator::Types::Basic::U64 size);
             typedef void(*MeshDraw)(void* mesh, void* renderer);
+
+            /* Uniform Buffer Object: */
+            typedef void*(*UniformBufferObjectNew)();
+            typedef void(*UniformBufferObjectDestroy)(void* ubo, void* renderer);
+            typedef void(*UniformBufferObjectInit)(void* ubo, void* renderer, Logica::Control::Validator* validator);
+            typedef void(*UniformBufferObjectAttachShader)(void* ubo, void* renderer, void* shader, const Progator::Types::Specifics::UBO::Property property);
+            typedef void(*UniformBufferObjectSetData)(void* ubo, void* renderer, const Progator::Types::Specifics::UBO::Property property, void* data, Progator::Types::Basic::U64 size);
         };
 
         /// @brief contains the pointers for the backend functions.
@@ -129,6 +136,13 @@ namespace Progator
             Progator::Base::BackendBinding::MeshDisableLayout mesh_disable_layout;
             Progator::Base::BackendBinding::MeshSetVertices mesh_set_vertices;
             Progator::Base::BackendBinding::MeshDraw mesh_draw;
+
+            /* Uniform Buffer Object: */
+            Progator::Base::BackendBinding::UniformBufferObjectNew uniform_buffer_object_new;
+            Progator::Base::BackendBinding::UniformBufferObjectDestroy uniform_buffer_object_destroy;
+            Progator::Base::BackendBinding::UniformBufferObjectInit uniform_buffer_object_init;
+            Progator::Base::BackendBinding::UniformBufferObjectAttachShader uniform_buffer_object_attach_shader;
+            Progator::Base::BackendBinding::UniformBufferObjectSetData uniform_buffer_object_set_data;
 
             /* mode: */
             Progator::Types::Basic::U8 mode;
