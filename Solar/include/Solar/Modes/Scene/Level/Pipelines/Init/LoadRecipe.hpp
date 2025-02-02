@@ -14,7 +14,15 @@ namespace Solar
             {
                 namespace Init
                 {
-                    void LoadRecipe(Solar::Modes::Scene::Level* level);
+                    /// @brief Loads the recipe to cache.
+                    /// @param level the level to the loaded.
+                    /// @param mode the mode attached to the level.
+                    /// @param world_key the key of the world to be loaded.
+                    void LoadRecipe(
+                        Solar::Modes::Scene::Level* level,
+                        Solar::Modes::Scene::Mode* mode,
+                        const Solar::Types::Basic::String& world_key
+                    );
                 };
             };
         };

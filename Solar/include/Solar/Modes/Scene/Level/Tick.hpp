@@ -9,7 +9,7 @@ namespace Solar
     {
         namespace Scene
         {
-            void LevelTick(Solar::Modes::Scene::Level* level);
+            void LevelTick(Solar::Modes::Scene::Level* level, Solar::Modes::Scene::Mode* mode);
         };
     };
 };

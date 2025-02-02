@@ -9,7 +9,7 @@ namespace Solar
     {
         namespace Scene
         {
-            void LevelInit(Solar::Modes::Scene::Level* level);
+            void LevelInit(Solar::Modes::Scene::Level* level, Solar::Modes::Scene::Mode* mode);
         };
     };
 };
