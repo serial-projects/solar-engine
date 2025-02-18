@@ -1,4 +1,4 @@
-#include "Progator/Backends/OpenGL/UniformBufferObject.hpp"
+#include "Progator/Backends/OpenGL/Buffers/Uniform.hpp"
 #include "Progator/Config.hpp"
 
 #ifdef PROGATOR_DEBUG

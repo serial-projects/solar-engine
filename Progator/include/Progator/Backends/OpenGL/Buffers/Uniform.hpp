@@ -1,5 +1,5 @@
-#ifndef ProgatorBackendsOpenGLUniformBufferObject_hpp
-#define ProgatorBackendsOpenGLUniformBufferObject_hpp
+#ifndef ProgatorBackendsOpenGLBuffersUniform_hpp
+#define ProgatorBackendsOpenGLBuffersUniform_hpp
 
 #include "Progator/Backends/OpenGL/Types.hpp"
 #include "Progator/Backends/OpenGL/Renderer.hpp"

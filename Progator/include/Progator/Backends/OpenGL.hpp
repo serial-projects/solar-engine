@@ -7,6 +7,6 @@
 #include "Progator/Backends/OpenGL/Shader.hpp"
 #include "Progator/Backends/OpenGL/Mesh.hpp"
 
-#include "Progator/Backends/OpenGL/UniformBufferObject.hpp"
+#include "Progator/Backends/OpenGL/Buffers/Uniform.hpp"
 
 #endif
