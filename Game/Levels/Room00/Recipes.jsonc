@@ -1,0 +1,18 @@
+{
+    "Grass":
+    {
+        "Meshes":
+        [
+            // This is always passed as a pair of <site>, <object>
+            ["root:Meshes/Cube", "*"]
+        ],
+        "Shaders":
+        [
+            "root:Shader/Basic.jsonc"
+        ],
+        "Textures":
+        [
+            "root:Textures/Grass.jsonc"
+        ]
+    }
+}

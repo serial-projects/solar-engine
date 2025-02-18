@@ -6,6 +6,7 @@
 
 /* NOTE: for convenience, just import the lower & high libraries here already: */
 #include "Solar/Types/Progator.hpp"
+#include "Solar/Types/GLM.hpp"
 #include "Solar/Types/Sojson.hpp"
 
 #endif
