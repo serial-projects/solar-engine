@@ -82,7 +82,7 @@ void Progator::Backends::OpenGL::UniformBufferObjectAttachShader(
     }
 }
 
-void Progator::Backends::OpenGL::UniformBufferSetData(
+void Progator::Backends::OpenGL::UniformBufferObjectSetData(
     Progator::Backends::OpenGL::UniformBufferObject* ubo,
     Progator::Backends::OpenGL::Renderer* renderer,
     const Progator::Types::Specifics::UBO::Property property,
