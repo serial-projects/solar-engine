@@ -1,15 +1,29 @@
 #!/bin/sh
-do_everything() {
-	# Set to ninja so we can have good stuff:
-
-	# NOTE: some times you want to use ASAN and some times you want to use valgrind.
-
-	cmake . -G Ninja					\
-		-DCMAKE_BUILD_TYPE=Debug		\
-		-DPROJECT_USE_ASAN=yes
-
-	# Do cleanup & do not use cache:
-	ninja -v clean
-	ninja -v -j$(nproc)
+copy_file(){
+    cp -v ./App/App ../Engine-v1
 }
-do_everything
+
+# NOTE: check if CHOST has been defined.
+if [[ -z "${CHOST}" ]]; then
+    CHOST=$(which gcc)
+fi
+
+build_things(){
+    
+    # NOTE: This is a too aggresive solution ;-) 
+    rm -v -r ./build/
+    mkdir ./build
+    
+    # Run cmake from there.
+    cd ./build
+    cmake .. -G Ninja                                   \
+        -DCMAKE_C_COMPILER=${CHOST}                     \
+        -DCMAKE_BUILD_TYPE="Debug"                      \
+        -DPROJECT_FORCE_COLORS=1                        \
+        -DPROJECT_USE_ASAN=1
+    ninja -v clean
+    ninja -v -j$(nproc) && copy_file
+}
+
+# Entry point:
+build_things

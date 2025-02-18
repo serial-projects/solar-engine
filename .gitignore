@@ -28,5 +28,8 @@ cmake_install.cmake
 *Test
 *.exe
 
+# Result of the compilations:
+Engine-v1
+
 # NOTE: this more of an personal note so I could remember:
 TODO.md
