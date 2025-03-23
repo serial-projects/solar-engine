@@ -1,6 +1,7 @@
 #include "Solar/Core/Provider/Site.hpp"
 
-std::optional<Solar::Core::Provider::SitePathAndKeyResult> Solar::Core::Provider::FromSiteGetAndSolvePathAndKey(
+std::optional<Solar::Core::Provider::SitePathAndKeyResult> 
+Solar::Core::Provider::FromSiteGetAndSolvePathAndKey(
     Solar::Core::Provider::Warehouse *warehouse,
     const Solar::Types::Basic::String &key
 )
