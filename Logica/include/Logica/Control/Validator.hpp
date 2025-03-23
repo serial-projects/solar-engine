@@ -2,80 +2,86 @@
 #define LogicaControlValidator_hpp
 
 #include "Logica/Types/Basic.hpp"
-#include "Logica/Types/Functions.hpp"
-
-/* Validator Macro Helpers: */
-
-#define LogicaControlValidatorPerformActionAndProceedIfValidated(action, validator)                 \
-    action;                                                                                         \
-    if(validator->code != 0) return;
-
-#define LogicaControlValidatorPerformActionAndHandleFail(action, validator, error_branch)           \
-    action;                                                                                         \
-    if(validator->code != 0) error_branch;
+#include <functional>
 
 namespace Logica
 {
     namespace Control
     {
-        /// @brief NOTE: use Validator class, this is NOT to be used as it just contains the code
-        /// and the buffer for the validator, for all the functions, use the class!
-        struct ValidatorValues
+        /**
+         * \brief Validator is an error storage component, that is, when there is an error
+         * it will keep it to VALIDATE certain actions later.
+         */
+        class Validator
         {
-            Logica::Types::Basic::U8        code;
-            Logica::Types::Basic::String    buffer;
-            ValidatorValues();
-        };
+            public:
+                Validator();
 
-        typedef void(*ValidatorWhenErrorCallback)(Logica::Control::ValidatorValues* validator, void* userdata);
+                /**
+                 * \brief An object that contains the code & current message.
+                 */
+                struct Content
+                {
+                    Logica::Types::Basic::U8        code = 0;
+                    Logica::Types::Basic::String    buffer;
+                };
 
-        /// @brief Validator is an error storage component, that is, when there is an error
-        /// it will keep it to VALIDATE certain actions later.
-        struct Validator
-        {
-            /* Code & Error Buffer: */
+                /**
+                 * \brief Contains the current message and the code the validator is in.
+                 */
+                Logica::Control::Validator::Content content;
 
-            /// @brief The values that are passed to the callback (in example)
-            Logica::Control::ValidatorValues values;
+                /* Set functions: */
 
-            /* Callbacks: */
+                /**
+                 * \brief When attached, it will callback an function.
+                 * \param when_error_callback_f function to attach.
+                 */
+                void SetErrorCallback(
+                    std::function<void(Logica::Control::Validator::Content*, void*)> 
+                        when_error_callback_f
+                );
 
-            /// @brief The attached function to call when error happens.
-            Logica::Control::ValidatorWhenErrorCallback when_error_callback_f;
+                /**
+                 * \brief an customized parameter data for your validator, useful for error handling.
+                 * \param userdata the user data (void*) format.
+                 */
+                void SetUserDataForCallback(void* userdata);
 
-            /// @brief The attached pointer for some data to the when_error_callback_f()
-            void* userdata;
+                /**
+                 * \brief Set the current state of the validator.
+                 * \param code the code (0 is usually Ok).
+                 * \param format the string to be formatted
+                 * \param ... anything else
+                 */
+                void SetError(
+                    const Logica::Types::Basic::U8 code,
+                    const Logica::Types::Basic::CH8* format,
+                    ...
+                );
 
-            /* Construction: */
+                /**
+                 *\brief Returns the buffer.
+                 * \return the reference for the string.
+                 */
+                Logica::Types::Basic::String& GetBuffer();
+                
+                /**
+                 * \brief Returns the code.
+                 * \return the code.
+                 */
+                Logica::Types::Basic::U8 GetCode();
+            private:
+                /**
+                 * \brief Callback for when some error happens.
+                 */
+                std::function<void(Logica::Control::Validator::Content*, void*)>
+                    at_error_callback;
 
-            /// @brief Validator builder.
-            Validator();
-
-            /* Set functions: */
-
-            /// @brief When attached, it will callback an function.
-            /// @param when_error_callback_f function to attach.
-            void SetErrorCallback(Logica::Control::ValidatorWhenErrorCallback when_error_callback_f);
-
-            /// @brief an customized parameter data for your validator, useful for error handling.
-            /// @param userdata the user data (void*) format.
-            void SetUserDataForCallback(void* userdata);
-
-            /// @brief Set the current state of the validator.
-            /// @param code the code (0 is usually Ok).
-            /// @param format the string to be formatted
-            /// @param ... anything else
-            void SetError(const Logica::Types::Basic::U8 code, const Logica::Types::Basic::CH8* format, ...);
-            
-            /* Get functions: */
-
-            /// @brief Returns the buffer.
-            /// @return the reference for the string.
-            Logica::Types::Basic::String& GetBuffer();
-
-            /// @brief Returns the code.
-            /// @return the code.
-            Logica::Types::Basic::U8 GetCode();
+                /**
+                 * \brief Pointer that is passed to the callback.
+                 */
+                void* userdata;
         };
     };
 };

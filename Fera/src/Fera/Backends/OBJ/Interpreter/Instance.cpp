@@ -18,7 +18,7 @@ void Fera::Backends::OBJ::Interpreter::InstanceDestroy(
 
 void Fera::Backends::OBJ::Interpreter::InstanceInit(
     Fera::Backends::OBJ::Interpreter::Instance* instance,
-    Logica::Types::Stream::Buffer* buffer
+    Logica::Types::Buffer::Base* buffer
 )
 {
     instance->tokenizer_rules = Logica::Texting::Tokenizer::Rules();

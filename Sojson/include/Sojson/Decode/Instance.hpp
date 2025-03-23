@@ -63,10 +63,10 @@ namespace Sojson
         /// @brief The parser instance.
         struct Instance
         {
-            Logica::Texting::Tokenizer::Instance current_tokenizer;
-            Logica::Texting::Tokenizer::Rules current_tokenizer_rules;
-            Logica::Control::Validator validator;
-            Sojson::Types::U8 state;
+            Logica::Texting::Tokenizer::Instance    current_tokenizer;
+            Logica::Texting::Tokenizer::Rules       current_tokenizer_rules;
+            Logica::Control::Validator              validator;
+            Sojson::Types::U8                       state;
         };
 
         /// @brief Returns an new instance (not on heap, this is just for the style).
@@ -75,17 +75,24 @@ namespace Sojson
 
         /// @brief Destroys an instance (doesn't do anything, you need to destroy the buffer yourself).
         /// @param instance the instance to be "destroyed"
-        void InstanceDestroy(Sojson::Decode::Instance* instance);
+        void InstanceDestroy(
+            Sojson::Decode::Instance* instance
+        );
 
         /// @brief Initializes the instance and prepares for tokenizer.
         /// @param instance the instance to initialize.
         /// @param buffer the buffer to be the source to the tokenizer.
-        void InstanceInit(Sojson::Decode::Instance* instance, Logica::Types::Stream::Buffer* buffer);
+        void InstanceInit(
+            Sojson::Decode::Instance* instance,
+            Logica::Types::Buffer::Base* buffer
+        );
 
         /// @brief Parses the whole inputed buffer (check for the validator for errors)
         /// @param instance the instance to do the parsing.
         /// @return the created node, use Sojson::NodeDestroy() to free it from memory.
-        Sojson::Node* InstanceParse(Sojson::Decode::Instance* instance);
+        Sojson::Node* InstanceParse(
+            Sojson::Decode::Instance* instance
+        );
     };
 };
 

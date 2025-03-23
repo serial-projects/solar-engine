@@ -45,38 +45,17 @@ inline Logica::Types::Basic::CH8 Logica::Texting::Tokenizer::Instance::__GetEsca
 
 )
 {
-    Logica::Types::Basic::CH8 result = 0;
+    Logica::Types::Basic::CH8 result            = 0;
     Logica::Types::Basic::I32 initial_character = this->__GetCharacter();
-    /* NOW for quick returns:
-     * \n -> new line
-     * \r -> carriage return
-     * \" -> for literal "
-     * \' -> for literal '
-     * \\ -> for literal \
-     * \t -> for horizontal tab
-     */
     switch(initial_character)
     {
-        case 'n':
-            result = '\n';
-            goto non_numbers;
-        case 'r':
-            result = '\r';
-            goto non_numbers;
-        case 't':
-            result = '\r';
-            goto non_numbers;
-        case '"':
-            result = '"';
-            goto non_numbers;
-        case '\'':
-            result = '\'';
-            goto non_numbers;
-        case '\\':
-            result = '\\';
-            goto non_numbers;
-        default:
-            break;
+        case 'n':   result = '\n';  goto non_numbers;
+        case 'r':   result = '\r';  goto non_numbers;
+        case 't':   result = '\r';  goto non_numbers;
+        case '"':   result = '"';   goto non_numbers;
+        case '\'':  result = '\'';  goto non_numbers;
+        case '\\':  result = '\\';  goto non_numbers;
+        default:    break;
     };
     
     /* TODO: do string literals that are: \{numbers} */
@@ -287,8 +266,8 @@ inline Logica::Types::Basic::I32 Logica::Texting::Tokenizer::Instance::__GetChar
 Logica::Texting::Tokenizer::Instance::Instance()
 {
     /* Set the pointers to NULL: */
-    this->buffer = nullptr;
-    this->rules = nullptr;
+    this->buffer    = nullptr;
+    this->rules     = nullptr;
 
     /* set the counters: */
     this->max_position_ever = 0;
@@ -309,7 +288,7 @@ void Logica::Texting::Tokenizer::Instance::SetRules(
 }
 
 void Logica::Texting::Tokenizer::Instance::SetBuffer(
-    Logica::Types::Stream::Buffer* buffer
+    Logica::Types::Buffer::Base* buffer
 )
 {
     this->buffer = buffer;

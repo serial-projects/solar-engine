@@ -18,7 +18,7 @@ void Sojson::Decode::InstanceDestroy(
 
 void Sojson::Decode::InstanceInit(
     Sojson::Decode::Instance* instance,
-    Logica::Types::Stream::Buffer* buffer
+    Logica::Types::Buffer::Base* buffer
 )
 {
     /*

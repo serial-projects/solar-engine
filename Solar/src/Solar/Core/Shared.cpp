@@ -46,10 +46,10 @@ void Solar::Core::SharedInit(
         (void*)shared
     );
     shared->warehouse.validator.SetErrorCallback(
-        [](Logica::Control::ValidatorValues* validator, void* userdata){
+        [](Logica::Control::Validator::Content* content, void* userdata){
             /* Prepare for the SDL Error: */
             const Solar::Types::Basic::String text = 
-                "Fatal: " + validator->buffer;
+                "Fatal: " + content->buffer;
 
             SDL_ShowSimpleMessageBox(
                 SDL_MESSAGEBOX_ERROR,

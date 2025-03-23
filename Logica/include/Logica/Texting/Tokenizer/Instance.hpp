@@ -4,7 +4,6 @@
 #include "Logica/Types.hpp"
 #include "Logica/Control/Validator.hpp"
 #include "Logica/Texting/Tokenizer/Rules.hpp"
-#include <stack>
 
 namespace Logica
 {
@@ -57,7 +56,7 @@ namespace Logica
             {
                 private:
                     Logica::Texting::Tokenizer::Rules* rules;
-                    Logica::Types::Stream::Buffer* buffer;
+                    Logica::Types::Buffer::Base* buffer;
                     Logica::Types::Basic::U8 state;
 
                     /* GetDelimited Token/String */
@@ -104,7 +103,7 @@ namespace Logica
 
                     /// @brief Set the buffer (can be FileBuffer, StringBuffer, etc);
                     /// @param buffer the buffer pointer.
-                    void SetBuffer(Logica::Types::Stream::Buffer* buffer);
+                    void SetBuffer(Logica::Types::Buffer::Base* buffer);
 
                     /// @brief Returns the state the instance is
                     /// @return the state (an Logica::Texting::Tokenizer::InstanceStatus value).

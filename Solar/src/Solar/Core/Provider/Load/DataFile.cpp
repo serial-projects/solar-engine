@@ -6,7 +6,7 @@
 
 static Sojson::Node* __SolarCoreProviderLoadDataFileFromFile(
     Solar::Core::Provider::Warehouse* warehouse,
-    Logica::Types::Stream::FileBuffer* file_buffer
+    Logica::Types::Buffer::File* file_buffer
 )
 {
     Sojson::Decode::Instance instance = Sojson::Decode::InstanceNew();
@@ -51,11 +51,12 @@ static Sojson::Node* __SolarCoreProviderLoadDataFile(
         << "\n";
 
     /* begin to load the file, here we require to open a buffer: */
-    Logica::Types::Stream::FileBuffer file_buffer;
+    Logica::Types::Buffer::File file_buffer;
     if(file_buffer.SetFile(file_path))
     {
         /* NOTE: then do the right thing: */
-        parsed_file = __SolarCoreProviderLoadDataFileFromFile(warehouse, &file_buffer);
+        file_buffer.Init();
+            parsed_file = __SolarCoreProviderLoadDataFileFromFile(warehouse, &file_buffer);
         file_buffer.Close();
     }
     else

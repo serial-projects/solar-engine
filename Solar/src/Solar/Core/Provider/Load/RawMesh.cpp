@@ -28,12 +28,12 @@ static Fera::Meshing::Mesh* __SolarCoreProviderLoadRawMeshUseOBJBackend(
     Sojson::Node* recipe
 )
 {
-    Logica::Types::Basic::String actual_file_path;
-    Logica::Types::Stream::FileBuffer file_buffer;
-    Fera::Meshing::Mesh* file_result_mesh = nullptr;
-    Sojson::Node* recipe_obj_specific_tuning = nullptr;
-    Fera::Backends::OBJ::Interpreter::Properties properties;
-    Fera::Backends::OBJ::Interpreter::Instance instance;
+    Logica::Types::Basic::String    actual_file_path;
+    Logica::Types::Buffer::File     file_buffer;
+    Fera::Meshing::Mesh*            file_result_mesh = nullptr;
+    Sojson::Node*                   recipe_obj_specific_tuning = nullptr;
+    Fera::Backends::OBJ::Interpreter::Properties    properties;
+    Fera::Backends::OBJ::Interpreter::Instance      instance;
 
     /* 0-) Load the actual file path: */
     auto file_path = Solar::Core::Provider::FromSiteGetAndSolvePathAndKey(
@@ -66,6 +66,8 @@ static Fera::Meshing::Mesh* __SolarCoreProviderLoadRawMeshUseOBJBackend(
         );
         goto skip_due_error;
     }
+    else
+        file_buffer.Init();
 
     /* 2-) Load the properties: */
     properties = {
@@ -109,9 +111,9 @@ static Fera::Meshing::Mesh* __SolarCoreProviderLoadRawMeshUseOBJBackend(
     instance = Fera::Backends::OBJ::Interpreter::InstanceNew();
     Fera::Backends::OBJ::Interpreter::InstanceInit(&instance, &file_buffer);
     instance.properties = properties;
-
+    
+    /* We call the OBJ Interpreter to parse itself.*/
     Fera::Backends::OBJ::Interpreter::InstanceParse(&instance);
-
     file_result_mesh = Fera::Backends::OBJ::Interpreter::InstanceGetMesh(&instance);
 
     /* 4-) check for errors: */

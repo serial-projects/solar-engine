@@ -112,13 +112,29 @@ namespace Fera
                     Fera::Backends::OBJ::Interpreter::Properties properties;
                 };
                 Fera::Backends::OBJ::Interpreter::Instance InstanceNew();
-                void InstanceDestroy(Fera::Backends::OBJ::Interpreter::Instance* instance);
-                void InstanceInit(Fera::Backends::OBJ::Interpreter::Instance* instance, Logica::Types::Stream::Buffer* buffer);
-                void InstanceStep(Fera::Backends::OBJ::Interpreter::Instance* instance);
-                void InstanceParse(Fera::Backends::OBJ::Interpreter::Instance* instance);
-                void InstanceGenerateObject(Fera::Backends::OBJ::Interpreter::Instance* instance);
-                void InstanceSetProperty(Fera::Backends::OBJ::Interpreter::Instance* instance, Fera::Backends::OBJ::Interpreter::Properties properties);
-                Fera::Meshing::Mesh* InstanceGetMesh(Fera::Backends::OBJ::Interpreter::Instance* instance);
+                void InstanceDestroy(
+                    Fera::Backends::OBJ::Interpreter::Instance* instance
+                );
+                void InstanceInit(
+                    Fera::Backends::OBJ::Interpreter::Instance* instance,
+                    Logica::Types::Buffer::Base* buffer
+                );
+                void InstanceStep(
+                    Fera::Backends::OBJ::Interpreter::Instance* instance
+                );
+                void InstanceParse(
+                    Fera::Backends::OBJ::Interpreter::Instance* instance
+                );
+                void InstanceGenerateObject(
+                    Fera::Backends::OBJ::Interpreter::Instance* instance
+                );
+                void InstanceSetProperty(
+                    Fera::Backends::OBJ::Interpreter::Instance* instance,
+                    Fera::Backends::OBJ::Interpreter::Properties properties
+                );
+                Fera::Meshing::Mesh* InstanceGetMesh(
+                    Fera::Backends::OBJ::Interpreter::Instance* instance
+                );
             };
         };
     };

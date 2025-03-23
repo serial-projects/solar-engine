@@ -1,26 +1,19 @@
 #include "Logica/Control/Validator.hpp"
 #include <cstdarg>
 
-/* TODO: remove the debug! */
-#include <iostream>
-
-Logica::Control::ValidatorValues::ValidatorValues()
-{
-    this->code = 0;
-    this->buffer = Logica::Types::Basic::String();
-}
-
 Logica::Control::Validator::Validator()
 {
-    this->when_error_callback_f = nullptr;
-    this->userdata = nullptr;
+    this->at_error_callback = std::function<void(Logica::Control::Validator::Content*, void*)>();
+    this->userdata          = nullptr;
+    this->content           = Logica::Control::Validator::Content();
 }
 
 void Logica::Control::Validator::SetErrorCallback(
-    Logica::Control::ValidatorWhenErrorCallback when_error_callback_f
+    std::function<void(Logica::Control::Validator::Content*, void*)> 
+        when_error_callback_f
 )
 {
-    this->when_error_callback_f = when_error_callback_f;
+    this->at_error_callback = when_error_callback_f;
 }
 
 void Logica::Control::Validator::SetUserDataForCallback(
@@ -43,29 +36,23 @@ void Logica::Control::Validator::SetError(
     Logica::Types::Basic::CH8 __buffer[512] = {};
     std::vsnprintf(__buffer, 512, format, args);
 
-    this->values.buffer = Logica::Types::Basic::String(__buffer);
-    this->values.code = code;
-
-    std::cout
-        << __PRETTY_FUNCTION__
-        << ": "
-        << this->values.buffer
-        << "\n";
+    this->content.buffer = Logica::Types::Basic::String(__buffer);
+    this->content.code = code;
 
     /* NOTE: finally call the call back (if possible): */
-    if(this->when_error_callback_f != nullptr)
-        this->when_error_callback_f(
-            &this->values,
+    if(this->at_error_callback)
+        this->at_error_callback(
+            &this->content,
             this->userdata
         );
 }
 
 Logica::Types::Basic::String& Logica::Control::Validator::GetBuffer()
 {
-    return this->values.buffer;
+    return this->content.buffer;
 }
 
 Logica::Types::Basic::U8 Logica::Control::Validator::GetCode()
 {
-    return this->values.code;
+    return this->content.code;
 }
