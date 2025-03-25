@@ -44,8 +44,8 @@ Progator::Objects::Mesh* Solar::Core::Provider::Load::Mesh(
         }
         
         /* NOTE: load the recipe & raw mesh: */
-        Sojson::Node* recipe = Solar::Core::Provider::Load::DataFile(warehouse, site);
-        Fera::Meshing::Mesh* raw_mesh = Solar::Core::Provider::Load::RawMesh(warehouse, site);
+        Sojson::Node* recipe            = Solar::Core::Provider::Load::DataFile(warehouse, site);
+        Fera::Meshing::Mesh* raw_mesh   = Solar::Core::Provider::Load::RawMesh(warehouse, site);
         if(raw_mesh == nullptr) goto skip_due_invalid_rendering_unit;
         
         /* TODO: make this return optional since this function CAN fail. */
