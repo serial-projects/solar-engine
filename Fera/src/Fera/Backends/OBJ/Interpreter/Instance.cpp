@@ -22,37 +22,29 @@ void Fera::Backends::OBJ::Interpreter::InstanceInit(
 )
 {
     instance->tokenizer_rules = Logica::Texting::Tokenizer::Rules();
-    instance->tokenizer_rules.is_token_delimiter = [](
+    instance->tokenizer_rules.get_token_type = 
+    [](
         Logica::Types::Basic::I32 ch
     )
     {
-        return (
-            ch == ' '  ||
-            ch == '\t' ||
-            ch == '\n'
-        );
+        Logica::Texting::Tokenizer::Rules::TokenTypes type
+            = Logica::Texting::Tokenizer::Rules::TokenTypes::NO_TOKEN;
+        switch(ch)
+        {
+            case ' ': case '\n': case '\t':
+                type = Logica::Texting::Tokenizer::Rules::TokenTypes::DELIMITER;
+                break;
+            case '"': case '\'':
+                type = Logica::Texting::Tokenizer::Rules::TokenTypes::STRING;
+                break;
+            default:
+                break;
+        }
+        return type;
     };
-    
-    instance->tokenizer_rules.is_token_string_delimiter = [](
-        Logica::Types::Basic::I32 ch
-    )
-    {
-        return (
-            ch == '\''||
-            ch == '"'
-        );
-    };
-    
-    instance->tokenizer_rules.is_token_highlight = [](
-        Logica::Types::Basic::I32 ch
-    )
-    {
-        return (false);
-    };
-
-    instance->tokenizer_rules.comment_starter = '#';
-    instance->tokenizer_rules.comment_single_line_hint = 0;
-    instance->tokenizer_rules.comment_delimited_hint = 0;
+    instance->tokenizer_rules.comment_starter           = '#';
+    instance->tokenizer_rules.comment_single_line_hint  = 0;
+    instance->tokenizer_rules.comment_delimited_hint    = 0;
 
     /* set the tokenizer: */
     instance->tokenizer = Logica::Texting::Tokenizer::Instance();
@@ -62,9 +54,9 @@ void Fera::Backends::OBJ::Interpreter::InstanceInit(
     /* set the other elements: */
     instance->current_group     = "default";
     instance->current_object    = "root";
-    instance->current_V     = Fera::Backends::OBJ::Interpreter::InstanceLists::V();
-    instance->current_VT    = Fera::Backends::OBJ::Interpreter::InstanceLists::VT();
-    instance->current_VN    = Fera::Backends::OBJ::Interpreter::InstanceLists::VN();
+    instance->current_V         = Fera::Backends::OBJ::Interpreter::InstanceLists::V();
+    instance->current_VT        = Fera::Backends::OBJ::Interpreter::InstanceLists::VT();
+    instance->current_VN        = Fera::Backends::OBJ::Interpreter::InstanceLists::VN();
     
     /* NOTE: this here is the ONLY allocated object! */
     instance->root = Fera::Meshing::MeshNew();
@@ -86,7 +78,7 @@ void Fera::Backends::OBJ::Interpreter::InstanceStep(
         /* then get the opcode: */
         /* Fera::Backends::OBJ::Interpreter:: */
         Fera::Types::String opcode = instance->tokenizer.GetToken(true);
-        if(instance->tokenizer.GetState() == Logica::Texting::Tokenizer::InstanceStatus::Running)
+        if(instance->tokenizer.GetState() == Logica::Texting::Tokenizer::Instance::States::RUNNING)
             Fera::Backends::OBJ::Interpreter::InstancePerformOpcode(instance, opcode);
         else
         {

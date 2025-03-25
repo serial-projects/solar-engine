@@ -11,21 +11,15 @@ inline Logica::Types::Basic::String Logica::Texting::Tokenizer::Instance::__GetD
     for(;;)
     {
         Logica::Types::Basic::I32 current_character = this->__GetCharacter();
-        if(this->rules->is_token_delimiter(current_character))
+        Logica::Texting::Tokenizer::Rules::TokenTypes type = this->rules->get_token_type(current_character);
+        if(type == Logica::Texting::Tokenizer::Rules::TokenTypes::DELIMITER)
             break;
-        else if(this->rules->is_token_highlight(current_character))
+        else if(
+            type == Logica::Texting::Tokenizer::Rules::TokenTypes::HIGHLIGHT ||
+            type == Logica::Texting::Tokenizer::Rules::TokenTypes::STRING
+        )
         {
-            /* NOTE: in this case, do something more important:
-             * 1-) Due the rules and the linearity of the tokenizer, we put the position on the
-             * buffer to before this token, basically we __RewindBuffer() here to avoid losing the
-             * next token. On the next token, it is GUARANTEED for this->rules->is_token_highlight
-             * to be trigged, unless the character is a token delimiter, which in this case, will
-             * create an feed back, for example, if the '\n' is a token delimiter and also a high
-             * light token, then we MIGHT have a problem that '\n' will be called to here, the
-             * starter token will be: ['\n', ... whatever comes next until break of this loop].
-             * 
-             * XXX: on the future, give an better look into this?
-             */
+            /* Leave this token to the next GetToken, so return on the buffer. */
             this->__RewindBuffer(1);
             break;
         }
@@ -84,11 +78,11 @@ inline Logica::Types::Basic::String Logica::Texting::Tokenizer::Instance::__GetD
         {
             /* TODO: set the policy for unbroken strings! */
             this->validator.SetError(
-                Logica::Texting::Tokenizer::InstanceErrorCodes::BadString,
+                Logica::Texting::Tokenizer::Instance::ErrorCodes::BAD_STRING,
                 "Early End of string on line %d",
                 this->line_counter
             );
-            this->state = Logica::Texting::Tokenizer::InstanceStatus::Died;
+            this->state = Logica::Texting::Tokenizer::Instance::States::DIED;
             break;
         }
         else if(current_character == '\\')
@@ -111,9 +105,9 @@ inline void Logica::Texting::Tokenizer::Instance::__ProceedLineCommentUsingRuleS
         this->__WasteLineComment();
     else
     {
-        this->state = Logica::Texting::Tokenizer::InstanceStatus::Died;
+        this->state = Logica::Texting::Tokenizer::Instance::States::DIED;
         this->validator.SetError(
-            Logica::Texting::Tokenizer::InstanceErrorCodes::BadComment,
+            Logica::Texting::Tokenizer::Instance::ErrorCodes::BAD_COMMENT,
             "Near line %d, there is a bad comment formed, expected %c, got = %c",
             this->line_counter,
             (char)this->rules->comment_single_line_hint,
@@ -188,9 +182,9 @@ inline void Logica::Texting::Tokenizer::Instance::__WasteDelimitedComment()
         /* FOR both of the options, either altered or not, the EOF is the end. */
         if(current_character == EOF)
         {
-            this->state = Logica::Texting::Tokenizer::InstanceStatus::Died;
+            this->state = Logica::Texting::Tokenizer::Instance::States::DIED;
             this->validator.SetError(
-                Logica::Texting::Tokenizer::InstanceErrorCodes::EarlyEndOfLine,
+                Logica::Texting::Tokenizer::Instance::ErrorCodes::EARLY_END_OF_LINE,
                 "Invalid delimited comment started on line %d",
                 operation_linestamp
             );
@@ -222,13 +216,13 @@ inline void Logica::Texting::Tokenizer::Instance::__TreatEOF(
     if(consider_eof)
     {
         /* THEN EOF is good, just set the machine to finish. */
-        this->state = Logica::Texting::Tokenizer::InstanceStatus::Finished;
+        this->state = Logica::Texting::Tokenizer::Instance::States::FINISHED;
     }
     else
     {
-        this->state = Logica::Texting::Tokenizer::InstanceStatus::Died;
+        this->state = Logica::Texting::Tokenizer::Instance::States::DIED;
         this->validator.SetError(
-            Logica::Texting::Tokenizer::InstanceErrorCodes::BadString,
+            Logica::Texting::Tokenizer::Instance::ErrorCodes::EARLY_END_OF_LINE,
             "Bad String at line %d",
             this->line_counter
         );
@@ -303,12 +297,13 @@ Logica::Types::Basic::String Logica::Texting::Tokenizer::Instance::GetToken(
     Logica::Types::Basic::Boolean consider_eof
 )
 {
-    Logica::Types::Basic::String current_token;
-    Logica::Types::Basic::I32 current_character;
-    Logica::Types::Basic::I32 comment_type_hint;
+    Logica::Types::Basic::String                    current_token;
+    Logica::Types::Basic::I32                       current_character;
+    Logica::Texting::Tokenizer::Rules::TokenTypes   current_character_type;
+    Logica::Types::Basic::I32                       next_character;
 top:
     /* NOTE: check if we are running! */
-    if(this->state != Logica::Texting::Tokenizer::InstanceStatus::Running)
+    if(this->state != Logica::Texting::Tokenizer::Instance::States::RUNNING)
         goto post_tokenization;
     
     current_character = this->__GetCharacter();
@@ -326,17 +321,18 @@ top:
      * 4-) Enter comment mode;
      * 5-) Or just default token.
      */
-
-    if(this->rules->is_token_delimiter(current_character))
+    
+    current_character_type = this->rules->get_token_type(current_character);
+    if(current_character_type == Logica::Texting::Tokenizer::Rules::TokenTypes::DELIMITER)
     {
         /* NOTE: for token delimitators, just wait for the next token */
         goto top;
     }
-    else if(this->rules->is_token_string_delimiter(current_character))
+    else if(current_character_type == Logica::Texting::Tokenizer::Rules::TokenTypes::STRING)
     {
         current_token = this->__GetDelimitedString(current_character);
     }
-    else if(this->rules->is_token_highlight(current_character))
+    else if(current_character_type == Logica::Texting::Tokenizer::Rules::TokenTypes::HIGHLIGHT)
     {
         /* NOTE: on that case, the high light token is important enough for have a character
          * just for it. */
@@ -345,26 +341,25 @@ top:
          * for '/' as the division operator but also as the '//' comment, to some extra parsing
          * here.
          */
-        const Logica::Types::Basic::I32 next_token = this->__GetCharacter();
+        next_character = this->__GetCharacter();
         if(
             (
                 current_character   == this->rules->comment_starter &&
-                next_token          == this->rules->comment_single_line_hint
+                next_character      == this->rules->comment_single_line_hint
             ) ||
             (
                 current_character   == this->rules->comment_starter &&
-                next_token          == this->rules->comment_delimited_hint
+                next_character      == this->rules->comment_delimited_hint
             )
         )
         {
             /* Set this and move to the comment (leaving this condition block to another). */
-            comment_type_hint = next_token;
             goto comment;
         }
         else
         {
             /* HACK: pre check for EOF. */
-            if(next_token != EOF)
+            if(next_character != EOF)
                 this->__RewindBuffer(1);
             current_token.push_back((Logica::Types::Basic::CH8)(current_character));
         }
@@ -372,9 +367,9 @@ top:
     else if(current_character == this->rules->comment_starter)
     {
         /* This function can come from the condition is_token_highlight! */
-        comment_type_hint = this->__GetCharacter();
+        next_character = this->__GetCharacter();
         comment:
-        this->__DetermineCommentTypeAndWasteComment(comment_type_hint);
+        this->__DetermineCommentTypeAndWasteComment(next_character);
         /* NOTE: even if the code is failed, we can safely go back. */
         goto top;
     }

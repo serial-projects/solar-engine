@@ -30,38 +30,29 @@ void Sojson::Decode::InstanceInit(
      * Sojson supports comments by default.
      */
     instance->current_tokenizer_rules = Logica::Texting::Tokenizer::Rules();
-    instance->current_tokenizer_rules.is_token_delimiter = [](
-        Logica::Types::Basic::U32 ch
-    )
-    {
-        return (
-            ch == ' '   ||
-            ch == '\n'  ||
-            ch == '\t'
-        );
-    };
-    instance->current_tokenizer_rules.is_token_string_delimiter = [](
-        Logica::Types::Basic::U32 ch
-    )
-    {
-        return (
-            ch == '\'' ||
-            ch == '"'
-        );
-    };
-    instance->current_tokenizer_rules.is_token_highlight = [](
-        Logica::Types::Basic::U32 ch
-    )
-    {
-        return (
-            ch == ':' ||    /* json requires ':', so on GetTableValue(), this will be required! */
-            ch == ',' ||    /* json requires ',' so on GetTableValue() or on GetListValue() we can determine whether to continue or not. */
-            ch == '[' ||
-            ch == ']' ||
-            ch == '{' ||
-            ch == '}'
-        );
-    };
+    instance->current_tokenizer_rules.get_token_type = 
+        [](
+            Logica::Types::Basic::I32 ch
+        )
+        {
+            Logica::Texting::Tokenizer::Rules::TokenTypes type
+                = Logica::Texting::Tokenizer::Rules::TokenTypes::NO_TOKEN;
+            switch(ch)
+            {
+                case ' ': case '\n': case '\t':
+                    type = Logica::Texting::Tokenizer::Rules::TokenTypes::DELIMITER;
+                    break;
+                case '"': case '\'':
+                    type = Logica::Texting::Tokenizer::Rules::TokenTypes::STRING;
+                    break;
+                case ':': case ',': case '[': case ']': case '{': case '}':
+                    type = Logica::Texting::Tokenizer::Rules::TokenTypes::HIGHLIGHT;
+                    break;
+                default:
+                    break;
+            }
+            return type;
+        };
     instance->current_tokenizer_rules.comment_starter           = '/';
     instance->current_tokenizer_rules.comment_single_line_hint  = '/';
     instance->current_tokenizer_rules.comment_delimited_hint    = '*';

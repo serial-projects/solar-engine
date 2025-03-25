@@ -11,46 +11,8 @@ namespace Logica
     {
         namespace Tokenizer
         {
-            /// @brief All the status of the tokenizer.
-            namespace InstanceStatus
-            {
-                enum InstanceStatus
-                {
-                    /// @brief Tokenizer has not finished (EOF not reached);
-                    Running = 0,
-
-                    /// @brief EOF was reached;
-                    Finished,
-
-                    /// @brief Something bad happened.
-                    Died
-                };
-            };
-
-            /// @brief All the instance error codes.
-            namespace InstanceErrorCodes
-            {
-                enum InstanceErrorCodes
-                {
-                    /// @brief No errors.
-                    Ok = 0,
-                    
-                    /// @brief When consider_eof is false and a EOF is found.
-                    EarlyEndOfLine,
-
-                    /// @brief When a string ends early by EOF.
-                    BadString,
-
-                    /// @brief When a comment is bad formed.
-                    BadComment,
-
-                    /// @brief Impossible errors.
-                    Unknown = UINT8_MAX
-                };
-            };
-
-            /// @brief This is actually an machine that has states and will tokenize until the      \a
-            /// end of the buffer is reached. That means the tokenizer CAN'T go back which is       \a
+            /// @brief This is actually an machine that has states and will tokenize until the
+            /// end of the buffer is reached. That means the tokenizer CAN'T go back which is
             /// quite a bummer BUT it is simpler that way.
             class Instance
             {
@@ -87,6 +49,34 @@ namespace Logica
                     /// @brief Counter for the lines.
                     Logica::Types::Basic::U32 line_counter;
                 public:
+                    enum States
+                    {
+                        /// @brief Tokenizer has not finished (EOF not reached);
+                        RUNNING = 0,
+
+                        /// @brief EOF was reached;
+                        FINISHED,
+
+                        /// @brief Something bad happened.
+                        DIED
+                    };
+
+                    enum ErrorCodes
+                    {
+                        /// @brief No errors.
+                        OK = 0,
+                        
+                        /// @brief When consider_eof is false and a EOF is found.
+                        EARLY_END_OF_LINE,
+
+                        /// @brief When a string ends early by EOF.
+                        BAD_STRING,
+
+                        /// @brief When a comment is bad formed.
+                        BAD_COMMENT
+                    };
+
+
                     /// @brief Holds the errors that might arrive when tokenizing!
                     Logica::Control::Validator validator;
                     

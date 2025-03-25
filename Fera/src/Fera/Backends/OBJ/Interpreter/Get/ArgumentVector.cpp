@@ -13,7 +13,7 @@ Fera::Backends::OBJ::Interpreter::InstanceLists::AnyDimensionVector
         Logica::Types::Basic::String current_token = instance->tokenizer.GetToken(false);
         
         /* NOTE: expected parameter but buffer ended... */
-        if(instance->tokenizer.GetState() != Logica::Texting::Tokenizer::InstanceStatus::Running)
+        if(instance->tokenizer.GetState() != Logica::Texting::Tokenizer::Instance::States::RUNNING)
         {
             instance->state = Fera::Backends::OBJ::Interpreter::InstanceStates::Died;
             instance->validator.SetError(

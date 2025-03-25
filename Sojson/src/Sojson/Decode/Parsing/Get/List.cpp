@@ -94,7 +94,7 @@ Sojson::Node* Sojson::Decode::Parsing::Get::List(
         /* NOTE: did we reach the end of the tokenizer? */
         if(
             instance->current_tokenizer.GetState() != 
-            Logica::Texting::Tokenizer::InstanceStatus::Running
+            Logica::Texting::Tokenizer::Instance::States::RUNNING
         )
         {
             /* In this case, this is a non-wanted EOF! */

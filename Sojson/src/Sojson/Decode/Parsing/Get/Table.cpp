@@ -183,7 +183,7 @@ Sojson::Node* Sojson::Decode::Parsing::Get::Table(
     {
         if(
             instance->current_tokenizer.GetState() != 
-            Logica::Texting::Tokenizer::InstanceStatus::Running
+            Logica::Texting::Tokenizer::Instance::States::RUNNING
         )
         {
             /* In this case, this is a non-wanted EOF! */
