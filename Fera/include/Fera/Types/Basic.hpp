@@ -2,8 +2,8 @@
 #define FeraTypesBasic_hpp
 
 #include "Logica/Logica.hpp"
-#include <string>
 #include <vector>
+#include <string>
 
 namespace Fera
 {
