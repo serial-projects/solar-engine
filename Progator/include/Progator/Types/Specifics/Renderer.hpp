@@ -2,7 +2,6 @@
 #define ProgatorTypesSpecificsRenderer_hpp
 
 #include "Progator/Types/Basic.hpp"
-
 namespace Progator
 {
     namespace Types
@@ -11,19 +10,25 @@ namespace Progator
         {
             namespace Renderer
             {
-                /// @brief size for the renderer.
-                typedef Progator::Types::Basic::U16 Size;
+                /**
+                 * \brief Defines the type to hold the viewport size.
+                 */
+                typedef Progator::Types::Basic::U16     ViewportSizeType;
 
-                /// @brief position for the renderer.
-                typedef Progator::Types::Basic::U16 Position;
-
-                /// @brief contains the size and position of the viewport.
+                /**
+                 * \brief Defines the type to hold the viewport position.
+                 */
+                typedef Progator::Types::Basic::U16     ViewportPositionType;
+                
+                /**
+                 * \brief Contains all the Viewport information:
+                 */
                 struct Viewport
                 {
-                    Progator::Types::Specifics::Renderer::Size width;
-                    Progator::Types::Specifics::Renderer::Size height;
-                    Progator::Types::Specifics::Renderer::Position x;
-                    Progator::Types::Specifics::Renderer::Position y;
+                    Progator::Types::Specifics::Renderer::ViewportSizeType      width;
+                    Progator::Types::Specifics::Renderer::ViewportSizeType      height;
+                    Progator::Types::Specifics::Renderer::ViewportPositionType  X;
+                    Progator::Types::Specifics::Renderer::ViewportPositionType  Y;
                 };
             };
         };

@@ -2,8 +2,8 @@
 #define LogicaTextingTokenizerInstance_hpp
 
 #include "Logica/Types.hpp"
-#include "Logica/Control/Validator.hpp"
 #include "Logica/Texting/Tokenizer/Rules.hpp"
+#include "Logica/Control/Validator.hpp"
 
 namespace Logica
 {
@@ -11,111 +11,141 @@ namespace Logica
     {
         namespace Tokenizer
         {
-            /// @brief All the status of the tokenizer.
-            namespace InstanceStatus
+            namespace InstanceErrors
             {
-                enum InstanceStatus
+                enum InstanceErrors
                 {
-                    /// @brief Tokenizer has not finished (EOF not reached);
-                    Running = 0,
+                    /**
+                     * \brief When everything is fine.
+                     */
+                    Ok                      = 0,
+                    
+                    /**
+                     * \brief For when the string ends prematurely, that is, while parsing and
+                     * getting characters for the string an EOF is found, that means the string
+                     * is prematurely over and the delimiters were NOT hit (and will never hit).
+                     */
+                    PrematureStringEnd,
 
-                    /// @brief EOF was reached;
+                    /**
+                     * \brief Usually used when a token is very unexpected or contradictory on the
+                     * rules itself, for example, suppose the '#' is a comment token and the line
+                     * version is '##', but we got '#$', this will trigger an error.
+                     */
+                    UnexpectedToken,
+
+                    /**
+                     * \brief Unreacheable code.
+                     */
+                    Unknown                 = UINT8_MAX
+                };
+            };
+
+            /**
+             * \brief Enumerates all the states of the Instance.
+             */
+            namespace InstanceState
+            {
+                enum InstanceState
+                {
+                    /**
+                     * \brief This and Unknown are unreacheable, but if for some reason you want to
+                     * customize the state (Maybe?), this state is valid?
+                     */
+                    Nothing         = 0,
+
+                    /**
+                     * \brief When the machine is executing properly.
+                     */
+                    Running,
+
+                    /**
+                     * \brief When the machine has finished, that is, everything is done.
+                     */
                     Finished,
 
-                    /// @brief Something bad happened.
-                    Died
+                    /**
+                     * \brief When the machine found a runtime error.
+                     */
+                    Died,
+
+                    /**
+                     * \brief Impossible code.
+                     */
+                    Unknown         = UINT8_MAX
                 };
             };
 
-            /// @brief All the instance error codes.
-            namespace InstanceErrorCodes
-            {
-                enum InstanceErrorCodes
-                {
-                    /// @brief No errors.
-                    Ok = 0,
-                    
-                    /// @brief When consider_eof is false and a EOF is found.
-                    EarlyEndOfLine,
-
-                    /// @brief When a string ends early by EOF.
-                    BadString,
-
-                    /// @brief When a comment is bad formed.
-                    BadComment,
-
-                    /// @brief Impossible errors.
-                    Unknown = UINT8_MAX
-                };
-            };
-
-            /// @brief This is actually an machine that has states and will tokenize until the      \a
-            /// end of the buffer is reached. That means the tokenizer CAN'T go back which is       \a
-            /// quite a bummer BUT it is simpler that way.
             class Instance
             {
                 private:
-                    Logica::Texting::Tokenizer::Rules* rules;
-                    Logica::Types::Buffer::Base* buffer;
-                    Logica::Types::Basic::U8 state;
+                Logica::Types::Stream::Buffer*      working_buffer;
+                Logica::Types::Basic::U32           line_counter = 0;
+                Logica::Texting::Tokenizer::Rules*  current_rules;
 
-                    /* GetDelimited Token/String */
-                    inline Logica::Types::Basic::String __GetDelimitedToken(const Logica::Types::Basic::I32 starter);
-                    inline Logica::Types::Basic::String __GetDelimitedString(const Logica::Types::Basic::I32 starter);
-                    inline Logica::Types::Basic::CH8 __GetEscapeCharacter();
+                /**
+                 * \brief Use this to remove the possibility of double line after an rewind, 
+                 * the line counter will ONLY increment when the buffer position is bigger than the 
+                 * max position.
+                 */
+                Logica::Types::Basic::Size          newline_max_position = 0;
 
-                    /* Determine/Proceed/Waste Comment Functions: */
-                    inline void __DetermineCommentTypeAndWasteComment(const Logica::Types::Basic::I32 comment_type_hint);
-                    inline void __DetermineLineCommentTypeAndWasteComment(const Logica::Types::Basic::I32 comment_type_hint);
-                    inline void __ProceedLineCommentUsingRuleSingleLineCommentHint(const Logica::Types::Basic::I32 comment_type_hint);
-                    inline void __WasteLineComment();
-                    inline void __WasteDelimitedComment();
+                /**
+                 * \brief Keep the state of the machine, since the tokenizer is a machine.
+                 */
+                Logica::Types::Basic::U8            state = 1;
 
-                    /* MISC. EOF and Buffer Rewind: */
-                    inline void __TreatEOF(Logica::Types::Basic::Boolean consider_eof);
-                    inline void __RewindBuffer(const Logica::Types::Basic::U8 amount);
+                void Rewind(
+                    const Logica::Types::Basic::U8 amount
+                );
+                
+                Logica::Types::Basic::I32 GetCharacter();
 
-                    /// @brief Get the character and consider '\n' already to be counted on the line_counter.
-                    /// @return return an character from the buffer.
-                    inline Logica::Types::Basic::I32 __GetCharacter();
-                    
-                    /// @brief max_position_ever as the name implies is the maximum position the
-                    /// buffer has ever reached, this is useful to avoid '\n' repeating or some
-                    /// other character we MIGHT want to count.
-                    Logica::Types::Basic::U32 max_position_ever;
+                void GetTokenStringLiteral(
+                    Logica::Types::Basic::String* key
+                );
+                
+                void GetTokenString(
+                    Logica::Types::Basic::String* key,
+                    const Logica::Types::Basic::I32 entrypoint_token
+                );
+                
+                void GetTokenAny(
+                    Logica::Types::Basic::String* key,
+                    const Logica::Types::Basic::I32 entrypoint_token
+                );
 
-                    /// @brief Counter for the lines.
-                    Logica::Types::Basic::U32 line_counter;
+                void WasteDelimitedComment();
+
+                void WasteLineComment();
+                
+                void WasteComment(
+                    Logica::Types::Basic::I32 hint
+                );
+
                 public:
-                    /// @brief Holds the errors that might arrive when tokenizing!
-                    Logica::Control::Validator validator;
-                    
-                    /// @brief Builds the tokenizer:
-                    Instance();
+                Instance();
 
-                    /// @brief Get the current line the tokenizer is.
-                    /// @return the line from 1 to UINT32_MAX.
-                    Logica::Types::Basic::U32 GetCurrentLine();
+                Logica::Control::Validator validator;
 
-                    /// @brief Set the rules.
-                    /// @param rules the rules pointer.
-                    void SetRules(Logica::Texting::Tokenizer::Rules* rules);
+                void SetBuffer(
+                    Logica::Types::Stream::Buffer* buffer
+                );
+                
+                void SetRules(
+                    Logica::Texting::Tokenizer::Rules* rules
+                );
 
-                    /// @brief Set the buffer (can be FileBuffer, StringBuffer, etc);
-                    /// @param buffer the buffer pointer.
-                    void SetBuffer(Logica::Types::Buffer::Base* buffer);
-
-                    /// @brief Returns the state the instance is
-                    /// @return the state (an Logica::Texting::Tokenizer::InstanceStatus value).
-                    Logica::Types::Basic::U8 GetState();
-
-                    /// @brief Returns a single token.
-                    /// @param consider_eof if EOF is to be considered or not expected.
-                    /// @return the token that was adquired (empty when Died or Finished).
-                    Logica::Types::Basic::String GetToken(Logica::Types::Basic::Boolean consider_eof);
+                Logica::Types::Basic::U8 GetState();
+                Logica::Types::Basic::U32 GetCurrentLine();
+                
+                void GetToken(
+                    Logica::Types::Basic::String* key
+                );
             };
         };
     };
 };
+
 
 #endif

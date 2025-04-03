@@ -1,12 +1,29 @@
 #!/bin/sh
+
 copy_file(){
-    cp -v ./App/App ../Engine-v1
+    cd ..
+    cp ./build/App/App ./Engine-v1 -v
 }
 
 # NOTE: check if CHOST has been defined.
 if [[ -z "${CHOST}" ]]; then
     CHOST=$(which gcc)
 fi
+
+# In case you want to run on ninja?
+
+run_ninja(){
+    ninja -v clean
+    ninja -v -j$(nproc) && copy_file
+}
+
+# Or just make?
+
+run_make(){
+    make clean
+    make -j$(nproc) && copy_file
+}
+
 
 build_things(){
     
@@ -16,13 +33,13 @@ build_things(){
     
     # Run cmake from there.
     cd ./build
-    cmake .. -G Ninja                                   \
+    cmake ..                                            \
         -DCMAKE_C_COMPILER=${CHOST}                     \
         -DCMAKE_BUILD_TYPE="Debug"                      \
         -DPROJECT_FORCE_COLORS=1                        \
-        -DPROJECT_USE_ASAN=1
-    ninja -v clean
-    ninja -v -j$(nproc) && copy_file
+        -DPROJECT_USE_ASAN=1                            \
+        -G Ninja                                        \
+        && run_ninja
 }
 
 # Entry point:

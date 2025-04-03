@@ -1,91 +1,49 @@
 #include "Sojson/Decode/Instance.hpp"
-#include "Sojson/Decode/Parsing.hpp"
-#include <iostream>
 
-Sojson::Decode::Instance Sojson::Decode::InstanceNew()
+Sojson::Decode::Instance::Instance()
 {
-    Sojson::Decode::Instance instance;
-    return instance;
+    /* Set the type decider: */
+    this->tokenizer_rules.get_character_type =
+        [](Logica::Types::Basic::U32 ch)
+        {
+            Logica::Types::Basic::U8 type = Logica::Texting::Tokenizer::RulesCharacterType::Nothing;
+            switch(ch)
+            {
+                case ' ': case '\t': case '\n':
+                    type = Logica::Texting::Tokenizer::RulesCharacterType::TokenDelimiter;
+                    break;
+                case '"': case '\'':
+                    type = Logica::Texting::Tokenizer::RulesCharacterType::StringDelimiter;
+                    break;
+                case '[': case ']': case '{': case '}': case ',': case ':':
+                    type = Logica::Texting::Tokenizer::RulesCharacterType::HighlightToken;
+                    break;
+            };
+            return type;
+        };
+    /* Set the comments here: */
+    this->tokenizer_rules.comment_token                     = '/';
+    this->tokenizer_rules.line_comment_hint_token           = 0;
+    this->tokenizer_rules.delimited_comment_hint_token      = '*';
+    this->tokenizer_rules.delimited_comment_closure_token   = '*';
+    
+    /* Set to the tokenizer: */
+    this->tokenizer_instance.SetRules(&this->tokenizer_rules);
 }
 
-void Sojson::Decode::InstanceDestroy(
-    Sojson::Decode::Instance* instance
+void Sojson::Decode::Instance::SetBuffer(
+    Logica::Types::Stream::Buffer* buffer
 )
 {
-    // DO NOTHING
-    return;
+    this->tokenizer_instance.SetBuffer(buffer);
 }
 
-void Sojson::Decode::InstanceInit(
-    Sojson::Decode::Instance* instance,
-    Logica::Types::Buffer::Base* buffer
-)
+Sojson::Node* Sojson::Decode::Instance::Parse()
 {
-    /*
-     * On JSON (with comments), we must consider the following:
-     * "" -> strings;
-     * ' ', '\n', '\t' -> token delimiters;
-     * '[]', '{}' ... -> important tokens;
-     * 
-     * Sojson supports comments by default.
-     */
-    instance->current_tokenizer_rules = Logica::Texting::Tokenizer::Rules();
-    instance->current_tokenizer_rules.is_token_delimiter = [](
-        Logica::Types::Basic::U32 ch
-    )
-    {
-        return (
-            ch == ' '   ||
-            ch == '\n'  ||
-            ch == '\t'
-        );
-    };
-    instance->current_tokenizer_rules.is_token_string_delimiter = [](
-        Logica::Types::Basic::U32 ch
-    )
-    {
-        return (
-            ch == '\'' ||
-            ch == '"'
-        );
-    };
-    instance->current_tokenizer_rules.is_token_highlight = [](
-        Logica::Types::Basic::U32 ch
-    )
-    {
-        return (
-            ch == ':' ||    /* json requires ':', so on GetTableValue(), this will be required! */
-            ch == ',' ||    /* json requires ',' so on GetTableValue() or on GetListValue() we can determine whether to continue or not. */
-            ch == '[' ||
-            ch == ']' ||
-            ch == '{' ||
-            ch == '}'
-        );
-    };
-    instance->current_tokenizer_rules.comment_starter           = '/';
-    instance->current_tokenizer_rules.comment_single_line_hint  = '/';
-    instance->current_tokenizer_rules.comment_delimited_hint    = '*';
-
-    /*
-     * Set the tokenizer to prepare for the json tokenization and
-     * parsing!
-     */
-    instance->current_tokenizer = Logica::Texting::Tokenizer::Instance();
-    instance->current_tokenizer.SetRules(&instance->current_tokenizer_rules);
-    instance->current_tokenizer.SetBuffer(buffer);
-    instance->state = Sojson::Decode::InstanceStates::Running;
+    return this->GetRootValue();
 }
 
-Sojson::Node* Sojson::Decode::InstanceParse(
-    Sojson::Decode::Instance* instance
-)
+Sojson::Decode::Instance::States Sojson::Decode::Instance::GetState()
 {
-    /* NOTE: GetValue() is the first thing we need on a JsonC file, right ? */
-    Sojson::Node* root_value =
-        Sojson::Decode::Parsing::Get::ValueRoot(instance);
-
-    /* did we keep running flag? if yes, then set to finish, if not, keep it. */
-    if(instance->state == Sojson::Decode::InstanceStates::Running)
-        instance->state = Sojson::Decode::InstanceStates::Finished;
-    return root_value;
+    return this->state;
 }

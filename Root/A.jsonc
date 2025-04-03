@@ -1,0 +1,53 @@
+{
+  /* This is a manifest file for the Solar RPG Engine, here you can build the specifications
+   * of your Game, like Graphical Units, GL options and more, this file is loaded before
+   * anything! Meaning you can customize many aspects of the engine, Since this is a demo
+   * file, there is many code points and content to make.
+   */
+  "graphics":
+  [
+      /* Each graphical unit is an Window where you can draw, in case your game needs more window
+       * you can specify it here, usually you JUST want an single window and well, it is required
+       * to have at least one Graphical unit to be used.
+       */
+      {
+          /* name: this is the name of the window. */
+          "name":             "main",
+
+          /* priority: this is the order of the updates on the graphical units, since
+           * we talking about the main unit, we need it to be updated first. */
+          "priority":         0,
+
+          /* Here is the window configuration: */
+          "window":
+          {
+              /* Set the size of the window: */
+              "width":        800,
+              "height":       640,
+
+              /* Set the title of the window: */
+              "title":        "Solar Engine",
+
+              /* if you want the game to be visible: */
+              "visible":      true,
+          
+              /* On renderer you can select: "OpenGL", "Vulkan" or whatever is available on the
+               * Progator build, use "Default" to use the default option in case you don't want
+               * for enforce anything.
+               */
+              "renderer":     "Default"
+          },
+          
+          /* Engine Properties: */
+          "engine":
+          {
+              /* tick_rate: contains how much ticks there will be on a single second. */
+              "tick_rate":    60,
+
+              /* draw_rate: same as tick_rate BUT, using 0 will cause to have no delay
+               * and the framerate will be aligned to the VSYNC if you have it. */
+              "draw_rate":    60
+          }
+      }
+  ]
+}

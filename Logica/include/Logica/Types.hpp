@@ -2,6 +2,6 @@
 #define LogicaTypes_hpp
 
 #include "Logica/Types/Basic.hpp"
-#include "Logica/Types/Buffer.hpp"
+#include "Logica/Types/Stream.hpp"
 
 #endif

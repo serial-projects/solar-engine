@@ -1,58 +1,100 @@
 #include "Logica/Control/Validator.hpp"
+#include "Logica/Config.hpp"
+
 #include <cstdarg>
 
-Logica::Control::Validator::Validator()
-{
-    this->at_error_callback = std::function<void(Logica::Control::Validator::Content*, void*)>();
-    this->userdata          = nullptr;
-    this->content           = Logica::Control::Validator::Content();
-}
-
-void Logica::Control::Validator::SetErrorCallback(
-    std::function<void(Logica::Control::Validator::Content*, void*)> 
-        when_error_callback_f
+void Logica::Control::Validator::AssignErrorCallback(
+    Logica::Control::ValidatorFunctions::ErrorCallback error_callback_f
 )
 {
-    this->at_error_callback = when_error_callback_f;
+    this->error_callback_f = error_callback_f;
 }
 
-void Logica::Control::Validator::SetUserDataForCallback(
+void Logica::Control::Validator::AssignWarningCallback(
+    Logica::Control::ValidatorFunctions::WarningCallback warning_callback_f
+)
+{
+    this->warning_callback_f = warning_callback_f;
+}
+
+void Logica::Control::Validator::AssignUserData(
     void* userdata
 )
 {
     this->userdata = userdata;
 }
 
-void Logica::Control::Validator::SetError(
+/* Report Functions: */
+void Logica::Control::Validator::ReportError(
     const Logica::Types::Basic::U8 code,
     const Logica::Types::Basic::CH8* format,
     ...
 )
 {
-    std::va_list args;
-    va_start(args, format);
+    /* Initialize the list: */
+    std::va_list arguments;
+    va_start(arguments, format);
     
-    /* TODO: allow for configuration for this buffer size, which is 512 ALWAYS. */
-    Logica::Types::Basic::CH8 __buffer[512] = {};
-    std::vsnprintf(__buffer, 512, format, args);
+    /* Start the buffer here: */
+    Logica::Types::Basic::CH8 buffer[LOGICA_CONTROL_VALIDATOR_REPORT_ERROR_BUFFER_SIZE] = {};
+    std::vsnprintf(
+        buffer,
+        LOGICA_CONTROL_VALIDATOR_REPORT_ERROR_BUFFER_SIZE,
+        format,
+        arguments
+    );
 
-    this->content.buffer = Logica::Types::Basic::String(__buffer);
-    this->content.code = code;
+    this->content.err_log           = buffer;
+    this->content.code              = code;
 
-    /* NOTE: finally call the call back (if possible): */
-    if(this->at_error_callback)
-        this->at_error_callback(
+    /* Call the callbacks? */
+    if(this->error_callback_f)
+        this->error_callback_f(
             &this->content,
             this->userdata
         );
 }
 
-Logica::Types::Basic::String& Logica::Control::Validator::GetBuffer()
+void Logica::Control::Validator::ReportWarning(
+    const Logica::Types::Basic::CH8* format,
+    ...
+)
 {
-    return this->content.buffer;
+    /* Initialize the list: */
+    std::va_list arguments;
+    va_start(arguments, format);
+
+    /* Start the buffer here: */
+    Logica::Types::Basic::CH8 buffer[LOGICA_CONTROL_VALIDATOR_REPORT_WARNING_BUFFER_SIZE] = {};
+    std::vsnprintf(
+        buffer,
+        LOGICA_CONTROL_VALIDATOR_REPORT_WARNING_BUFFER_SIZE,
+        format,
+        arguments
+    );
+
+    this->content.warn_log          = buffer;
+
+    /* Call the callbacks? */
+    if(this->warning_callback_f)
+        this->warning_callback_f(
+            &this->content,
+            this->userdata
+        );
 }
 
+/* Get and some other functions: */
 Logica::Types::Basic::U8 Logica::Control::Validator::GetCode()
 {
     return this->content.code;
+}
+
+Logica::Types::Basic::String& Logica::Control::Validator::GetErrorLog()
+{
+    return this->content.err_log;
+}
+
+Logica::Types::Basic::String& Logica::Control::Validator::GetWarningLog()
+{
+    return this->content.warn_log;
 }

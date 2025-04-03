@@ -2,8 +2,7 @@
 #define Logica_hpp
 
 #include "Logica/Types.hpp"
-#include "Logica/Texting.hpp"
-#include "Logica/Data.hpp"
 #include "Logica/Control.hpp"
+#include "Logica/Texting.hpp"
 
 #endif

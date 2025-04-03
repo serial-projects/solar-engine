@@ -9,26 +9,35 @@ namespace Progator
     {
         namespace Specifics
         {
+            /**
+             * \brief Contains everything specific to the window element on Progator.
+             */
             namespace Window
             {
-                /// @brief type for the window size.s
-                typedef Progator::Types::Basic::U16 Size;
+                /**
+                 * \brief Define the type to hold the size of the integer to carry the
+                 * window size, on default (or historically) an U16 is enough to store
+                 * most than any size window ever have;
+                 */
+                typedef Progator::Types::Basic::U16 SizeType;
 
-                /// @brief type for the windoww position.
-                typedef Progator::Types::Basic::U16 Position;
+                /**
+                 * \brief Define the type to hold the position of an integer to carry the
+                 * window position.
+                 */
+                typedef Progator::Types::Basic::U16 PositionType;
 
-                /// @brief used by SDL to return the window size.
-                typedef Progator::Types::Basic::U32 Id;
-
-                /// @brief contains the window dimensions!
+                /**
+                 * \brief Contains all the geometry information that the window needs.
+                 */
                 struct Geometry
                 {
-                    Progator::Types::Specifics::Window::Size width;
-                    Progator::Types::Specifics::Window::Size height;
-                    Progator::Types::Specifics::Window::Position x;
-                    Progator::Types::Specifics::Window::Position y;
+                    Progator::Types::Specifics::Window::SizeType        width;
+                    Progator::Types::Specifics::Window::SizeType        height;
+                    Progator::Types::Specifics::Window::PositionType    X;
+                    Progator::Types::Specifics::Window::PositionType    Y;
                 };
-            };
+            }
         };
     };
 };

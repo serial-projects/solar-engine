@@ -1,9 +1,11 @@
-#ifndef ProgatorTypesBasic_hpp
-#define ProgatorTypesBasic_hpp
+#ifndef SojsonTypesBasic_hpp
+#define SojsonTypesBasic_hpp
 
 #include "Logica/Logica.hpp"
+#include <string>
+#include <vector>
 
-namespace Progator
+namespace Sojson
 {
     namespace Types
     {
@@ -21,10 +23,9 @@ namespace Progator
             typedef Logica::Types::Basic::F64       F64;
             typedef Logica::Types::Basic::CH8       CH8;
             typedef Logica::Types::Basic::Result    Result;
-            typedef Logica::Types::Basic::Boolean   Boolean;
             typedef Logica::Types::Basic::String    String;
-        }
+        };
     };
-}
+};
 
 #endif

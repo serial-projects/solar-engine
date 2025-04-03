@@ -1,99 +1,116 @@
 #ifndef SojsonDecodeInstance_hpp
 #define SojsonDecodeInstance_hpp
 
-#include "Logica/Logica.hpp"
 #include "Sojson/Types.hpp"
-#include "Sojson/Node.hpp"
+#include "Logica/Logica.hpp"
+#include "Sojson/Decorators.hpp"
 
 namespace Sojson
 {
     namespace Decode
     {
-        /// @brief Contains all the possible states the instance can be.
-        namespace InstanceStates
+        
+        class Instance
         {
-            enum InstanceStates
+            private:
+            Logica::Texting::Tokenizer::Instance    tokenizer_instance;
+            Logica::Texting::Tokenizer::Rules       tokenizer_rules;
+
+            /* GetRootValue() */
+            SOJSON_NODISCARD
+            Sojson::Node* GetRootValue();
+            
+            /* GetValue(): */
+            SOJSON_NODISCARD
+            Sojson::Node* GetValue(
+                Logica::Types::Basic::String& key,
+                const Logica::Types::Basic::U8 depth
+            );
+
+            /* GetBasicValue() */
+            SOJSON_NODISCARD
+            Sojson::Node* GetBasicValue(Logica::Types::Basic::String& key);
+            
+            /* GetList() */
+            SOJSON_NODISCARD
+            Sojson::Types::Basic::Result GetValueAndPushBackToList(
+                Sojson::Node::List* building_list,
+                Sojson::Types::Basic::U8 depth
+            );
+            
+            SOJSON_NODISCARD
+            Sojson::Node* GetList(
+                const Logica::Types::Basic::U8 depth
+            );
+
+            /* GetTable() */
+            SOJSON_NODISCARD
+            Sojson::Types::Basic::Result GetValueFromTableOnTheFirstValue(
+                Sojson::Node::Table* building_table,
+                Sojson::Types::Basic::U8 depth
+            );
+
+            SOJSON_NODISCARD
+            Sojson::Types::Basic::Result GetValueFromTableOnTheMiddleAndEndValue(
+                Sojson::Node::Table* building_table,
+                Sojson::Types::Basic::U8 depth
+            );
+
+            SOJSON_NODISCARD
+            Sojson::Node* GetTable(const Logica::Types::Basic::U8 depth);
+
+            public:
+            Instance();
+
+            /**
+             * \brief Contains all the possible states for the instance.
+             */
+            enum States
             {
-                /// @brief The tokenizer is running.
-                Running = 0,
-
-                /// @brief The tokenizer had finished properly.
-                Finished,
-
-                /// @brief The tokenizer didn't finish and the validator should be considered.
-                Died,
-
-                /// @brief Impossible code reaches, something probably got very wrong here.
-                Unknown = UINT8_MAX
+                RUNNING         = 0,
+                FINISHED,
+                DIED
             };
-        };
+            Sojson::Decode::Instance::States state;
 
-        namespace InstanceErrors
-        {
-            enum InstanceErrors
+            /**
+             * \brief Contains all the error to the validator:
+             */
+            enum Errors
             {
-                /// @brief No errors.
-                Ok = 0,
-
-                /// @brief When the syntax is not alright :D
-                SyntaxError,
-
-                /// @brief Unexpected closures, like [0, 0,] <-- where is the next value? got
-                /// closure instead of value, that applies for tables that {"value": 0, } <-- see,
-                /// no value here.
-                InvalidClosure,
-
-                /// @brief When an key is bad like: 'hey' or hey (which out the quotes).
-                BadKey,
-
-                /// @brief For when the tokenizer ends before finishing an object (that is, closing
-                /// the actual object), example: [0, 0, 1 ... <EOF> (at EOF, the tokenizer stops).
-                PrematureEnd,
-
-                /// @brief For when an object expects some value, like {, ...} <-- on the beginning
-                /// it is expected an value, but got nothing!
-                ExpectedValue,
-
-                /// @brief When a key is already present on the node, for example: 
-                /// {"A": 0, ..., "A": 10} <-- in this case the table already had the element A.
-                DuplicatedKey,
+                NO                      = 0,
+                INVALID_TOKEN,
+                INVALID_SYNTAX,
+                TABLE_INVALID_KEY,
+                TABLE_LACKS_SPLIT,
+                TABLE_KEY_REDEFINITION,
+                PREMATURE_END
             };
+
+            /**
+             * \brief Validator to hold any errors that might arrive with:
+             */
+            Logica::Control::Validator validator;
+            
+            /**
+             * \brief The buffer is the common source to where the code will be pumped
+             * you must specify one.
+             */
+            void SetBuffer(Logica::Types::Stream::Buffer* buffer);
+
+            /**
+             * \brief Parse the buffer you specified.
+             */
+            SOJSON_NODISCARD
+            Sojson::Node* Parse();
+
+            /**
+             * \brief Get the state of the tokenizer.
+             * \returns The state of the tokenizer.
+             */
+            Sojson::Decode::Instance::States GetState();
         };
-
-        /// @brief The parser instance.
-        struct Instance
-        {
-            Logica::Texting::Tokenizer::Instance    current_tokenizer;
-            Logica::Texting::Tokenizer::Rules       current_tokenizer_rules;
-            Logica::Control::Validator              validator;
-            Sojson::Types::U8                       state;
-        };
-
-        /// @brief Returns an new instance (not on heap, this is just for the style).
-        /// @return the new instance.
-        Sojson::Decode::Instance InstanceNew();
-
-        /// @brief Destroys an instance (doesn't do anything, you need to destroy the buffer yourself).
-        /// @param instance the instance to be "destroyed"
-        void InstanceDestroy(
-            Sojson::Decode::Instance* instance
-        );
-
-        /// @brief Initializes the instance and prepares for tokenizer.
-        /// @param instance the instance to initialize.
-        /// @param buffer the buffer to be the source to the tokenizer.
-        void InstanceInit(
-            Sojson::Decode::Instance* instance,
-            Logica::Types::Buffer::Base* buffer
-        );
-
-        /// @brief Parses the whole inputed buffer (check for the validator for errors)
-        /// @param instance the instance to do the parsing.
-        /// @return the created node, use Sojson::NodeDestroy() to free it from memory.
-        Sojson::Node* InstanceParse(
-            Sojson::Decode::Instance* instance
-        );
-    };
+    }
 };
 
 #endif
