@@ -40,7 +40,17 @@ namespace Logica
              */
             struct Rules
             {
-                Logica::Texting::Tokenizer::RulesFunctions::GetCharacterType get_character_type;
+                /**
+                 * \brief Contains everything about the types of tokens.
+                 */
+                enum CharacterTypes
+                {
+                    NOTHING             = 0,
+                    TOKEN_DELIMITER,
+                    STRING_DELIMITER,
+                    HIGHLIGHT_TOKEN
+                };
+                std::function<Logica::Types::Basic::U8(const Logica::Types::Basic::I32)> get_character_type;
                 Logica::Types::Basic::I32   comment_token;
                 Logica::Types::Basic::I32   line_comment_hint_token;
                 Logica::Types::Basic::I32   delimited_comment_hint_token;

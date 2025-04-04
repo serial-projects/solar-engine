@@ -7,21 +7,6 @@
 
 namespace Sojson
 {
-    namespace NodeTypes
-    {
-        enum NodeTypes
-        {
-            Nothing             = 0,
-            Integer,
-            Decimal,
-            String,
-            Boolean,
-            List,
-            Table,
-            Unknown             = UINT8_MAX
-        };
-    };
-
     class Node
     {
         private:

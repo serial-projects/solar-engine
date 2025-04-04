@@ -1,7 +1,7 @@
 #include "Logica/Texting/Split.hpp"
 
 inline Logica::Texting::SplitResult Logica::Texting::Split(
-    Logica::Types::Basic::String& source,
+    const Logica::Types::Basic::String& source,
     Logica::Types::Basic::CH8 separator
 )
 {

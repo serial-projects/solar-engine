@@ -61,12 +61,12 @@ void Logica::Texting::Tokenizer::Instance::GetTokenString(
         if(current_character == EOF)
         {
             this->validator.ReportError(
-                Logica::Texting::Tokenizer::InstanceErrors::PrematureStringEnd,
+                Logica::Texting::Tokenizer::Instance::Errors::PREMATURE_STRING_END,
                 "Premature end on string that started %d, expected closure on line %d!",
                 line_string_started,
                 this->line_counter
             );
-            this->state = Logica::Texting::Tokenizer::InstanceState::Died;
+            this->state = Logica::Texting::Tokenizer::Instance::States::DIED;
             break;
         }
         if(current_character == entrypoint_token)
@@ -136,11 +136,11 @@ void Logica::Texting::Tokenizer::Instance::WasteDelimitedComment()
         if(current_character == EOF)
         {
             this->validator.ReportError(
-                Logica::Texting::Tokenizer::InstanceErrors::PrematureStringEnd,
+                Logica::Texting::Tokenizer::Instance::Errors::PREMATURE_STRING_END,
                 "In line %d, got an incomplete delimited comment",
                 this->line_counter
             );
-            this->state = Logica::Texting::Tokenizer::InstanceState::Died;
+            this->state = Logica::Texting::Tokenizer::Instance::States::DIED;
             break;
         }
         else if(current_character == this->current_rules->delimited_comment_closure_token)
@@ -183,14 +183,14 @@ void Logica::Texting::Tokenizer::Instance::WasteComment(
         {
             /* BAD TOKEN: */
             this->validator.ReportError(
-                Logica::Texting::Tokenizer::InstanceErrors::PrematureStringEnd,
+                Logica::Texting::Tokenizer::Instance::Errors::PREMATURE_STRING_END,
                 "Expected %c or %c in line %d for comment, got %c",
                 static_cast<char>(this->current_rules->delimited_comment_hint_token),
                 static_cast<char>(this->current_rules->line_comment_hint_token), 
                 this->line_counter,
                 static_cast<char>(hint)
             );
-            this->state = Logica::Texting::Tokenizer::InstanceState::Died;
+            this->state = Logica::Texting::Tokenizer::Instance::States::DIED;
         }
     }
     else
@@ -220,7 +220,7 @@ void Logica::Texting::Tokenizer::Instance::GetToken(
     key->clear();
 top:
     /* Early Checking: */
-    if(this->state != Logica::Texting::Tokenizer::InstanceState::Running)
+    if(this->state != Logica::Texting::Tokenizer::Instance::States::RUNNING)
         goto skip_everything;
 
     current_character       = this->GetCharacter();
@@ -228,7 +228,7 @@ top:
 
     if(current_character == EOF)
     {
-        this->state = Logica::Texting::Tokenizer::InstanceState::Finished;
+        this->state = Logica::Texting::Tokenizer::Instance::States::FINISHED;
         goto skip_everything;
     }
 

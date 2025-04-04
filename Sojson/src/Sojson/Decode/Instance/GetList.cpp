@@ -93,8 +93,8 @@ Sojson::Node* Sojson::Decode::Instance::GetList(
     )
     {
         if(
-            this->tokenizer_instance.GetState() !=
-                Logica::Texting::Tokenizer::InstanceState::Running
+            this->tokenizer_instance.state == 
+                Logica::Texting::Tokenizer::Instance::States::RUNNING
         )
         { 
             this->validator.ReportError(

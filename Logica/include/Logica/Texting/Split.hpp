@@ -17,7 +17,7 @@ namespace Logica
          * a list containing the split result.
          */
         Logica::Texting::SplitResult Split(
-            Logica::Types::Basic::String& source,
+            const Logica::Types::Basic::String& source,
             Logica::Types::Basic::CH8 separator
         );
     };
