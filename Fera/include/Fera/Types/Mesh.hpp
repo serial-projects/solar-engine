@@ -39,7 +39,7 @@ namespace Fera
                     /**
                      * \brief The definition of a Unit is.
                      */
-                    typedef Fera::Types::Mesh::Unit* Unit;
+                    typedef Fera::Types::Mesh::Unit Unit;
                     
                     /**
                      * \brief Contains the enumerator for the values.
@@ -55,6 +55,14 @@ namespace Fera
                      * \brief The type the value is currently.
                      */
                     Fera::Types::Mesh::Value::Types         type = Fera::Types::Mesh::Value::Types::NOTHING;
+                    
+                    Value();
+                    ~Value();
+                    
+                    /**
+                     * \brief Returns the content of the Value.
+                     */
+                    Fera::Types::Basic::String Dump();
                 };
 
                 /**
@@ -75,6 +83,21 @@ namespace Fera
                  */
                 Fera::Types::Mesh::Value* Get(const Fera::Types::Basic::CH8* key);
                 Fera::Types::Mesh::Value* Get(const Fera::Types::Basic::String& key);
+
+                /**
+                 * \brief Create an new value and maybe return it.
+                 * \return This is a optional value since the content can be uncreatable in case the
+                 * hierachy involves a invalid arrangement like: Group.Object.<Your Object>, this is
+                 * considered invalid since a object can't hold anything.
+                 */
+                Fera::Types::Mesh::Value* Create(const Logica::Texting::SplitResult& key);
+                Fera::Types::Mesh::Value* Create(const Fera::Types::Basic::String& key);
+                Fera::Types::Mesh::Value* Create(const Logica::Types::Basic::CH8* key);
+
+                /**
+                 * \brief Returns the buffer containing the dump of the mesh tree.
+                 */
+                Fera::Types::Basic::String Dump();
             };
     };
 };
