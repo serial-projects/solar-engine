@@ -6,17 +6,18 @@ Sojson::Decode::Instance::Instance()
     this->tokenizer_rules.get_character_type =
         [](Logica::Types::Basic::U32 ch)
         {
-            Logica::Types::Basic::U8 type = Logica::Texting::Tokenizer::RulesCharacterType::Nothing;
+            Logica::Types::Basic::U8 type =
+                Logica::Texting::Tokenizer::Rules::CharacterTypes::NOTHING;
             switch(ch)
             {
                 case ' ': case '\t': case '\n':
-                    type = Logica::Texting::Tokenizer::RulesCharacterType::TokenDelimiter;
+                    type = Logica::Texting::Tokenizer::Rules::CharacterTypes::TOKEN_DELIMITER;
                     break;
                 case '"': case '\'':
-                    type = Logica::Texting::Tokenizer::RulesCharacterType::StringDelimiter;
+                    type = Logica::Texting::Tokenizer::Rules::CharacterTypes::STRING_DELIMITER;
                     break;
                 case '[': case ']': case '{': case '}': case ',': case ':':
-                    type = Logica::Texting::Tokenizer::RulesCharacterType::HighlightToken;
+                    type = Logica::Texting::Tokenizer::Rules::CharacterTypes::HIGHLIGHT_TOKEN;
                     break;
             };
             return type;

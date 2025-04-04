@@ -21,17 +21,17 @@ namespace App
             [](Logica::Types::Basic::I32 ch)
             {
                 Logica::Types::Basic::U8 value =
-                    Logica::Texting::Tokenizer::RulesCharacterType::Nothing;
+                    Logica::Texting::Tokenizer::Rules::CharacterTypes::NOTHING;
                 switch(ch)
                 {
                     case '\n': case '\t': case ' ':
-                        value = Logica::Texting::Tokenizer::RulesCharacterType::TokenDelimiter;
+                        value = Logica::Texting::Tokenizer::Rules::CharacterTypes::TOKEN_DELIMITER;
                         break;
                     case '\'': case '"':
-                        value = Logica::Texting::Tokenizer::RulesCharacterType::StringDelimiter;
+                        value = Logica::Texting::Tokenizer::Rules::CharacterTypes::STRING_DELIMITER;
                         break;
                     case '[': case ']': case '{': case '}': case '/':
-                        value = Logica::Texting::Tokenizer::RulesCharacterType::HighlightToken;
+                        value = Logica::Texting::Tokenizer::Rules::CharacterTypes::HIGHLIGHT_TOKEN;
                         break;
                 };
                 return value;
@@ -47,7 +47,7 @@ namespace App
         Logica::Types::Basic::String source;
         for(
             Logica::Types::Basic::U32 index = 0;
-            (i.GetState() == Logica::Texting::Tokenizer::InstanceState::Running);
+            (i.state == Logica::Texting::Tokenizer::Instance::States::RUNNING);
             index++
         )
         {
@@ -75,17 +75,17 @@ namespace App
             [](Logica::Types::Basic::I32 ch)
             {
                 Logica::Types::Basic::U8 value =
-                    Logica::Texting::Tokenizer::RulesCharacterType::Nothing;
+                    Logica::Texting::Tokenizer::Rules::CharacterTypes::NOTHING;
                 switch(ch)
                 {
                     case '\n': case '\t': case ' ':
-                        value = Logica::Texting::Tokenizer::RulesCharacterType::TokenDelimiter;
+                        value = Logica::Texting::Tokenizer::Rules::CharacterTypes::TOKEN_DELIMITER;
                         break;
                     case '\'': case '"':
-                        value = Logica::Texting::Tokenizer::RulesCharacterType::StringDelimiter;
+                        value = Logica::Texting::Tokenizer::Rules::CharacterTypes::STRING_DELIMITER;
                         break;
                     case '[': case ']': case '{': case '}':
-                        value = Logica::Texting::Tokenizer::RulesCharacterType::HighlightToken;
+                        value = Logica::Texting::Tokenizer::Rules::CharacterTypes::HIGHLIGHT_TOKEN;
                         break;
                 };
                 return value;
@@ -101,7 +101,7 @@ namespace App
         Logica::Types::Basic::String source;
         for(
             Logica::Types::Basic::U32 index = 0;
-            (i.GetState() == Logica::Texting::Tokenizer::InstanceState::Running);
+            (i.state == Logica::Texting::Tokenizer::Instance::States::RUNNING);
             index++
         )
         {

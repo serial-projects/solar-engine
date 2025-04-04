@@ -23,26 +23,48 @@ namespace Logica
 
         class Validator
         {
-            private:
-            Logica::Control::ValidatorFunctions::ErrorCallback      error_callback_f;
-            Logica::Control::ValidatorFunctions::WarningCallback    warning_callback_f;
-            void*                                                   userdata;
             public:
-            Logica::Control::ValidatorContent                       content;
+
+            /**
+             * \brief Contains the error message string and code.
+             */
+            struct Content
+            {
+                Logica::Types::Basic::String    error_message;
+                Logica::Types::Basic::String    warn_message;
+                Logica::Types::Basic::U8        code = 0;
+            };
+
+            /**
+             * \brief The content the validator holds, this is also passed to the callback functions
+             * and is a "slot" for the validator.
+             */
+            Logica::Control::Validator::Content content;
+
+            /**
+             * \brief Standard type for the Callback.
+             */
+            typedef std::function<void(Logica::Control::Validator::Content*, void*)>
+                Callback;
 
             /* Assign Functions: */
-            void AssignErrorCallback(Logica::Control::ValidatorFunctions::ErrorCallback error_callback_f);
-            void AssignWarningCallback(Logica::Control::ValidatorFunctions::WarningCallback warning_callback_f);
-            void AssignUserData(void* userdata);
+            void AssignErrorCallback(Logica::Control::Validator::Callback callback)     { this->error_callback = callback; };
+            void AssignWarningCallback(Logica::Control::Validator::Callback callback)   { this->warning_callback = callback; };
+            void AssignUserData(void* userdata)                                         { this->userdata = userdata; };
 
             /* Report Functions: */
             void ReportError(const Logica::Types::Basic::U8 code, const Logica::Types::Basic::CH8* format, ...);
             void ReportWarning(const Logica::Types::Basic::CH8* format, ...);
             
             /* Get and some other functions: */
-            Logica::Types::Basic::U8 GetCode();
-            Logica::Types::Basic::String& GetErrorLog();
-            Logica::Types::Basic::String& GetWarningLog();
+            inline Logica::Types::Basic::U8        GetCode()        { return this->content.code; };
+            inline Logica::Types::Basic::String&   GetErrorLog()    { return this->content.error_message; };
+            inline Logica::Types::Basic::String&   GetWarningLog()  { return this->content.warn_message; };
+
+            private:
+            Logica::Control::Validator::Callback    error_callback;
+            Logica::Control::Validator::Callback    warning_callback;
+            void*                                   userdata;
         };
     };
 };

@@ -3,27 +3,6 @@
 
 #include <cstdarg>
 
-void Logica::Control::Validator::AssignErrorCallback(
-    Logica::Control::ValidatorFunctions::ErrorCallback error_callback_f
-)
-{
-    this->error_callback_f = error_callback_f;
-}
-
-void Logica::Control::Validator::AssignWarningCallback(
-    Logica::Control::ValidatorFunctions::WarningCallback warning_callback_f
-)
-{
-    this->warning_callback_f = warning_callback_f;
-}
-
-void Logica::Control::Validator::AssignUserData(
-    void* userdata
-)
-{
-    this->userdata = userdata;
-}
-
 /* Report Functions: */
 void Logica::Control::Validator::ReportError(
     const Logica::Types::Basic::U8 code,
@@ -44,12 +23,12 @@ void Logica::Control::Validator::ReportError(
         arguments
     );
 
-    this->content.err_log           = buffer;
+    this->content.error_message     = buffer;
     this->content.code              = code;
 
     /* Call the callbacks? */
-    if(this->error_callback_f)
-        this->error_callback_f(
+    if(this->error_callback)
+        this->error_callback(
             &this->content,
             this->userdata
         );
@@ -73,28 +52,12 @@ void Logica::Control::Validator::ReportWarning(
         arguments
     );
 
-    this->content.warn_log          = buffer;
+    this->content.warn_message = buffer;
 
     /* Call the callbacks? */
-    if(this->warning_callback_f)
-        this->warning_callback_f(
+    if(this->warning_callback)
+        this->warning_callback(
             &this->content,
             this->userdata
         );
-}
-
-/* Get and some other functions: */
-Logica::Types::Basic::U8 Logica::Control::Validator::GetCode()
-{
-    return this->content.code;
-}
-
-Logica::Types::Basic::String& Logica::Control::Validator::GetErrorLog()
-{
-    return this->content.err_log;
-}
-
-Logica::Types::Basic::String& Logica::Control::Validator::GetWarningLog()
-{
-    return this->content.warn_log;
 }

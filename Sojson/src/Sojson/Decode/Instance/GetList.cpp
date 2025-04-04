@@ -6,25 +6,13 @@ Sojson::Types::Basic::Result Sojson::Decode::Instance::GetValueAndPushBackToList
     Sojson::Types::Basic::U8 depth
 )
 {
-    Sojson::Types::Basic::Result should_continue = true;
-    Sojson::Node* list_node_entry = nullptr;
+    Sojson::Types::Basic::Result should_continue    = true;
+    Sojson::Node* list_node_entry                   = nullptr;
 
     /* NOTE: next indicator is the ',' token, which here determines whether the object should
      * close or not, using ']' will close the list, independent of the size the list is in. */
     Logica::Types::Basic::String value_entrypoint_or_next_indicator_or_closure;
     this->tokenizer_instance.GetToken(&value_entrypoint_or_next_indicator_or_closure);
-
-    std::cout
-        << __PRETTY_FUNCTION__
-        << ": "
-        << building_list->size()
-        << "\n";
-    std::cout
-        << __PRETTY_FUNCTION__
-        << ": "
-        << value_entrypoint_or_next_indicator_or_closure
-        << "\n";
-
     if(value_entrypoint_or_next_indicator_or_closure == "]")
     {
         should_continue = false;
@@ -93,7 +81,7 @@ Sojson::Node* Sojson::Decode::Instance::GetList(
     )
     {
         if(
-            this->tokenizer_instance.state == 
+            this->tokenizer_instance.state != 
                 Logica::Texting::Tokenizer::Instance::States::RUNNING
         )
         { 

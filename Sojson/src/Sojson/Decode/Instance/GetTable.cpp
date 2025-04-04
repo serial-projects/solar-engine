@@ -176,7 +176,7 @@ Sojson::Node* Sojson::Decode::Instance::GetTable(
     )
     {
         if(
-            this->tokenizer_instance.state == Logica::Texting::Tokenizer::Instance::States::RUNNING
+            this->tokenizer_instance.state != Logica::Texting::Tokenizer::Instance::States::RUNNING
         )
         {
             this->validator.ReportError(

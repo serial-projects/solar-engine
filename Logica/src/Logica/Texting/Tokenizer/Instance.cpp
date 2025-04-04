@@ -2,7 +2,7 @@
 
 Logica::Texting::Tokenizer::Instance::Instance()
 {
-    this->state = Logica::Texting::Tokenizer::InstanceState::Running;
+    this->state = Logica::Texting::Tokenizer::Instance::States::RUNNING;
 }
 
 void Logica::Texting::Tokenizer::Instance::SetBuffer(
@@ -17,11 +17,6 @@ void Logica::Texting::Tokenizer::Instance::SetRules(
 )
 {
     this->current_rules = rules;
-}
-
-Logica::Types::Basic::U8 Logica::Texting::Tokenizer::Instance::GetState()
-{
-    return this->state;
 }
 
 Logica::Types::Basic::U32 Logica::Texting::Tokenizer::Instance::GetCurrentLine()

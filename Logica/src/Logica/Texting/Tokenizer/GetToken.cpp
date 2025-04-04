@@ -99,17 +99,17 @@ void Logica::Texting::Tokenizer::Instance::GetTokenAny(
 
         /* keep going: */
         if(
-            current_character_type ==
-                Logica::Texting::Tokenizer::RulesCharacterType::TokenDelimiter
+            current_character_type == 
+                Logica::Texting::Tokenizer::Rules::CharacterTypes::TOKEN_DELIMITER
         )
         {
             break;
         }
         else if(
             current_character_type  ==
-                Logica::Texting::Tokenizer::RulesCharacterType::HighlightToken  ||
+                Logica::Texting::Tokenizer::Rules::CharacterTypes::HIGHLIGHT_TOKEN  ||
             current_character_type  ==
-                Logica::Texting::Tokenizer::RulesCharacterType::StringDelimiter ||
+                Logica::Texting::Tokenizer::Rules::CharacterTypes::STRING_DELIMITER ||
             /* NOTE: we also consider the current_character to be a comment starter, in case
              * it is, we MUST also back on track to leave for the next GetToken() to process
              * this token.
@@ -236,21 +236,21 @@ top:
 
     if (
         current_character_type ==
-            Logica::Texting::Tokenizer::RulesCharacterType::TokenDelimiter
+            Logica::Texting::Tokenizer::Rules::CharacterTypes::TOKEN_DELIMITER
     )
     {
         goto top;
     }
     else if(
         current_character_type ==
-            Logica::Texting::Tokenizer::RulesCharacterType::StringDelimiter
+            Logica::Texting::Tokenizer::Rules::CharacterTypes::STRING_DELIMITER
     )
     {
         this->GetTokenString(key, current_character);
     }
     else if(
         current_character_type ==
-            Logica::Texting::Tokenizer::RulesCharacterType::HighlightToken
+            Logica::Texting::Tokenizer::Rules::CharacterTypes::HIGHLIGHT_TOKEN
     )
     {
         /* NOTE: due some languages using '/' for keywords and some other special tokens,

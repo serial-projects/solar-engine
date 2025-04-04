@@ -11,31 +11,6 @@ namespace Logica
         namespace Tokenizer
         {
             /**
-             * \brief Enum containing all the token types for the tokenizer.
-             */
-            namespace RulesCharacterType
-            {
-                enum RulesCharacterTypes
-                {
-                    Nothing             = 0,
-                    TokenDelimiter,
-                    StringDelimiter,
-                    HighlightToken,
-                    Unknown             = UINT8_MAX
-                };
-            };
-
-            /**
-             * \brief contains the functions that must be wrapped on the rules for the tokenizer
-             * to work properly.
-             */
-            namespace RulesFunctions
-            {
-                typedef std::function<Logica::Types::Basic::U8(const Logica::Types::Basic::I32)>
-                    GetCharacterType;
-            };
-
-            /**
              * \brief Contains all the rules for the tokenizer to use.
              */
             struct Rules
