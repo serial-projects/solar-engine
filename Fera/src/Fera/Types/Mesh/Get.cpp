@@ -11,10 +11,7 @@ Fera::Types::Mesh::Value* Fera::Types::Mesh::Get(const Logica::Texting::SplitRes
          * If not, then it is simply another group! */
         if(index >= result.size())
         {
-            if(current_value->type != Fera::Types::Mesh::Value::Types::UNIT)
-                value = current_value;
-            else
-                break;
+            value = current_value;
         }
         else
         {
