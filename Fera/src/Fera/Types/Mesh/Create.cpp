@@ -1,7 +1,10 @@
+#include "Logica/Logica.hpp"
 #include "Fera/Types/Mesh.hpp"
 
+#include <iostream>
+
 Fera::Types::Mesh::Value* Fera::Types::Mesh::Create(
-    const Logica::Texting::SplitResult& key
+    const Logica::Texting::SplitResult& result
 )
 {
     /* Let's traverse everything: */
@@ -16,14 +19,15 @@ Fera::Types::Mesh::Value* Fera::Types::Mesh::Create(
      */
     for(Fera::Types::Basic::U8 index = 0; index < UINT8_MAX; index++)
     {
-        if(index >= key.size())
+        if(index >= (result.size() - 1))
         {
+            std::cout << "END reached\n";
             if(current_value->type == Fera::Types::Mesh::Value::Types::GROUP)
             {
                 /**
                  * Since we are +1 on the key index, we rewind to the last entry.
                  */
-                Fera::Types::Basic::String current_key = key.at(index - 1);
+                Fera::Types::Basic::String current_key = result.at(index);
                 Fera::Types::Mesh::Value::Group* current_group =
                     static_cast<Fera::Types::Mesh::Value::Group*>(
                         current_value->value
@@ -33,6 +37,11 @@ Fera::Types::Mesh::Value* Fera::Types::Mesh::Create(
                     /**
                      * In this case, we just return the element.
                      */
+                    std::cout
+                        << __PRETTY_FUNCTION__
+                        << ": Using already existing object = "
+                        << current_key
+                        << "\n";
                     created_value = current_group->at(current_key);
                 }
                 else
@@ -40,11 +49,17 @@ Fera::Types::Mesh::Value* Fera::Types::Mesh::Create(
                     /**
                      * In this case, the element was not created and we need to do it here.
                      */
+                    std::cout
+                        << __PRETTY_FUNCTION__
+                        << ": Creating an object = "
+                        << current_key
+                        << "\n";
                     created_value           = new Fera::Types::Mesh::Value;
                     created_value->type     = Fera::Types::Mesh::Value::Types::UNIT;
                     created_value->value    = new Fera::Types::Mesh::Unit;
                     current_group->insert({current_key, created_value});
                 }
+                break;
             }
             else
             {
@@ -53,6 +68,7 @@ Fera::Types::Mesh::Value* Fera::Types::Mesh::Create(
         }
         else
         {
+            std::cout << "NEXT reached\n";
             /**
              * NOTE: Here the things get an bit complicated, we want to:
              * 1-) Is the current value we are an GROUP?
@@ -64,7 +80,7 @@ Fera::Types::Mesh::Value* Fera::Types::Mesh::Create(
              */
             if(current_value->type == Fera::Types::Mesh::Value::Types::GROUP)
             {
-                Fera::Types::Basic::String current_key = key.at(index);
+                Fera::Types::Basic::String current_key = result.at(index);
                 Fera::Types::Mesh::Value::Group* current_group =
                     static_cast<Fera::Types::Mesh::Value::Group*>(current_value->value);
                 if(current_group->find(current_key) == current_group->end())
@@ -73,14 +89,24 @@ Fera::Types::Mesh::Value* Fera::Types::Mesh::Create(
                      * In this case, we create an new group to hold our content, we also add it to
                      * the branch the value is lacking and use that to the next current value.
                      */
+                    std::cout
+                        << __PRETTY_FUNCTION__
+                        << ": Creating an new group = "
+                        << current_key
+                        << "\n";
                     Fera::Types::Mesh::Value* new_group = new Fera::Types::Mesh::Value;
-                    new_group->type = Fera::Types::Mesh::Value::Types::GROUP;
-                    new_group->value= static_cast<void*>(new Fera::Types::Mesh::Value::Group);
+                    new_group->type                     = Fera::Types::Mesh::Value::Types::GROUP;
+                    new_group->value                    = static_cast<void*>(new Fera::Types::Mesh::Value::Group);
                     current_group->insert({current_key, new_group});
                     current_value = new_group;
                 }
                 else
                 {
+                    std::cout
+                        << __PRETTY_FUNCTION__
+                        << ": Using group = "
+                        << current_key
+                        << "\n";
                     current_value = current_group->at(current_key);
                 }
             }
@@ -98,10 +124,12 @@ Fera::Types::Mesh::Value* Fera::Types::Mesh::Create(
 {
     Logica::Texting::SplitResult result =
         Logica::Texting::Split(key, '.');
-    return this->Get(result);
+    return this->Create(result);
 }
 
-Fera::Types::Mesh::Value* Fera::Types::Mesh::Create(const Logica::Types::Basic::CH8* key)
+Fera::Types::Mesh::Value* Fera::Types::Mesh::Create(
+    const Logica::Types::Basic::CH8* key
+)
 {
     return this->Create(Fera::Types::Basic::String(key));
 }
