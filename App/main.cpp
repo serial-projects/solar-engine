@@ -1,5 +1,6 @@
 #include "Logica/Logica.hpp"
 #include "Sojson/Sojson.hpp"
+#include "Fera/Fera.hpp"
 
 #include <iostream>
 
@@ -152,11 +153,46 @@ namespace App
         delete tree;
     }
 
+    void PerformFeraTestOnMesh()
+    {
+        Fera::Types::Mesh* m_mesh = new Fera::Types::Mesh;
+        m_mesh->Create("default.object");
+        
+        /* Append some values inside: */
+        Fera::Types::Mesh::Value* default_object = m_mesh->Get("default.object");
+        if(default_object)
+        {
+            if(default_object->type == Fera::Types::Mesh::Value::Types::UNIT)
+                static_cast<Fera::Types::Mesh::Unit*>(default_object->value)->faces = 30;
+            else
+            {
+                std::cout
+                    << __PRETTY_FUNCTION__
+                    << ": expected unit but got group.\n";
+            }
+        }
+        else
+        {
+            std::cout
+                << __PRETTY_FUNCTION__
+                << ": adquired bad object!\n";
+        }
+
+        /* Say what is inside; */
+        std::cout 
+            << __PRETTY_FUNCTION__
+            << ": "
+            << m_mesh->Dump()
+            << "\n";
+        delete m_mesh;
+    }
+
     void PerformTest()
     {
         // App::PerformLogicaTesting();
         // App::PerformLogicaTestingButUsingAnotherRuleset();
-        App::PerformSojsonTesting();
+        // App::PerformSojsonTesting();
+        App::PerformFeraTestOnMesh();
     }
 };
 
