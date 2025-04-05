@@ -17,8 +17,11 @@ namespace Fera
                  */
                 struct Unit
                 {
-                    std::vector<Fera::Types::Basic::F32>    data;
+                    typedef std::vector<Fera::Types::Basic::F32> Data;
+                    Fera::Types::Mesh::Unit::Data           data;
                     Fera::Types::Basic::U32                 faces;
+                    Unit();
+                    ~Unit();
                 };
 
                 /**
@@ -62,7 +65,10 @@ namespace Fera
                     /**
                      * \brief Returns the content of the Value.
                      */
-                    Fera::Types::Basic::String Dump();
+                    Fera::Types::Basic::String Dump(
+                        const Fera::Types::Basic::String& key,
+                        std::vector<Fera::Types::Basic::String>* location_stack
+                    );
                 };
 
                 /**
@@ -90,7 +96,7 @@ namespace Fera
                  * hierachy involves a invalid arrangement like: Group.Object.<Your Object>, this is
                  * considered invalid since a object can't hold anything.
                  */
-                Fera::Types::Mesh::Value* Create(const Logica::Texting::SplitResult& key);
+                Fera::Types::Mesh::Value* Create(const Logica::Texting::SplitResult& result);
                 Fera::Types::Mesh::Value* Create(const Fera::Types::Basic::String& key);
                 Fera::Types::Mesh::Value* Create(const Logica::Types::Basic::CH8* key);
 
